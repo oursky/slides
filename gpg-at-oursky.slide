@@ -64,6 +64,7 @@ e.g. Ben sign a file with Rick's Key
   gpg --export -a ida@oursky.com
 
 - (Optional) Read about Subkeys
+- (Optional) Push key to key servers
 
 * Pass
 
