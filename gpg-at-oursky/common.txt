@@ -1,0 +1,22 @@
+>> gpg2 --edit-key bencheng@oursky.com
+pub  2048R/48D350D2  created: 2015-03-02  expires: never       usage: SC
+                     trust: ultimate      validity: ultimate
+sub  2048R/8CCC82E9  created: 2015-03-02  expires: never       usage: E
+sub  2048R/7AD0441D  created: 2015-08-29  expires: never       usage: A
+sub  2048R/5C11C0F7  created: 2015-08-31  expires: 2017-08-30  usage: S
+[ultimate] (1). keybase.io/bencheng <bencheng@keybase.io>
+[ultimate] (2)  Ben Cheng <bencheng@oursky.com>
+[ultimate] (3)  Ben Cheng <chpapa@gmail.com>
+
+gpg> uid 1 // HL
+gpg> trust // HL
+
+Please decide how far you trust this user to correctly verify other users' keys
+(by looking at passports, checking fingerprints from different sources, etc.)
+
+  1 = I don't know or won't say
+  2 = I do NOT trust
+  3 = I trust marginally
+  4 = I trust fully
+  5 = I trust ultimately
+  m = back to the main menu

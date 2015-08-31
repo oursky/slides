@@ -1,0 +1,146 @@
+GPG at Oursky
+Just enough to survive
+4 Sep 2015
+
+Ben Cheng
+Oursky
+bencheng@oursky.com
+
+* What is this sharing about?
+
+Just enough GPG knowledge at work
+
+- Generation of key
+- Keybase.io
+- Using Pass
+
+AND This is not about ...
+
+- Not comprehensive GPG knowledge
+- Not enough to become an security expert lol
+
+* So you shall already know about...
+
+- Public / Private Key
+- GPG
+
+  brew install gpg2
+
+* Common operations
+
+- Encrypt
+- Decrypt
+- Sign
+e.g. Ben sign a file with Rick's Key
+=> Ben tells the world this file is from me (and I trusted Rick's key)
+
+- Verify
+
+* Trust / UID
+
+.code gpg-at-oursky/common.txt
+
+* Key Generation 1
+
+.code gpg-at-oursky/gen-key.txt /1 OMIT/,/2 OMIT/
+
+* Key Generation 2
+
+.code gpg-at-oursky/gen-key.txt /2 OMIT/,/3 OMIT/
+
+* Set pref and UID
+
+.code gpg-at-oursky/gen-key.txt /3 OMIT/,
+
+* After match
+
+- Generate revoke cert
+  gpg --output idachan-revoke.gpg --gen-revoke ida@oursky.com
+
+- Export Secret Keys
+  gpg --export-secret-keys -a ida@oursky.com
+
+- Export Public Keys
+  gpg --export -a ida@oursky.com
+
+- (Optional) Read about Subkeys
+
+* Pass
+
+* What's Pass?
+
+- Very simple command line password management system for team
+- encrypt password file by gpg
+- git directory at ~/.password-store
+- .gpg-id file on each directory for the gpg uid who have access to it
+
+  brew install pass
+  echo "source /usr/local/etc/bash_completion.d/password-store" >> ~/.bashrc
+
+* Listing
+
+.code gpg-at-oursky/pass.txt /1 OMIT/,/2 OMIT/
+
+* Common operation
+
+- Start
+  hub clone oursky/password-store
+  mv password-store .password-store
+
+- Copy password to clipboard / show it
+  pass apps/twitter/oursky
+  pass -c apps/twitter/oursky
+
+- Insert / Generate / Remove password
+  pass insert apps/twitter/pandaform
+  pass generate apps/twitter/pandaform 15
+  pass rm apps/twitter/pandaform
+
+- Sync
+  pass push
+  pass pull
+
+* Reassign access
+
+After you have imported the keys of fellows (keybase track), pass can re-encrypt a folder (and its sub-folder). 
+e.g. Give access to cheungpat for everything under clients/abc
+
+.code gpg-at-oursky/pass.txt /2 OMIT/,/3 OMIT/
+
+* How we use it
+
+We use it for:
+- share passwords to other team members (don't send via insecure channel)
+- save passwords for future reference (don't save on your personal / insecure medium)
+- share special secure information. Use *pass insert -m* for multilines
+
+Don't use it for:
+- the software have a team features (such as AWS IAM roles)
+- share passwords for external members
+
+* Keybase.io
+
+* Keybase.io
+
+- People directory, authenticate people via social network
+- Very handy keybase command line tool
+- Invitation only
+
+.link keybase.io Keybase.io
+
+Here are some WTF...
+
+- DON'T upload your private key
+- Trust based on Social Network?
+
+* Very handy keybase commands
+
+  keybase login
+  keybase prove [twitter/github/reddit/web]
+  keybase push
+  keybase revoke
+  keybase track cheungpat
+  keybase encrypt cheungpat -s foot.txt -o bar.asc
+  keybase decrypt bar.asc -o bar.txt
+
+.link https://keybase.io/docs/command_line self-explantory documentation

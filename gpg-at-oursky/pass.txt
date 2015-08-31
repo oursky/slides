@@ -1,0 +1,29 @@
+// 1 OMIT
+>> pass
+Password Store
+├── README.md
+├── apps
+│   └── twitter
+│       ├── oursky.gpg
+│       ├── pandaform.gpg
+├── clients
+├── dev
+│   ├── apple-id
+│   │   └── oursky.gpg
+│   └── namecheap
+│       └── oursky.gpg
+└── servers
+    └── abc.oursky.com
+        └── root.gpg
+
+// 2 OMIT
+>> pass init -p clients/easytable y03kuen@gmail.com // HL
+Password store initialized for y03kuen@gmail.com
+[master e59b61c] Set GPG id to y03kuen@gmail.com.
+ 1 file changed, 1 insertion(+)
+ create mode 100644 clients/abc/.gpg-id
+clients/abc/google-apps/info@oursky.com: reencrypting to 19099D75CF61A4F8
+[master 323a36c] Reencrypt password store using new GPG id y03kuen@gmail.com.
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rewrite clients/abc/google-apps/info@oursky.com.gpg (100%)
+// 3 OMIT

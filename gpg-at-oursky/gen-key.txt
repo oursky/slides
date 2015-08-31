@@ -1,0 +1,71 @@
+// 1 OMIT
+>> gpg --gen-key // HL
+gpg (GnuPG) 1.4.19; Copyright (C) 2015 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Please select what kind of key you want:
+   (1) RSA and RSA (default)
+   (2) DSA and Elgamal
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+Your selection? 1 // HL
+RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (2048) 4096 // HL
+Requested keysize is 4096 bits
+Please specify how long the key should be valid.
+         0 = key does not expire
+      <n>  = key expires in n days
+      <n>w = key expires in n weeks
+      <n>m = key expires in n months
+      <n>y = key expires in n years
+Key is valid for? (0) 0
+Key does not expire at all
+Is this correct? (y/N) y
+// 2 OMIT
+You need a user ID to identify your key; the software constructs the user ID
+from the Real Name, Comment and Email Address in this form:
+    "Heinrich Heine (Der Dichter) <heinrichh@duesseldorf.de>"
+
+Real name: Ida Chan // HL
+Email address: ida@oursky.com // HL
+Comment:
+You selected this USER-ID:
+    "Ida Chan <ida@oursky.com>"
+
+Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? o
+You need a Passphrase to protect your secret key.
+
+gpg: key 505EF763 marked as ultimately trusted
+public and secret key created and signed.
+
+gpg: checking the trustdb
+gpg: 3 marginal(s) needed, 1 complete(s) needed, PGP trust model
+gpg: depth: 0  valid:   3  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 3u
+pub   4096R/505EF763 2015-08-31
+      Key fingerprint = 2CDE 199D 10E9 1FF2 65B5  6926 8040 8728 505E F763
+uid                  Ida Chan <ida@oursky.com>
+sub   4096R/1A04EAEB 2015-08-31
+// 3 OMIT
+>> gpg --edit-key ida@oursky.com // HL
+gpg (GnuPG) 1.4.19; Copyright (C) 2015 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+pub  4096R/505EF763  created: 2015-08-31  expires: never       usage: SC // HL
+                     trust: ultimate      validity: ultimate
+sub  4096R/1A04EAEB  created: 2015-08-31  expires: never       usage: E // HL
+[ultimate] (1). Ida Chan <ida@oursky.com>
+
+gpg> setpref SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed // HL
+Set preference list to:
+     Cipher: AES256, AES192, AES, CAST5, 3DES
+     Digest: SHA512, SHA384, SHA256, SHA224, SHA1
+     Compression: ZLIB, BZIP2, ZIP, Uncompressed
+     Features: MDC, Keyserver no-modify
+Really update the preferences? (y/N) y
+
+gpg> adduid // HL
+gpg> save
