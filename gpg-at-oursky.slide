@@ -19,7 +19,7 @@ AND This is not about ...
 - Not comprehensive GPG knowledge
 - Not enough to become an security expert lol
 
-* So you shall already know about...
+* So you should already know about...
 
 - Public / Private Key
 - GPG
@@ -32,6 +32,7 @@ AND This is not about ...
 - Decrypt
 - Sign
 e.g. Ben sign a file with Rick's Key
+=> Ben encrypt Rick's Public Key with its Private Key
 => Ben tells the world this file is from me (and I trusted Rick's key)
 
 - Verify
@@ -98,8 +99,8 @@ e.g. Ben sign a file with Rick's Key
   pass rm apps/twitter/pandaform
 
 - Sync
-  pass push
-  pass pull
+  pass git push
+  pass git pull
 
 * Reassign access
 
