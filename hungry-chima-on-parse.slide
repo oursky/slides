@@ -1,0 +1,63 @@
+Hungry Chima on Slack
+9 Oct 2015
+
+David Ng
+Oursky
+david.ng@oursky.com
+
+* Slack Bot
+
+Slack bot
+
+.link https://api.slack.com/bot-users
+- Add as a member in your team
+- It appears as a user
+
+Slack command
+
+.link https://api.slack.com/slash-commands
+- Listen for custom triggers in chat messages 
+- Not shown as a user
+- Replies are private (only visible to you)
+
+* Default Commands on Slack
+
+- /prefs
+- /remind me in [time] to [message]
+- /open [channel]
+- /kick [user]
+- /away
+- /shrug [your message]
+  Appends ¯\_(ツ)_/¯ to your message
+
+* Set up Slash Commands
+- Add new integration to Slack
+.link https://oursky.slack.com/services/new
+
+.image hungry-chima-on-parse/new-slack-integration
+
+
+* Existing commands at Oursky
+
+- /hello
+- /address
+- /yo [yo-username]
+
+* How it works
+
+- Slack Slash Command -(Request)-> Parse Cloud Code
+- Parse Cloud Code -(Response)-> Slack Channel
+
+* Parse Cloud Code
+.link https://parse.com/apps/quickstart#cloud_code/unix
+- Get the Parse tool
+- Set up
+- Develope
+- Deploy with `parse deploy command`
+
+* Parse Cloud Code Framework
+- NodeJS
+- ExpressJS Framework
+
+* Basic API Server
+.code hungry-chima-on-parse/cloud.txt /1 OMIT/

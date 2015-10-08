@@ -1,0 +1,83 @@
+// 1 OMIT
+var express = require('express');
+var app = express();
+ 
+app.use(express.bodyParser());
+
+app.post('/command',
+         express.basicAuth('OURSKY', 'xxxxxxxxxxxxxxxxxxxxx'),
+         function(req, res) {
+
+  var command = req.body.command;
+
+    if (command === "/address") {
+      address(req,res);
+    } else if (command === "/hello") {
+      hello(req,res);
+    } else if (command === "/yo") {
+      yo(req,res);
+    } else if (command === "/tellchima") {
+      tellchima(req,res);
+    }
+     else {
+      res.send('Command not found');
+    }
+
+});
+
+app.listen();
+
+// 2 OMIT
+function tellchima(req,res) {
+  var reqBody = req.body;
+
+  var text = reqBody.text;
+  var teamId = reqBody.team_id;
+  var channelId = reqBody.channel_id;
+  var channelName = reqBody.channel_name;
+  var userId = reqBody.user_id;
+  var userName = reqBody.user_name;
+
+  var record = new Record();
+
+  var saveCompleted = function() {
+    res.send('Meow. Received!\nEcho: '+text);
+    };
+}
+
+// 3 OMIT
+
+function yo(req,res) {
+
+  var yoUser = req.body.text
+  var yoURL = 'http://api.justyo.co/yo/';
+
+  if ( "all" === yoUser.toLowerCase()) {
+    console.log("Yo all subscribers!");
+    yoURL = 'http://api.justyo.co/yoall/';
+  }
+
+  Parse.Cloud.httpRequest({
+    method: 'POST',
+    url: yoURL,
+    body: {
+      api_token : 'YO-API-YOKEN-HERE',
+      username : yoUser
+    },
+    success: function(httpResponse) {
+      console.log(httpResponse.text);
+      res.send("Yo sent to "+yoUser +"!");
+    },
+    error: function(httpResponse) {
+      console.error('Request failed with response code ' + httpResponse.status);
+      res.send("Failed to send Yo.");
+  }
+  });
+
+}
+
+// 4 OMIT
+Parse.Cloud.job("dailySummary", function(request, status) {
+ Parse.Cloud.useMasterKey();
+  loadRecordsForDate(new Date());
+});
