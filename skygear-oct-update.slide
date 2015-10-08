@@ -1,0 +1,227 @@
+Skygear.io at Oursky
+Oct Progress Update
+9 Oct 2015
+
+Roy Yuen
+Oursky
+royuen@oursky.com
+
+* Offical naming
+
+We have finally decided to call "ourd" service as Skygear.io!
+
+All SDK class prefix renaming and document site will be updated soon.
+
+* Projects adopted
+
+Now we have 2 projects using Skygear as backend at the moment:
+
+- uFO (iOS) - Your one stop restauant menu
+- Taylors (Web) - A web portal to manage projects in a writing company
+
+And more client projects would use skygear as backend soon:
+
+- Village (iOS)
+- Fesh (iOS, TBC)
+
+*  Doc site (DRAFT) is ready!
+
+If you are interested, please visit:
+
+- Guideline / Tutorial: http://docs.pandadb.com/tutorial/toc/
+- iOS SDK class reference: http://docs.pandadb.com/ios/
+
+The guideline site has all basic introduction to Skygear, setup guideline, and also each SDK's development guidelines / examples.
+
+They are currently in basic draft and we will continue to improve them.
+
+* Plugin System
+
+- Database Extension Point
+- Handler Extension Point
+- Lambda Function
+- Authentication Provider
+- Scheduled Tasks
+
+Plugin example:
+
+    import pyourd
+
+    @pyourd.op("chima:echo")
+    def echo():
+        return {"message": "Hello World"}
+
+* Plugin System - Database Extension Point
+
+- `before_save` — executes decorated function before a record save operation occurs
+- `before_delete` — executes decorated function before a record delete operation occurs
+- `after_save` — executes decorated function before a record save operation occurs
+- `after_delete` — executes decorated function before a record save operation occurs
+
+    @pyourd.before_save("note", async=False)
+    def update_word_count(record, original_record, db):
+        word_list = record["content"].split(" ")
+        record["word_count"] = len(word_list)
+        return record
+
+* Plugin System - Handler Extension Point
+
+- Create a custom handler for your application to call
+
+    @pyourd.handler("chima:echo", auth_required=True)
+    def meow(payload, io):
+        io.write(payload)
+        return
+
+You can define your own payload and response from the application.
+
+* Plugin System - Lambda Function
+
+- Using handler may be tricky because you need to define everything yourself. As a convinent approach you could use Lambda instead
+
+    @pyourd.op("hello:world")
+    def say(name="world!"):
+        return {"message": "Hello " + name}
+
+And from your application, you could call above endpoint by:
+
+    [container callLambda:@"hello:world" 
+                arguments:@[@"dingdong"] 
+        completionHandler:^(NSDictionary *response, NSError *error) {
+
+        if (error) {
+            NSLog(@"error calling hello:world: %@", error);
+            return;
+        }
+
+        NSLog(@"Received response = %@", response);
+    }];
+
+* Plugin System - Authentication Provider
+
+Allow you to extend skygear's authentication functionality to other social services such as facebook / github
+
+    import pyourd
+    import pyourd.providers
+    import facebook
+
+    @pyourd.provides("auth", "com.facebook")
+    class FacebookProvider(pyourd.providers.BaseAuthProvider):
+        def login(self, auth_data):
+            graph = facebook.GraphAPI(access_token=auth_data['access_token'])
+            auth_data.update(graph.get_object(id='me'))
+            return {"principal_id": auth_data['id'], "auth_data": auth_data}
+
+// TODO: How does app side call to auth with above setup?
+
+
+* Plugin System - Scheduled Tasks
+
+It's easy to create a periodic job in ourd as a plugin
+
+    @pyourd.every("@every 1m")
+    def watch(io):
+        open('/tmp/messages.txt', 'a').write('Hello World!\n')
+
+In this case the watch function would be called every minute.
+
+
+* JS SDK
+
+Besides iOS SDK, we have also created the JS SDK. It's still in early development. It covers:
+
+- CRUD records
+- Users authentication
+
+* Pubsub support
+
+Ourd now supports pubsub interface. You can use it to create real time update experience in Skygear applications.
+
+For example in iOS, you can subscribe to a channel with this:
+
+    ODContainer *container = [ODContainer defaultContainer];
+    [container.pubsubClient subscribeTo:@"hello" handler:^(NSDictionary *info) {
+        NSString *name = info[@"name"];
+        NSLog(@"%@ says hello", name);
+    }];
+
+And in plugin, you can publish a message in the channel
+
+    container = OurdContainer()
+    pubsub = container.pubsub()
+    pubsub.publish("notes_channel", {"message": "Hello World!"})
+
+And of course, you can also do it on iOS too:
+
+    [container.pubsubClient publishMessage:@{@"name": @"world"} toChannel:@"hello"];
+
+* ODSubscription update
+
+- ODSubscription now supports for both push notification and pubsub update automatically
+- If the user didn't allow push notification permission, the app will still get the real time updates from pubsub channel
+
+* Asset support
+
+Upload an asset and associate it to a record
+
+    - (void)imagePickerController:(UIImagePickerController *)picker
+    didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info
+    {
+        NSURL *url = info[UIImagePickerControllerReferenceURL];
+        ODAsset *asset = [ODAsset assetWithName:@"profile-picture" fileURL:url];
+
+        ODContainer *container = [ODContainer defaultContainer];
+        [container uploadAsset:asset completionHandler:^(ODAsset *asset, NSError *error) {
+            if (error) {
+                NSLog(@"error uploading asset: %@", error);
+                return;
+            }
+
+            self.photoRecord[@"image"] = asset;
+            [container.privateCloudDatabase saveRecord:self.photoRecord completion:nil];
+        }];
+    }
+
+* Asset support
+
+To get it, you can call asset.url:
+
+    [privateDB fetchRecordWithID:photoRecordID completionHandler:^(ODRecord *photo, NSError *error) {
+        if (error) {
+            NSLog(@"error fetching photo: %@", error);
+            return;
+        }
+
+        ODAsset *asset = photo[@"image"];
+        NSURL *url = asset.url;
+        // do something with the url
+    }];
+
+* Geo-location support
+
+Saving location in a record
+
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:22.283 longitude:114.15];
+    record[@"location"] = location;
+
+Query a list of records by distance
+
+    CLLocation *distanceFromLoc = [[CLLocation alloc] initWithLatitude:22.283 longitude:114.15];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"distanceToLocation:fromLocation:(location, %@) < %f", distanceFromLoc, 400.f];
+    ODQuery *query = [ODQuery queryWithRecordType:@"photo" predicate:predicate];
+
+
+* Now planning
+
+Access control
+
+- Introduce role concept, such as admin, staff, user
+- Allow developer to limit certain record access to different role of users
+
+Command Line Interface
+
+- Export / Import records
+- Manage table schema
+- Modifying records
+
+* We target to open source Skygear to public in Dec.
