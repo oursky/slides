@@ -1,0 +1,147 @@
+SSH Can
+
+# SSH can!
+
+
+* SSH can start a shell in remote host
+
+    $ ssh root@188.166.253.253
+    Password:
+    sshdemo#
+
+
+* SSH can save you some typing
+
+    $ vim ~/.ssh/config
+    Host sshdemo
+      HostName 188.166.253.253
+      User root
+
+
+* SSH can save you even more typing (authentication with SSH key)
+
+Step 1: First, you need to generate your SSH key
+
+    $ ssh-keygen
+    Generating public/private rsa key pair.
+    Enter file in which to save the key (/root/.ssh/id_rsa): 
+    Enter passphrase (empty for no passphrase): 
+    Enter same passphrase again: 
+    Your identification has been saved in /root/.ssh/id_rsa.
+    Your public key has been saved in /root/.ssh/id_rsa.pub.
+    The key fingerprint is:
+    29:a4:83:8a:a7:c7:a6:d3:a5:66:41:c6:03:0e:b3:0c root@sshdemo
+    The key's randomart image is:
+    +--[ RSA 2048]----+
+    |                 |
+    |E                |
+    |==    .          |
+    |.o=. o   .       |
+    | o..o . S        |
+    |... .. .         |
+    |oo.+             |
+    |.oO              |
+    |oB               |
+    +-----------------+
+
+
+* SSH can save you even more typing (authentication with SSH key)
+
+Step 2: Copy your SSH public key
+
+    $ cat ~/.ssh/id_rsa.pub
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDXgDgcrRnWnJOwfLU0ZQPtUlFjrvWYtFlWl3M7NpL1
+    JTggprJXNQeCc7yaM2E1GS2WqZHCdCZQXvLUsYYi/x2Ejllf5u/jb4aPbXguopaP3MiWR39mbjCvf2h9
+    65TR4qRYLWY56xtaWpmzDYeJF3g1sFENa4z8pi23eWks6ZnlYhJ291KuYwk3RqSa6+Hc8dHSUAY5q2YY
+    fKyWauCUS5gS70FavKlkiiXaMN/5vwASrU41d9wKgHylVH0U7by2/cYMEBhOTXUDa3cYdjchEC08IZfH
+    RGQ0c0O3WA70x9Tq4cRQx2oTABDYglQqUu0pOs/pHYnqknhfZf5ZYhC/276h root@sshdemo
+
+
+* SSH can save you even more typing (authentication with SSH key)
+
+Step 3: Add SSH public key to `authorized_keys`
+
+    sshdemo# mkdir -p ~/.ssh
+    sshdemo# cat mykey.pub >> ~/.ssh/authorized_keys
+
+
+* SSH can save you even more typing (authentication with SSH key)
+
+How do you know a coworker's SSH key with style?
+
+    $ curl https://github.com/rickmak.keys
+    ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA1F7kuIxN6oPfWI8o77wgo7lbxlFkxu9PjaYly4U0FPcr
+    EodArQ46VHTdu7HOAeIvY8kQiLLd8t0krA0T6NW3Bfk4Ny8xNs0med/GXdBPalh4W0R030Zy4NeBJJ2k
+    DcWtVukrNvM6Sky9Vokls0H/8wlImTv3DRC/2qTweXydOo7SFxH1USGwtupjC8EvvU+z37c1LGQGLYL0
+    LcFsm6aEHnd1BBgMCNiLFEWcS+SV7b2DhWCUX/Z25RTcB7Ll+pVLQEwz3cfU0AivaXVoKzwQH/rGe6q7
+    Ua89iUACMW9DkhQyM75abyYB0AHlIS6cbRZGu5qagKmSf7OiRTRppt/+8Q==
+
+
+* SSH can forward your key to remote host without exposing your private key
+
+    $ ssh -A sshdemo
+    sshdemo# ssh root@otherhost
+    otherhost#
+
+TYPE LESS: Add `ForwardAgent` to ssh_config
+
+
+* SSH can copy files to/from remote host
+
+    $ scp sshdemo:remote_file.txt local_file.txt
+    $ scp local_file.txt sshdemo:remote_file.txt
+
+
+* SSH can execute program without shell
+
+    $ ssh sshdemo uname -a
+
+SSH executes `uname -a` at the remote host, then disconnect.
+
+
+* SSH can read/write stdin/stdout
+
+    $ ssh sshdemo ls -1 | pbcopy
+    $ cat ~/.ssh/id_rsa.pub | ssh sshdemo sh -c "cat >> ~/.ssh/authorized_keys"
+
+
+* SSH can connect to locked-down host via gateway
+
+    $ vim ~/.ssh/config
+    Host prod
+      HostName secure-server.example.com
+      User root
+      ProxyCommand ssh ubuntu@gateway-server.example.com exec nc %h %p
+
+SSH set up the proxy by running `ProxyCommand`, then connect to target host
+through the proxy.
+
+
+* SSH can forward local port to remote port
+
+    $ ssh -L 3306:localhost:3306 sshdemo
+
+You can now connect to localhost:3306 for MySQL server running on the remote host.
+
+
+* SSH can forward remote port to local port
+
+    $ ssh -R 80:localhost:8000 sshdemo
+
+Port 80 on remote server is now forwarded to localhost:8000.
+
+NOTE: Need `GatewayPorts` in `sshd_config(5)`
+
+
+* SSH can act as SOCKS proxy
+
+    $ ssh -D 21080 sshdemo
+
+SOCKS proxy now listening at localhost:21080.
+
+
+* SSH can run GUI programs
+
+    $ ssh -X sshdemo
+    sshdemo# firefox
+
