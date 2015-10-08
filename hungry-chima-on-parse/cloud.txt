@@ -78,6 +78,6 @@ function yo(req,res) {
 
 // 4 OMIT
 Parse.Cloud.job("dailySummary", function(request, status) {
- Parse.Cloud.useMasterKey();
+  Parse.Cloud.useMasterKey();
   loadRecordsForDate(new Date());
 });

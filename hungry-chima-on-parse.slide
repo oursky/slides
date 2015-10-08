@@ -34,7 +34,7 @@ Slack command
 - Add new integration to Slack
 .link https://oursky.slack.com/services/new
 
-.image hungry-chima-on-parse/new-slack-integration
+.image hungry-chima-on-parse/new-slack-integration.png
 
 
 * Existing commands at Oursky
@@ -45,15 +45,15 @@ Slack command
 
 * How it works
 
-- Slack Slash Command -(Request)-> Parse Cloud Code
-- Parse Cloud Code -(Response)-> Slack Channel
+- Slack Slash Command ---(Request)---> Parse Cloud Code
+- Parse Cloud Code ---(Response)---> Slack Channel
 
 * Parse Cloud Code
 .link https://parse.com/apps/quickstart#cloud_code/unix
 - Get the Parse tool
 - Set up
 - Develope
-- Deploy with `parse deploy command`
+- Deploy with `parse deploy` command
 
 * Parse Cloud Code Framework
 - NodeJS
@@ -61,3 +61,9 @@ Slack command
 
 * Basic API Server
 .code hungry-chima-on-parse/cloud.txt /1 OMIT/
+
+* To YO users
+.code hungry-chima-on-parse/cloud.txt /3 OMIT/
+
+* To tellchima
+.code hungry-chima-on-parse/cloud.txt /2 OMIT/
