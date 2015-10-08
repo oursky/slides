@@ -73,7 +73,16 @@ Plugin example:
         io.write(payload)
         return
 
-You can define your own payload and response from the application.
+In your iOS application, you need to subclass the ODOperation class, and implement prepareForRequest, handleResponse and handleRequestError function.
+
+    - (void)prepareForRequest {
+        NSDictionary *payload = @{@"timezone": self.timezone};
+        self.request = [[ODRequest alloc] initWithAction:@"chima:echo" payload:payload];
+        self.request.accessToken = self.container.currentAccessToken;
+    }
+
+To call the handler in plugin, your should add the operation object to [ODContainer addOperation:]
+
 
 * Plugin System - Lambda Function
 
@@ -112,7 +121,18 @@ Allow you to extend skygear's authentication functionality to other social servi
             auth_data.update(graph.get_object(id='me'))
             return {"principal_id": auth_data['id'], "auth_data": auth_data}
 
-// TODO: How does app side call to auth with above setup?
+* Plugin System - Authentication Provider
+
+And in iOS app, to login with custom auth plugin
+
+    - (void)loginWithData:(NSDictionary *)dict
+    {
+        ODUserLoginOperation *op = [ODUserLoginOperation operationWithAuthenticationProvider:@"com.example" data:dict]
+        op.loginCompletionBlock = ^(ODUserRecordID *userID, ODAccessToken *accessToken, NSError *error) {
+            NSLog(@"User ID: %@", userID)
+        };
+        [[ODContainer defaultContainer] addOperation:op];
+    }
 
 
 * Plugin System - Scheduled Tasks
