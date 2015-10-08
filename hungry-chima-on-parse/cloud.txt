@@ -22,12 +22,36 @@ app.post('/command',
      else {
       res.send('Command not found');
     }
-
 });
 
 app.listen();
-
 // 2 OMIT
+function yo(req,res) {
+  var yoUser = req.body.text
+  var yoURL = 'http://api.justyo.co/yo/';
+
+  if ( "all" === yoUser.toLowerCase()) {
+    console.log("Yo all subscribers!");
+    yoURL = 'http://api.justyo.co/yoall/';
+  }
+
+  Parse.Cloud.httpRequest({
+    method: 'POST',
+    url: yoURL,
+    body: {
+      api_token : 'YO-API-YOKEN-HERE',
+      username : yoUser
+    },
+    success: function(httpResponse) {
+      res.send("Yo sent to "+yoUser +"!");
+    },
+    error: function(httpResponse) {
+      res.send("Failed to send Yo.");
+    }
+  });
+}
+
+// 3 OMIT
 function tellchima(req,res) {
   var reqBody = req.body;
 
@@ -45,36 +69,6 @@ function tellchima(req,res) {
     };
 }
 
-// 3 OMIT
-
-function yo(req,res) {
-
-  var yoUser = req.body.text
-  var yoURL = 'http://api.justyo.co/yo/';
-
-  if ( "all" === yoUser.toLowerCase()) {
-    console.log("Yo all subscribers!");
-    yoURL = 'http://api.justyo.co/yoall/';
-  }
-
-  Parse.Cloud.httpRequest({
-    method: 'POST',
-    url: yoURL,
-    body: {
-      api_token : 'YO-API-YOKEN-HERE',
-      username : yoUser
-    },
-    success: function(httpResponse) {
-      console.log(httpResponse.text);
-      res.send("Yo sent to "+yoUser +"!");
-    },
-    error: function(httpResponse) {
-      console.error('Request failed with response code ' + httpResponse.status);
-      res.send("Failed to send Yo.");
-  }
-  });
-
-}
 
 // 4 OMIT
 Parse.Cloud.job("dailySummary", function(request, status) {

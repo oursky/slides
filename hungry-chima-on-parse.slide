@@ -48,6 +48,8 @@ Slack command
 - Slack Slash Command ---(Request)---> Parse Cloud Code
 - Parse Cloud Code ---(Response)---> Slack Channel
 
+* Parse
+
 * Parse Cloud Code
 .link https://parse.com/apps/quickstart#cloud_code/unix
 - Get the Parse tool
@@ -61,7 +63,8 @@ Slack command
 - ExpressJS Framework
 
 * Cloud Functions
-.code hungry-chima-on-parse/parse.txt /1 OMIT/
+- E.g. Average Star of the movie in Review
+.code hungry-chima-on-parse/parse.txt
 
 * Triggers
 .link https://parse.com/docs/cloudcode/guide#cloud-code-beforesave-triggers
@@ -83,10 +86,10 @@ Slack command
 - Jobs
 
 * Basic API Server
-.code hungry-chima-on-parse/cloud.txt /1 OMIT/
+.code hungry-chima-on-parse/cloud.txt /1 OMIT/,/2 OMIT/
 
 * To YO users
-.code hungry-chima-on-parse/cloud.txt /3 OMIT/
+.code hungry-chima-on-parse/cloud.txt /2 OMIT/,/3 OMIT/
 
 * To tellchima
-.code hungry-chima-on-parse/cloud.txt /2 OMIT/
+.code hungry-chima-on-parse/cloud.txt /3 OMIT/,/4 OMIT/
