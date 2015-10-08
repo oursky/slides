@@ -52,12 +52,35 @@ Slack command
 .link https://parse.com/apps/quickstart#cloud_code/unix
 - Get the Parse tool
 - Set up
-- Develope
+  Account, project name etc.
+- Develop
 - Deploy with `parse deploy` command
 
 * Parse Cloud Code Framework
 - NodeJS
 - ExpressJS Framework
+
+* Cloud Functions
+.code hungry-chima-on-parse/parse.txt /1 OMIT/
+
+* Triggers
+.link https://parse.com/docs/cloudcode/guide#cloud-code-beforesave-triggers
+- beforeSave
+- afterSave
+- beforeDelete
+- afterDelete
+
+* Limits
+- Cloud functions will be killed after 15 seconds of wall clock time.
+- Memory: currently 384 MB, but subject to change in the future
+- GC by the JavaScript engine
+
+* More features:
+- Networking
+  POST / GET Request
+- Webhook
+- Modules
+- Jobs
 
 * Basic API Server
 .code hungry-chima-on-parse/cloud.txt /1 OMIT/
