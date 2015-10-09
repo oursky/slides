@@ -1,5 +1,7 @@
 Hungry Chima on Slack
+Parse implementation
 9 Oct 2015
+Tags: oursky, parse, slack
 
 David Ng
 Oursky
@@ -24,6 +26,7 @@ Slack command
 
 - /prefs
 - /remind me in [time] to [message]
+  /remind me at 7pm to feed chima
 - /open [channel]
 - /kick [user]
 - /away
@@ -37,7 +40,9 @@ Slack command
 .image hungry-chima-on-parse/new-slack-integration.png
 
 
-* Existing commands at Oursky
+* Hungry Chima is not only /tellchima
+- /tellchima [msg]
+- /untellchima #[issue_no]
 
 - /hello
 - /address
@@ -50,21 +55,87 @@ Slack command
 
 * Parse
 
+* Parse
+.link https://parse.com/docs
+
+*Web* 
+- JS
+
+*Mobile*
+- iOS, Android, Unity
+
+*Desktop*
+- OSX, .Net + Xamarin
+
+*Server*
+- Cloud Code, PHP, REST API
+
+*Others*
+- Arduino, Embedded C
+
+
 * Parse Cloud Code
 .link https://parse.com/apps/quickstart#cloud_code/unix
 - Get the Parse tool
 - Set up
-  Account, project name etc.
+  parse new
 - Develop
-- Deploy with `parse deploy` command
+  myapp
+  ├── cloud
+  │   └── main.js
+  ├── .parse.local
+  ├── .parse.project
+  └── public
+      └── index.html
+- Deploy
+  parse deploy
 
 * Parse Cloud Code Framework
-- NodeJS
-- ExpressJS Framework
+.link http://blog.parse.com/announcements/building-parse-web-apps-with-the-express-web-framework/
+- Node.js
+- Express Framework
+
+- host at *.parseapp.com
 
 * Cloud Functions
 - E.g. Average Star of the movie in Review
-.code hungry-chima-on-parse/parse.txt
+.code hungry-chima-on-parse/parse.txt /1 OMIT/,/2 OMIT/
+
+* Basic queries
+- Define Query
+    var query = new Parse.Query(User);
+- set condition
+    // Equal
+    query.equalTo("role", "PM");
+    query.notEqualTo("role", "PM");
+
+    // Compare
+    query.lessThan("age", 30);
+    query.lessThanOrEqualTo("age", 30);
+    query.greaterThan("age", 30);
+    query.greaterThanOrEqualTo("age", 30);
+
+    // Contain
+    query.containedIn("name", ["Rick","Ben","Roy"]);
+    query.notContainedIn("name", ["Rick","Ben","Roy"]);
+
+    // Exists
+    query.exists("girlfriend");
+    query.doesNotExist("girlfriend"); // :(
+
+* More
+
+- Constriant
+    query.limit(10);
+    query.skip(10);
+
+- Array Value
+    query.equalTo("arrayKey", 2);
+    query.containsAll("arrayKey", [2, 3, 4]);
+
+- And / Or
+    var mainQuery = Parse.Query.or(query1, query2);
+    var mainQuery = Parse.Query.and(query1, query1);
 
 * Triggers
 .link https://parse.com/docs/cloudcode/guide#cloud-code-beforesave-triggers
@@ -72,6 +143,9 @@ Slack command
 - afterSave
 - beforeDelete
 - afterDelete
+
+* Triggers Example : beforeSave
+.code hungry-chima-on-parse/parse.txt /2 OMIT/,/3 OMIT/
 
 * Limits
 - Cloud functions will be killed after 15 seconds of wall clock time.
@@ -84,6 +158,8 @@ Slack command
 - Webhook
 - Modules
 - Jobs
+.image hungry-chima-on-parse/parse-scheduled-jobs.png
+
 
 * Basic API Server
 .code hungry-chima-on-parse/cloud.txt /1 OMIT/,/2 OMIT/
@@ -91,5 +167,15 @@ Slack command
 * To YO users
 .code hungry-chima-on-parse/cloud.txt /2 OMIT/,/3 OMIT/
 
+* To receive YO
+- Yo integration
+- at `#yo` channel
+
 * To tellchima
 .code hungry-chima-on-parse/cloud.txt /3 OMIT/,/4 OMIT/
+
+* Job
+- job
+.code hungry-chima-on-parse/cloud.txt /4 OMIT/,/5 OMIT/
+- request to slack
+.code hungry-chima-on-parse/cloud.txt /5 OMIT/,/6 OMIT/

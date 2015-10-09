@@ -1,28 +1,24 @@
 // 1 OMIT
 var express = require('express');
-var app = express();
- 
+var app = express(); 
 app.use(express.bodyParser());
 
 app.post('/command',
          express.basicAuth('OURSKY', 'xxxxxxxxxxxxxxxxxxxxx'),
          function(req, res) {
-
-  var command = req.body.command;
-
-    if (command === "/address") {
-      address(req,res);
-    } else if (command === "/hello") {
-      hello(req,res);
-    } else if (command === "/yo") {
-      yo(req,res);
-    } else if (command === "/tellchima") {
-      tellchima(req,res);
-    }
-     else {
-      res.send('Command not found');
-    }
-});
+          var command = req.body.command;
+            if (command === "/address") {
+              address(req,res);
+            } else if (command === "/hello") {
+              hello(req,res);
+            } else if (command === "/yo") {
+              yo(req,res);
+            } else if (command === "/tellchima") {
+              tellchima(req,res);
+            } else {
+              res.send('Command not found');
+            }
+        });
 
 app.listen();
 // 2 OMIT
@@ -31,8 +27,7 @@ function yo(req,res) {
   var yoURL = 'http://api.justyo.co/yo/';
 
   if ( "all" === yoUser.toLowerCase()) {
-    console.log("Yo all subscribers!");
-    yoURL = 'http://api.justyo.co/yoall/';
+    yoURL = 'http://api.justyo.co/yoall/'; // Yo all subscribers!
   }
 
   Parse.Cloud.httpRequest({
@@ -71,7 +66,23 @@ function tellchima(req,res) {
 
 
 // 4 OMIT
-Parse.Cloud.job("dailySummary", function(request, status) {
-  Parse.Cloud.useMasterKey();
-  loadRecordsForDate(new Date());
+Parse.Cloud.job("dailyReminder", function(request, status) {
+  postReminderToSlack();
 });
+// 5 OMIT
+function postReminderToSlack() {
+  var text = "If you have something to post, please `/tellchima`. Publish daily at 5pm.";
+  Parse.Cloud.httpRequest({
+    method: 'POST',
+    url: 'https://hooks.slack.com/services/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',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: {
+          'text': text,
+          "channel": "#general"
+    }
+  });
+}
+
+// 6 OMIT

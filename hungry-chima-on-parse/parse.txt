@@ -11,7 +11,34 @@ Parse.Cloud.define("averageStars", function(request, response) {
       response.success(sum / results.length);
     },
     error: function() {
-      response.error("movie lookup failed");
+      response.error("Failed");
     }
   });
 });
+
+// 2 OMIT
+Parse.Cloud.beforeSave(Parse.User, function(request, response) {
+  if(request.object.existed()){
+    response.success();
+    return;
+  };
+  if (!request.object.get("userId")) {
+    response.error('A User must have a userId.');
+  } else {
+    var query = new Parse.Query(Team);
+    query.equalTo("userId", request.object.get("userId"));
+    query.first({
+      success: function(object) {
+        if (object) {
+          response.error("A User with this userId already exists.");
+        } else {
+          response.success();
+        }
+      },
+      error: function(error) {
+        response.error("Could not validate uniqueness for this User object.");
+      }
+    });
+  }
+});
+//3 OMIT
