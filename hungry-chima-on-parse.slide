@@ -1,21 +1,21 @@
 Hungry Chima on Slack
 Parse implementation
-9 Oct 2015
+16 Oct 2015
 Tags: oursky, parse, slack
 
 David Ng
 Oursky
 david.ng@oursky.com
 
-* Slack Bot
+* Slack Bot vs Slack Command
 
-*Slack bot*
+Slack bot
 
 .link https://api.slack.com/bot-users
 - Add as a member in your team
 - It appears as a user
 
-*Slack command*
+Slack command
 
 .link https://api.slack.com/slash-commands
 - Listen for custom triggers in chat messages 
@@ -138,7 +138,7 @@ others:
 
     // Exists
     query.exists("girlfriend");
-    query.doesNotExist("girlfriend"); // :(
+    query.doesNotExist("girlfriend"); // sosad
 
 * More
 
@@ -170,7 +170,7 @@ others:
 - GC by the JavaScript engine
 
 * More features:
-- Networking : _POST / GET Request_
+- Networking : POST / GET Request
 - Webhook
 - Modules
 - Push Notifications
@@ -201,7 +201,7 @@ Related Blog
 - request to slack
 .code hungry-chima-on-parse/cloud.txt /5 OMIT/,/6 OMIT/
 
-* Someday when you need a client app
+* One day, when you need a client app
 
 * Web App
 - Get JS SDK
@@ -213,11 +213,12 @@ Related Blog
 - Query
 .code hungry-chima-on-parse/cloud.txt /7 OMIT/,/8 OMIT/
 
-* Android
+* Android App
 - Get Android SDK
 - Query
 .code hungry-chima-on-parse/cloud.txt /7 OMIT/,/8 OMIT/
 
 * Parse Open source SDK
 .link http://blog.parse.com/announcements/open-sourcing-our-sdks/
+.link http://blog.parse.com/announcements/open-sourcing-our-facebook-and-twitter-integration-frameworks/
 .image hungry-chima-on-parse/parse-opensource.png
