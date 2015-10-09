@@ -62,6 +62,8 @@ function tellchima(req,res) {
   var saveCompleted = function() {
     res.send('Meow. Received!\nEcho: '+text);
     };
+
+  record.save().then(saveCompleted);
 }
 
 
@@ -86,3 +88,32 @@ function postReminderToSlack() {
 }
 
 // 6 OMIT
+var Record = Parse.Object.extend("Record");
+var query = new Parse.Query(Record);
+
+query.greaterThanOrEqualTo( "createdAt", date );
+query.equalTo("issueNumber", 100);
+query.find();
+// 7 OMIT
+PFQuery *query = [PFQuery queryWithClassName:@"Record"];
+[query whereKey:@"issueNumber" equalTo:@100];
+[query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+  if (!error) {
+    // The find succeeded.
+  } else {
+    // Failed.
+  }
+}];
+// 8 OMIT
+ParseQuery<ParseObject> query = ParseQuery.getQuery("Record");
+query.whereEqualTo("issueNumber", 100);
+query.findInBackground(new FindCallback<ParseObject>() {
+    public void done(List<ParseObject> recordList, ParseException e) {
+        if (e == null) {
+            // The find succeeded.
+        } else {
+            // Failed.
+        }
+    }
+});
+// 9 OMIT

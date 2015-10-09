@@ -9,13 +9,13 @@ david.ng@oursky.com
 
 * Slack Bot
 
-Slack bot
+*Slack bot*
 
 .link https://api.slack.com/bot-users
 - Add as a member in your team
 - It appears as a user
 
-Slack command
+*Slack command*
 
 .link https://api.slack.com/slash-commands
 - Listen for custom triggers in chat messages 
@@ -26,12 +26,12 @@ Slack command
 
 - /prefs
 - /remind me in [time] to [message]
-  /remind me at 7pm to feed chima
+  e.g. /remind me at 7pm to feed chima
 - /open [channel]
 - /kick [user]
 - /away
 - /shrug [your message]
-  Appends ¯\_(ツ)_/¯ to your message
+  usage: Appends ¯\_(ツ)_/¯ to your message
 
 * Set up Slash Commands
 - Add new integration to Slack
@@ -40,9 +40,14 @@ Slack command
 .image hungry-chima-on-parse/new-slack-integration.png
 
 
-* Hungry Chima is not only /tellchima
+* Hungry Chima is not /tellchima only
+
+It is a collection of commands:
+
 - /tellchima [msg]
 - /untellchima #[issue_no]
+
+others:
 
 - /hello
 - /address
@@ -62,16 +67,16 @@ Slack command
 - JS
 
 *Mobile*
-- iOS, Android, Unity
+- iOS, Android, Unity, Xamarin, React, Windows Phone
 
 *Desktop*
-- OSX, .Net + Xamarin
+- OSX, .Net
 
 *Server*
 - Cloud Code, PHP, REST API
 
 *Others*
-- Arduino, Embedded C
+- Arduino, Embedded C, Raspberry Pi, Intel, Broadcom, Atmel, Texas Instruments
 
 
 * Parse Cloud Code
@@ -96,6 +101,18 @@ Slack command
 - Express Framework
 
 - host at *.parseapp.com
+
+* Sample Web Server
+  Parse.Cloud.define("hello", function(request, response) {
+    response.success("Hello world!");
+  });
+
+  app.get('/test',
+           function(req, res) {
+            res.send('Yeah!');
+          });
+
+  app.listen();
 
 * Cloud Functions
 - E.g. Average Star of the movie in Review
@@ -153,10 +170,10 @@ Slack command
 - GC by the JavaScript engine
 
 * More features:
-- Networking
-  POST / GET Request
+- Networking : _POST / GET Request_
 - Webhook
 - Modules
+- Push Notifications
 - Jobs
 .image hungry-chima-on-parse/parse-scheduled-jobs.png
 
@@ -171,6 +188,10 @@ Slack command
 - Yo integration
 - at `#yo` channel
 
+Related Blog
+
+.link https://medium.com/@YoAppStatus/yo-team-uses-slack-and-loves-it-b1e756555e30 on Medium
+
 * To tellchima
 .code hungry-chima-on-parse/cloud.txt /3 OMIT/,/4 OMIT/
 
@@ -179,3 +200,24 @@ Slack command
 .code hungry-chima-on-parse/cloud.txt /4 OMIT/,/5 OMIT/
 - request to slack
 .code hungry-chima-on-parse/cloud.txt /5 OMIT/,/6 OMIT/
+
+* Someday when you need a client app
+
+* Web App
+- Get JS SDK
+- Query exactly the same on cloud code
+.code hungry-chima-on-parse/cloud.txt /6 OMIT/,/7 OMIT/
+
+* iOS App
+- Get iOS SDK
+- Query
+.code hungry-chima-on-parse/cloud.txt /7 OMIT/,/8 OMIT/
+
+* Android
+- Get Android SDK
+- Query
+.code hungry-chima-on-parse/cloud.txt /7 OMIT/,/8 OMIT/
+
+* Parse Open source SDK
+.link http://blog.parse.com/announcements/open-sourcing-our-sdks/
+.image hungry-chima-on-parse/parse-opensource.png
