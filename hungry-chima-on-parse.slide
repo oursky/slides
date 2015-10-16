@@ -39,8 +39,7 @@ Slack command
 
 .image hungry-chima-on-parse/new-slack-integration.png
 
-
-* Hungry Chima is not /tellchima only
+* Hungry Chima is not only /tellchima
 
 It is a collection of commands:
 
@@ -222,3 +221,6 @@ Related Blog
 .link http://blog.parse.com/announcements/open-sourcing-our-sdks/
 .link http://blog.parse.com/announcements/open-sourcing-our-facebook-and-twitter-integration-frameworks/
 .image hungry-chima-on-parse/parse-opensource.png
+
+* Skygear Implementation
+- Leave readers as an exercise : )
