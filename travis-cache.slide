@@ -1,0 +1,111 @@
+Speed up Travis build
+30 October 2015
+
+Kwok-kuen Cheung
+Wizard Without Portfolio
+cheungpat@oursky.com
+
+* How to speed things up?
+
+- Migrate to container-based infrastructure
+- Cache dependencies
+
+* Migrate to container-based infrastructure
+
+* Legacy infrastructure
+
+.image travis-cache/legacy-infra.png
+
+- Build starts in a minute (or more)
+- Unpredictable performance
+
+* Container-based infrastructure
+
+- Build starts in “seconds”
+- Faster builds
+- Only available for Linux builds (i.e. non-Apple apps)
+- Must not use `sudo` in `.travis.yml`
+
+* How to enable container-based infrastructure
+
+- Do not use `sudo` in `.travis.yml`
+- Add this in `.travis.yml`:
+
+    sudo: false
+
+.image travis-cache/container-infra.png
+
+* Cache dependencies
+
+* Why cache dependencies?
+
+- Dependencies are code that your application depends on
+- Dependencies rarely change for each build
+- Each build starts from scratch, meaning time is wasted downloading and rebuilding dependencies
+- Dependencies can be cached for reuse in the next build
+- Save lots of time!!
+
+* How slow is installing dependencies?
+
+.image travis-cache/identify-slow.png
+
+* What can be cached?
+
+Good for caching: Code that needs to be downloaded and built from source.
+
+- pip requirements
+- CocoaPods Pods
+- Ruby gems
+- Node modules
+- Any directories
+
+* What should not be cached?
+
+Not good for caching: Prebuilt binary that can be downloaded.
+
+- Android SDKs
+- Debian packages
+- JDK packages
+- Prebuilt binaries
+
+Why? Because you may not save a lot of time when compared to downloading
+these files from the Internet.
+
+* How to enable caching
+
+    #python
+    cache:
+      directories:
+          - $HOME/.cache/pip
+
+    #npm
+    cache:
+      directories:
+          - node_modules
+
+Travis archive these directories at the end of each build, and restore
+the content before each build starts.
+
+See also: http://docs.travis-ci.com/user/caching/
+
+* How to exclude directories from cache
+
+    before_cache:
+      - rm -rf $HOME/.cache/pip/log/debug.log
+
+Delete files you don't want at the `before_cache` phase. This phase
+is run before Travis archive cached directories.
+
+* “My build failed. I think the problem is the cache.”
+
+- Click *Settings* > *Caches*
+
+.image travis-cache/clean-cache1.png
+
+- Click *Delete* to delete cached directories
+
+.image travis-cache/clean-cache2.png
+
+* Before vs After
+
+.image travis-cache/before-after.png
