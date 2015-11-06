@@ -1,0 +1,45 @@
+React Native
+Time to use it with the new Android Support
+18 Sep 2015
+
+Rick Mak
+Oursky
+rickmak@oursky.com
+
+* What will this shareing cover
+
+- Getting Start with react-native
+- First React-native project
+- Connecting to your server
+- Using websocket
+
+* Getting Start with React-native
+
+- brew installi nvm
+- nvm install node && nvm alias default node
+- brew install watchman
+- brew install flow
+- npm install -g react-native-cli
+- react-native init ChatRoom
+
+* This is what will be run on iOS
+
+.code react-native/index.ios.js /1 OMIT/,/2 OMIT/
+
+* We can modify the style by CSS
+
+.code react-native/index.ios.js /2 OMIT/,/3 OMIT/
+
+* Let write some network code
+
+.code react-native/index.universal.js /2 OMIT/,/3 OMIT/
+
+* Let see if same code run at Android
+
+  react-native run-android
+
+* Use of js lib
+
+.code react-native/index.universal.js /3 OMIT/,/4 OMIT/
+
+* React != React Native
