@@ -1,0 +1,125 @@
+Better type at Python
+7 Nov 2015
+
+Rick Mak
+Oursky
+rickmak@oursky.com
+
+* Python 3.5 Release
+
+
+https://docs.python.org/3.5/whatsnew/3.5.html
+Released on September 13, 2015, 2 months ago
+
+*New*library*modules*introduce*
+ typing: PEP 484 – Type Hints
+
+The syntax introduced long ago, Dec-2006
+ PEP 3107 - Function Annotations
+
+* Your view on Type
+
+- Anyone used typing?
+- Anyone used function annotations?
+- Anyone think using it will have performance boost or punishment?
+
+* Get it working
+
+- Python 3.5
+    import typing
+- Python 3.2-3.4
+    pip install typing
+
+* Some code
+
+.code py-type/nohint.py
+
+* Same code with type hints
+
+.code py-type/hint.py
+
+* More complex type hints
+
+Dictionary
+
+.code py-type/complex.py /1 OMIT/,/2 OMIT/
+
+* More complex type hints
+
+Sequence and List
+
+.code py-type/complex.py /2 OMIT/,/3 OMIT/
+
+* Forward references
+
+.code py-type/complex.py /3 OMIT/,/4 OMIT/
+
+* What is Type Hints good for?
+
+- Make IDE works better
+- Make developement of static analysis easier
+- Improve readbility, for tools and for human
+- Serve as Documentation
+
+* Make IDE works better
+
+* Let see how PyCharm works
+
+.image py-type/pycharm.png
+
+* Make development of static analysis easier
+
+* mypy
+
+[[https://github.com/JukkaL/mypy][JukkaL/mypy]]
+
+    pip install mypy-lang
+
+Analysis a file without runing it
+
+    (venv)$ mypy callee.py
+    callee.py, line 7: Argument 1 to "hello" has incompatible type "int"; expected "str"
+
+* Serve as (additional) documentation
+
+* Docstring for sphinx to gen autodoc
+
+.code py-type/docstring.py
+
+* Same information using func type annotation
+
+.code py-type/doctype.py
+
+
+* Python2 with pyi stub
+
+An *.pyi file that only have interface
+
+.code py-type/py2.pyi
+
+Also useful for
+ - Package you can't change
+ - Legacy package you don't want to change
+
+There is github repos hosting stub for stdlib
+[[https://github.com/python/typeshed][python/typeshed]]
+
+* What is not
+
+- Not about code generation
+- Code pass type check can still break
+- No runtime type checking, No performance overhead
+
+* How you can use get the function annotaion
+
+You can using [[https://docs.python.org/3.5/library/inspect.html][inspect]] to query back the annotation.
+
+.code py-type/complex.py /4 OMIT/,/5 OMIT/
+
+i.e. You may abuse it to do type conversion or validation at runtime.
+
+* Reference
+
+- [[http://www.mypy-lang.org][mypy]]
+- [[https://www.youtube.com/watch?v=Yqnrfa5ri7E][Guido van Rossum - Type Hints for Python 3.5]]
+- http://blog.pirx.ru/media/files/2015/type-hinting-talk/type-hinting.html
