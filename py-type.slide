@@ -11,17 +11,17 @@ rickmak@oursky.com
 https://docs.python.org/3.5/whatsnew/3.5.html
 Released on September 13, 2015, 2 months ago
 
-*New*library*modules*introduce*
- typing: PEP 484 – Type Hints
+*New*library*modules*introduced*
+ `typing`: PEP 484 – Type Hints
 
 The syntax introduced long ago, Dec-2006
  PEP 3107 - Function Annotations
 
-* Your view on Type
+* Your view on type
 
 - Anyone used typing?
 - Anyone used function annotations?
-- Anyone think using it will have performance boost or punishment?
+- Anyone thinks using it will have performance boost or punishment?
 
 * Get it working
 
@@ -54,11 +54,11 @@ Sequence and List
 
 .code py-type/complex.py /3 OMIT/,/4 OMIT/
 
-* What is Type Hints good for?
+* What are type hints good for?
 
 - Make IDE works better
-- Make developement of static analysis easier
-- Improve readbility, for tools and for human
+- Make developement of static analysis tools easier
+- Improve readability, for tools and for human
 - Serve as Documentation
 
 * Make IDE works better
@@ -67,7 +67,7 @@ Sequence and List
 
 .image py-type/pycharm.png
 
-* Make development of static analysis easier
+* Make development of static analysis tools easier
 
 * mypy
 
@@ -75,7 +75,7 @@ Sequence and List
 
     pip install mypy-lang
 
-Analysis a file without runing it
+Analyse a file without running it
 
     (venv)$ mypy callee.py
     callee.py, line 7: Argument 1 to "hello" has incompatible type "int"; expected "str"
@@ -104,15 +104,15 @@ Also useful for
 There is github repos hosting stub for stdlib
 [[https://github.com/python/typeshed][python/typeshed]]
 
-* What is not
+* What type hints are not
 
 - Not about code generation
-- Code pass type check can still break
+- Your code can still break after type checking
 - No runtime type checking, No performance overhead
 
-* How you can use get the function annotaion
+* How you can find out function annotation in your code
 
-You can using [[https://docs.python.org/3.5/library/inspect.html][inspect]] to query back the annotation.
+You can use [[https://docs.python.org/3.5/library/inspect.html][inspect]] to get back the annotation.
 
 .code py-type/complex.py /4 OMIT/,/5 OMIT/
 
