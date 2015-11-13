@@ -1,0 +1,78 @@
+WatchOS 2
+What we learnt from Spentable
+13 Nov 2015
+
+Ben Cheng
+Oursky
+bencheng@oursky.com
+
+* WatchOS 2
+
+- User Experience Design *depends* on Form
+- New devices + New tech = New Form = Unknown UX
+- Our job: Great Design + Great Code = Great UX
+
+* This presentation is about...
+
+- Things I learnt via Spentable Apple Watch Apps
+- Maybe it's time to reflect on what we're doing everyday?
+
+* Navigation
+
+- Navigation is tricky: Hirachical / Page Base
+- Force touch = Only for customize current view
+
+* Hirachical Sample
+
+.image watchos/hirachical.png
+
+* Page Sample
+
+.image watchos/page.png
+
+* Force Touch (Bad) Sample
+
+.image watchos/forcetouch.png
+
+* Feedback
+
+- Haptic Feedback instead of visual feedback
+- Use animation feedback if needed
+
+* Animation Feedback Sample
+
+.image watchos/animate.png
+
+* Small Screen
+
+- Input Elements are not standardized yet, think creative.
+- Use animation to convey more information.
+
+* Special Input Elements Sample
+
+Use of crown
+
+.image watchos/friends.png
+
+* Animation Sample
+
+.image watchos/animation.gif
+
+* How should we sync Spentable currency / categories to WatchOS?
+
+.link https://developer.apple.com/library/watchos/documentation/General/Conceptual/AppleWatch2TransitionGuide/UpdatetheAppCode.html
+
+- updateApplicationContext - background, each successive call replaces the dictionary sent by the previous call
+- transferUserInfo - background
+- transferCurrentComplicationUserInfo - background
+- transferFile - background
+- sendMessage - foreground
+
+* Answer: updateApplicationContext at app 1st launch
+
+Reason: 
+
+- Users might not have Watch App installed for whatever reason when they 1st launch spentable
+- We want Watch App usable without launching Spentable iPhone App
+- Use *updateApplicationContext* to sync data, even if Watch App is not installed it will keep the latest version of dictionary.
+
