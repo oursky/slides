@@ -25,12 +25,12 @@ CC81327D
 - Support `IN` predicate
 - Support redis as AuthToken store
 - Support user-relation predicate in record query
-- Suppor teager load on multiple keypath (*use with caution*)
+- Support eager load on multiple keypath (*use with caution*)
 
 * Plugin
 
 - Aware of disconnect
-- Initial a proper python logger
+- Include a proper logger by default
 - Improve the logging on connection lost
 - Provide change password util func
 - Able to pre / post process of asset in plugin after save record
