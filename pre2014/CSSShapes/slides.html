@@ -1,0 +1,1095 @@
+
+<!doctype html>  
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>CSS Basic Shapes</title>
+
+    <!-- Based on reveal.js 1.3 -->
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/print.css" type="text/css" media="print">
+
+    <link rel="stylesheet" href="lib/zenburn.css">
+
+    <style type="text/css">
+      .shape {
+        width: 100%;
+      }
+      .shape > div {
+        margin: 20px auto;
+      }
+      .code {
+        width: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 400px;
+      }
+      #reveal style {
+        display: block;
+        font-family: monospace;
+        font-size: 90%;
+        outline: none;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <div id="reveal">
+      <!-- Used to fade in a background when a specific slide state is reached -->
+      <div class="state-background"></div>
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h1>CSS Basic Shapes</h1>
+          <h3 class="inverted">Based on a tutorial from <a href="http://css-tricks.com/examples/ShapesOfCSS/">CSS-Tricks</a></h3>
+          <script>
+            // Delicously hacky. Look away.
+            if( navigator.userAgent.match( /(iPhone|iPad|iPod|Android)/i ) ) document.write( '<p style="color: rgba(0,0,0,0.3); text-shadow: none;">('+'Tap to navigate'+')</p>' );
+          </script>
+        </section>
+
+        <section>
+          <h2>CSS used to create <strong>shapes</strong></h2>
+          <ul>
+            <li class="fragment">Easy to use (can wrap as a mixin)</li>
+            <li class="fragment">Less dependent on images</li>
+            <li class="fragment">(Alternate ways... consult Un<a href="http://unicodesnowmanforyou.com/" target="_blank">i</a>code table)</li>
+          </ul>
+        </section>
+
+        <section>
+          <section>
+            <h2>Some Shapes (1)</h2>
+            <p class="fragment">Square</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="square"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#square {
+    width: 100px;
+    height: 100px;
+    background: #71E9F4;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (1)</h2>
+            <p class="fragment">Rectangle</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="rectangle"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#rectangle {
+    width: 180px;
+    height: 100px;
+    background: #71E9F4;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (1)</h2>
+            <p class="fragment">Parallelogram</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="parallelogram"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#parallelogram {
+    width: 180px;
+    height: 100px;
+    background: #71E9F4;
+    -webkit-transform: skew(20deg);
+       -moz-transform: skew(20deg);
+         -o-transform: skew(20deg);
+        -ms-transform: skew(20deg);
+            transform: skew(20deg);
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (1)</h2>
+            <p class="fragment">Trapezoid</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="trapezoid"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#trapezoid {
+    width: 180px;
+    height: 0;
+    border-bottom: 100px solid #71E9F4;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+}</style></pre></div>
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Some Shapes (2)</h2>
+            <p class="fragment">Triangle (Up)</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="triangle-up"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#triangle-up {
+    width: 0;
+    height: 0;
+    border-bottom: 100px solid #71E9F4;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (2)</h2>
+            <p class="fragment">Triangle (Down)</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="triangle-down"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#triangle-down {
+    width: 0;
+    height: 0;
+    border-top: 100px solid #71E9F4;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (2)</h2>
+            <p class="fragment">Triangle (Left)</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="triangle-left"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#triangle-left {
+  width: 0;
+  height: 0;
+  border-top: 50px solid transparent;
+  border-right: 100px solid #71E9F4;
+  border-bottom: 50px solid transparent;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (2)</h2>
+            <p class="fragment">Triangle (Right)</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="triangle-right"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#triangle-right {
+  width: 0;
+  height: 0;
+  border-top: 50px solid transparent;
+  border-left: 100px solid #71E9F4;
+  border-bottom: 50px solid transparent;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (2)</h2>
+            <p class="fragment">Triangle (Top Left)</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="triangle-tl"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#triangle-tl {
+  width: 0;
+  height: 0;
+  border-top: 100px solid #71E9F4;
+  border-right: 100px solid transparent;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (2)</h2>
+            <p class="fragment">Triangle (Top Right)</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="triangle-tr"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#triangle-tr {
+  width: 0;
+  height: 0;
+  border-top: 100px solid #71E9F4;
+  border-left: 100px solid transparent;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (2)</h2>
+            <p class="fragment">Triangle (Bottom Left)</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="triangle-bl"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#triangle-bl {
+  width: 0;
+  height: 0;
+  border-bottom: 100px solid #71E9F4;
+  border-right: 100px solid transparent;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (2)</h2>
+            <p class="fragment">Triangle (Bottom Right)</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="triangle-br"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#triangle-br {
+  width: 0;
+  height: 0;
+  border-bottom: 100px solid #71E9F4;
+  border-left: 100px solid transparent;
+}</style></pre></div>
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Some Shapes (3)</h2>
+            <p class="fragment">Circle</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="circle"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#circle {
+    width: 100px;
+    height: 100px;
+    background: #71E9F4;
+    -webkit-border-radius: 50%;
+       -moz-border-radius: 50%; /* For better support */
+         -o-border-radius: 50%; /* use "50%" instead. */
+        -ms-border-radius: 50%;
+            border-radius: 50%;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (2)</h2>
+            <p class="fragment">Oval</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="oval"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#oval {
+    width: 200px;
+    height: 100px;
+    background: #71E9F4;
+    -webkit-border-radius: 50%;
+       -moz-border-radius: 50%; /* For better support          */
+         -o-border-radius: 50%; /* use "100px / 50px" instead. */
+        -ms-border-radius: 50%;
+            border-radius: 50%;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (3)</h2>
+            <p class="fragment">Egg</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="egg"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#egg {
+    display: block;
+    width: 126px; 
+    height: 180px;
+    background-color: #71E9F4;
+    -webkit-border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+       -moz-border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+         -o-border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        -ms-border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}</style></pre></div>
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Some Shapes (4)</h2>
+            <p class="fragment">Diamond (Square) [via <a href="http://josephsilber.com/">Joseph Silber</a>]</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="diamond-square"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#diamond-square {
+    width: 0;
+    height: 0;
+    border: 50px solid transparent;
+    border-bottom-color: #71E9F4;
+    position: relative;
+    top: -50px;
+}
+#diamond-square:after {
+    content: '';
+    position: absolute;
+    left: -50px; 
+    top: 50px;
+    width: 0;
+    height: 0;
+    border: 50px solid transparent;
+    border-top-color: #71E9F4;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (4)</h2>
+            <p class="fragment">Diamond (Shield) [via <a href="http://josephsilber.com/">Joseph Silber</a>]</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="diamond-shield"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#diamond-shield {
+    width: 0;
+    height: 0;
+    border: 50px solid transparent;
+    border-bottom: 20px solid #71E9F4;
+    position: relative;
+    top: -50px;
+}
+#diamond-shield:after {
+    content: '';
+    position: absolute;
+    left: -50px; top: 20px;
+    width: 0;
+    height: 0;
+    border: 50px solid transparent;
+    border-top: 70px solid #71E9F4;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (4)</h2>
+            <p class="fragment">Diamond (Narrow) [via <a href="http://josephsilber.com/">Joseph Silber</a>]</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="diamond-narrow"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#diamond-narrow {
+    width: 0;
+    height: 0;
+    border: 50px solid transparent;
+    border-bottom: 70px solid #71E9F4;
+    position: relative;
+    top: -50px;
+}
+#diamond-narrow:after {
+    content: '';
+    position: absolute;
+    left: -50px; top: 70px;
+    width: 0;
+    height: 0;
+    border: 50px solid transparent;
+    border-top: 70px solid #71E9F4;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (4)</h2>
+            <p class="fragment">Diamond (Cut) [via <a href="#">lexander Futekov</a>]</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="diamond-cut"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#diamond-cut {
+    border-style: solid;
+    border-color: transparent transparent #71E9F4 transparent;
+    border-width: 0 25px 25px 25px;
+    height: 0;
+    width: 50px;
+    position: relative;
+    margin: 20px auto 50px auto;
+}
+#diamond-cut:after {
+    content: "";
+    position: absolute;
+    top: 25px;
+    left: -25px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: #71E9F4 transparent transparent transparent;
+    border-width: 70px 50px 0 50px;
+}</style></pre></div>
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Some Shapes (5)</h2>
+            <p class="fragment">Talk Bubble</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="talkbubble"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#talkbubble {
+    width: 120px; 
+    height: 80px; 
+    background: #71E9F4;
+    position: relative;
+    -webkit-border-radius: 10px;
+       -moz-border-radius: 10px;
+         -o-border-radius: 10px;
+        -ms-border-radius: 10px;
+            border-radius: 10px;
+}
+#talkbubble:before {
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: 26px;
+    width: 0;
+    height: 0;
+    border-top: 13px solid transparent;
+    border-right: 26px solid #71E9F4;
+    border-bottom: 13px solid transparent;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (5)</h2>
+            <p class="fragment">Burst (8-pt)</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="burst-8"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#burst-8 {
+    background: #71E9F4;
+    width: 80px;
+    height: 80px;
+    position: relative;
+    text-align: center;
+    -webkit-transform: rotate(20deg);
+       -moz-transform: rotate(20deg);
+        -ms-transform: rotate(20deg);
+         -o-transform: rotate(20deg);
+            transform: rotate(20deg);
+}
+#burst-8:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 80px;
+    width: 80px;
+    background: #71E9F4;
+    -webkit-transform: rotate(135deg);
+       -moz-transform: rotate(135deg);
+        -ms-transform: rotate(135deg);
+         -o-transform: rotate(135deg);
+            transform: rotate(135deg);
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (5)</h2>
+            <p class="fragment">Burst (12-pt) [via <a href="http://commondream.net/post/8848553728/pure-css-badges">Alan Johnson</a>]</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="burst-12"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#burst-12 {
+    background: #71E9F4;
+    width: 80px;
+    height: 80px;
+    position: relative;
+    text-align: center;
+}
+#burst-12:before, #burst-12:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 80px;
+    width: 80px;
+    background: #71E9F4;
+}
+#burst-12:before {
+    -webkit-transform: rotate(30deg);
+       -moz-transform: rotate(30deg);
+        -ms-transform: rotate(30deg);
+         -o-transform: rotate(30deg);
+}
+#burst-12:after {
+    -webkit-transform: rotate(60deg);
+       -moz-transform: rotate(60deg);
+        -ms-transform: rotate(60deg);
+         -o-transform: rotate(60deg);
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (5)</h2>
+            <p class="fragment">Star (6-pt)</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="star-6"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#star-6 {
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid #71E9F4;
+    position: relative;
+}
+#star-6:after {
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-top: 100px solid #71E9F4;
+    position: absolute;
+    content: "";
+    top: 30px;
+    left: -50px;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (5)</h2>
+            <p class="fragment">Star (5-pt) [via <a href="http://kitmacallister.com/2011/css-only-5-point-star/">Kit MacAllister</a>]</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="star-5"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#star-5 {
+    margin: 50px auto;
+    position: relative;
+    display: block;
+    color: #71E9F4;
+    width: 0px;
+    height: 0px;
+    border-right:  100px solid transparent;
+    border-bottom: 70px  solid #71E9F4;
+    border-left:   100px solid transparent;
+    -moz-transform:    rotate(35deg);
+    -webkit-transform: rotate(35deg);
+    -ms-transform:     rotate(35deg);
+    -o-transform:      rotate(35deg);
+    transform:         rotate(35deg);
+}
+#star-5:before {
+    border-bottom: 80px solid #71E9F4;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    position: absolute;
+    height: 0;
+    width: 0;
+    top: -45px;
+    left: -65px;
+    display: block;
+    content: '';
+    -webkit-transform: rotate(-35deg);
+    -moz-transform:    rotate(-35deg);
+    -ms-transform:     rotate(-35deg);
+    -o-transform:      rotate(-35deg);
+    transform:         rotate(-35deg);
+}
+#star-5:after {
+    position: absolute;
+    display: block;
+    color: #71E9F4;
+    top: 3px;
+    left: -105px;
+    width: 0px;
+    height: 0px;
+    border-right: 100px solid transparent;
+    border-bottom: 70px solid #71E9F4;
+    border-left: 100px solid transparent;
+    -webkit-transform: rotate(-70deg);
+    -moz-transform:    rotate(-70deg);
+    -ms-transform:     rotate(-70deg);
+    -o-transform:      rotate(-70deg);
+    transform:         rotate(-70deg);
+    content: '';
+}</style></pre></div>
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Some Shapes (6)</h2>
+            <p class="fragment">Pentagon</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="pentagon"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#pentagon {
+    position: relative;
+    width: 54px;
+    border-width: 50px 18px 0;
+    border-style: solid;
+    border-color: #71E9F4 transparent;
+}
+#pentagon:before {
+    content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    top: -85px;
+    left: -18px;
+    border-width: 0 45px 35px;
+    border-style: solid;
+    border-color: transparent transparent #71E9F4;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (6)</h2>
+            <p class="fragment">Hexagon</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="hexagon"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#hexagon {
+    width: 100px;
+    height: 55px;
+    background: #71E9F4;
+    position: relative;
+}
+#hexagon:before {
+    content: "";
+    position: absolute;
+    top: -25px; 
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 25px solid #71E9F4;
+}
+#hexagon:after {
+    content: "";
+    position: absolute;
+    bottom: -25px; 
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-top: 25px solid #71E9F4;
+}
+          </style></pre></div>
+            </div>
+          </section>
+          <!--section>
+            <h2>Some Shapes (6)</h2>
+            <p class="fragment">Octagon</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="octagon"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#octagon {
+    width: 100px;
+    height: 100px;
+    background: red;
+    position: relative;
+}
+
+#octagon:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;    
+    border-bottom: 29px solid red;
+    border-left: 29px solid #eee;
+    border-right: 29px solid #eee;
+    width: 42px;
+    height: 0;
+}
+
+#octagon:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;    
+    border-top: 29px solid red;
+    border-left: 29px solid #eee;
+    border-right: 29px solid #eee;
+    width: 42px;
+    height: 0;
+}</style></pre></div>
+            </div>
+          </section-->
+        </section>
+
+        <section>
+          <section>
+            <h2>Some Shapes (7)</h2>
+            <p class="fragment">Curve-tailed Arrow</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="curvedarrow"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#curvedarrow {
+    position: relative;
+    width: 0;
+    height: 0;
+    border-top: 9px solid transparent;
+    border-right: 9px solid #71E9F4;
+    -webkit-transform: rotate(10deg);
+    -moz-transform: rotate(10deg);
+    -ms-transform: rotate(10deg);
+    -o-transform: rotate(10deg);
+    transform: rotate(10deg);
+}
+#curvedarrow:after {
+    content: "";
+    position: absolute;
+    border: 0 solid transparent;
+    border-top: 3px solid #71E9F4;
+    border-radius: 20px 0 0 0;
+    top: -12px;
+    left: -9px;
+    width: 12px;
+    height: 12px;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (7)</h2>
+            <p class="fragment">Heart [via <a href="http://nicolasgallagher.com/">Nicolas Gallagher</a>]</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="heart"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#heart {
+    position: relative;
+    width: 100px;
+    height: 90px;
+}
+#heart:before,
+#heart:after {
+    position: absolute;
+    content: "";
+    left: 50px;
+    top: 0;
+    width: 50px;
+    height: 80px;
+    background: #71E9F4;
+    -moz-border-radius: 50px 50px 0 0;
+    border-radius: 50px 50px 0 0;
+    -webkit-transform: rotate(-45deg);
+       -moz-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+         -o-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+    -webkit-transform-origin: 0 100%;
+       -moz-transform-origin: 0 100%;
+        -ms-transform-origin: 0 100%;
+         -o-transform-origin: 0 100%;
+            transform-origin: 0 100%;
+}
+#heart:after {
+    left: 0;
+    -webkit-transform: rotate(45deg);
+       -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+         -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+    -webkit-transform-origin: 100% 100%;
+       -moz-transform-origin: 100% 100%;
+        -ms-transform-origin: 100% 100%;
+         -o-transform-origin: 100% 100%;
+            transform-origin :100% 100%;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (7)</h2>
+            <p class="fragment">Infinity [via <a href="http://nicolasgallagher.com/">Nicolas Gallagher</a>]</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="infinity"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#infinity {
+    position: relative;
+    width: 212px;
+    height: 100px;
+}
+
+#infinity:before, #infinity:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 60px;    
+    border: 20px solid #71E9F4;
+    -webkit-border-radius: 50px 50px 0 50px;
+       -moz-border-radius: 50px 50px 0 50px;
+         -o-border-radius: 50px 50px 0 50px;
+        -ms-border-radius: 50px 50px 0 50px;
+            border-radius: 50px 50px 0 50px;
+    -webkit-transform: rotate(-45deg);
+       -moz-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+         -o-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+}
+
+#infinity:after {
+    left: auto;
+    right: 0;
+    -webkit-border-radius: 50px 50px 50px 0;
+       -moz-border-radius: 50px 50px 50px 0;
+         -o-border-radius: 50px 50px 50px 0;
+        -ms-border-radius: 50px 50px 50px 0;
+            border-radius: 50px 50px 50px 0;
+    -webkit-transform: rotate(45deg);
+       -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+         -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (7)</h2>
+            <p class="fragment">Pacman</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="pacman"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#pacman {
+    width: 0px;
+    height: 0px;
+    border-right: 60px solid transparent;
+    border-top: 60px solid #71E9F4;
+    border-left: 60px solid #71E9F4;
+    border-bottom: 60px solid #71E9F4;
+    border-top-left-radius: 60px;
+    border-top-right-radius: 60px;
+    border-bottom-left-radius: 60px;
+    border-bottom-right-radius: 60px;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (7)</h2>
+            <p class="fragment">Yin Yang [via <a href="#">Alexander Futekov</a>]</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="yinyang"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#yinyang {
+    width: 96px;
+    height: 48px;
+    background: white;
+    border-color: black;
+    border-style: solid;
+    border-width: 2px 2px 50px 2px;
+    border-radius: 100%;
+    position: relative;
+}
+
+#yinyang:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    background: white;
+    border: 18px solid black;
+    border-radius: 100%;
+    width: 12px;
+    height: 12px;
+}
+
+#yinyang:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: black;
+    border: 18px solid white;
+    border-radius: 100%;
+    width: 12px;
+    height: 12px;
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (7)</h2>
+            <p class="fragment">Badge Ribbon</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="badgeribbon"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#badgeribbon {
+    position: relative;
+    background: #71E9F4;
+    height: 100px;
+    width: 100px;
+    -moz-border-radius:    50px;
+    -webkit-border-radius: 50px;
+    border-radius:         50px;
+}
+
+#badgeribbon:before,
+#badgeribbon:after {
+  content: '';            
+  position: absolute;            
+  border-bottom: 70px solid #71E9F4;
+  border-left: 40px solid transparent;
+  border-right: 40px solid transparent;
+  top: 70px;
+  left: -10px;
+  -webkit-transform: rotate(-140deg);
+  -moz-transform:    rotate(-140deg);
+  -ms-transform:     rotate(-140deg);
+  -o-transform:      rotate(-140deg);
+  transform:         rotate(-140deg); 
+}
+
+#badgeribbon:after {
+  left: auto;
+  right: -10px;
+  -webkit-transform: rotate(140deg);
+  -moz-transform:    rotate(140deg);
+  -ms-transform:     rotate(140deg);
+  -o-transform:      rotate(140deg);
+  transform:         rotate(140deg);
+}</style></pre></div>
+            </div>
+          </section>
+          <section>
+            <h2>Some Shapes (7)</h2>
+            <p class="fragment">Invader</p>
+            <div class="fragment">
+              <div class="shape">
+                <div id="invader"></div>
+              </div>
+              <div class="code"><pre><style contenteditable>#invader {
+    box-shadow:
+      0 0 0 1em #71E9F4,
+      0 1em 0 1em #71E9F4,
+      -2.5em 1.5em 0 .5em #71E9F4,
+      2.5em 1.5em 0 .5em #71E9F4,
+      -3em -3em 0 0 #71E9F4,
+      3em -3em 0 0 #71E9F4,
+      -2em -2em 0 0 #71E9F4,
+      2em -2em 0 0 #71E9F4,
+      -3em -1em 0 0 #71E9F4,
+      -2em -1em 0 0 #71E9F4,
+      2em -1em 0 0 #71E9F4,
+      3em -1em 0 0 #71E9F4,
+      -4em 0 0 0 #71E9F4,
+      -3em 0 0 0 #71E9F4,
+      3em 0 0 0 #71E9F4,
+      4em 0 0 0 #71E9F4,
+      -5em 1em 0 0 #71E9F4,
+      -4em 1em 0 0 #71E9F4,
+      4em 1em 0 0 #71E9F4,
+      5em 1em 0 0 #71E9F4,
+      -5em 2em 0 0 #71E9F4,
+      5em 2em 0 0 #71E9F4,
+      -5em 3em 0 0 #71E9F4,
+      -3em 3em 0 0 #71E9F4,
+      3em 3em 0 0 #71E9F4,
+      5em 3em 0 0 #71E9F4,
+      -2em 4em 0 0 #71E9F4,
+      -1em 4em 0 0 #71E9F4,
+      1em 4em 0 0 #71E9F4,
+      2em 4em 0 0 #71E9F4;
+
+    background: #71E9F4;
+
+    background: #71E9F4;
+    width: 1em;
+    height: 1em;
+    overflow: hidden;
+
+    margin: 50px 0 70px 65px;
+}</style></pre></div>
+            </div>
+          </section>
+        </section>
+        
+        <section>
+          <h1 style="-webkit-transform: rotate(180deg);
+       -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+         -o-transform: rotate(180deg);
+            transform: rotate(180deg);">THE END</h1>
+        </section>
+      </div>
+
+      <!-- The navigational controls UI -->
+      <aside class="controls">
+        <a class="left" href="#">&#x25C4;</a>
+        <a class="right" href="#">&#x25BA;</a>
+        <a class="up" href="#">&#x25B2;</a>
+        <a class="down" href="#">&#x25BC;</a>
+      </aside>
+
+      <!-- Displays presentation progress, max value changes via JS to reflect # of slides -->
+      <div class="progress"><span></span></div>
+      
+    </div>
+    
+    <script src="js/reveal.js"></script>
+
+    <!-- Optional libraries for code syntax highlighting and classList support in IE9 -->
+    <script src="lib/highlight.js"></script>
+    <script src="lib/classList.js"></script>
+    
+    <script>
+      // Parse the query string into a key/value object
+      var query = {};
+      location.search.replace( /[A-Z0-9]+?=(\w*)/gi, function(a) {
+        query[ a.split( '=' ).shift() ] = a.split( '=' ).pop();
+      } );
+
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // If true; each slide will be pushed to the browser history
+        history: true,
+
+        // Loops the presentation, defaults to false
+        loop: false,
+
+        // Flags if mouse wheel navigation should be enabled
+        mouseWheel: false,
+
+        // Apply a 3D roll to links on hover
+        rollingLinks: true,
+
+        // UI style
+        theme: query.theme || 'default', // default/neon
+
+        // Transition style
+        transition: query.transition || 'default' // default/cube/page/concave/linear(2d)
+      });
+
+      hljs.initHighlightingOnLoad();
+    </script>
+</html>
