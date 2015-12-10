@@ -1,0 +1,89 @@
+Skygear.io at Oursky
+Dec Progress Update
+4 Dec 2015
+
+Rick Mak
+Oursky
+rickmak@oursky.com
+@rickmak
+CC81327D
+
+* Adoption
+
+- 3 Project
+  - Village (React-Native)
+- 9 People
+
+* Core updates
+
+- go1.5
+- Update on the docker-compose example to make it works
+- A docker for migration
+    docker run --rm --link skygear_db_1:db oursky/skygear-migrate
+- Improve error message on DB dead
+- Support sequence field, i.e. auto-increment
+- Support `IN` predicate
+- Support redis as AuthToken store
+- Support user-relation predicate in record query
+- Support eager load on multiple keypath (*use with caution*)
+
+* Plugin
+
+- Aware of disconnect
+- Include a proper logger by default
+- Improve the logging on connection lost
+- Provide change password util func
+- Able to pre / post process of asset in plugin after save record
+
+* JS SDK
+
+- Pubsub
+- Eager load at query
+- Save and query User Relation
+- Support Geo Data and query
+- Support Asset upload
+- Support lambda function call
+- Support query by user-relation
+
+* Asset Upload code
+
+    const asset = new Asset({
+        'name': doc.name,
+        'file': doc,
+    });
+    recordAttrs = {
+        'type': 'file',
+        'name': doc.name,
+        'size': doc.size,
+        'document': asset,
+        [docOwnerKey]: new skygear.Reference(ownerRecord),
+        'uploadedBy': new skygear.Reference(user),
+    };
+    const docRecord = docRecordCls.create(recordAttrs);
+    skygear.publicDB.save(docRecord).then(() => { consol.log('saved'); })
+
+* Query by user-relation
+    
+    const query = new skygear.Query(Note);
+    query.havingRelation('_owner', skygear.relation.Friend);
+    skygear.publicDB.query(query).then((records) => {
+        console.log('records owned by my friend');
+    })
+
+
+* iOS SDK
+
+- Add clang-format
+
+* Added how to contributing
+
+http://docs.pandadb.com/tutorial/contributing/
+
+In short, send me pull-request
+
+* Regular release coming
+
+- Every Wed
+- Incompatible changes
+- Features add
+- Bugs fix
