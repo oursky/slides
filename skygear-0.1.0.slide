@@ -1,0 +1,61 @@
+Skygear.io at Oursky
+0.1.0 Release
+18 Dec 2015
+
+Rick Mak
+Oursky
+rickmak@oursky.com
+@rickmak
+CC81327D
+
+* First release
+
+Version 0.1.0
+
+Now the public version of SDKs and Plugin can be found in following repos:
+
+- https://github.com/SkygearIO/skygear-SDK-iOS
+- https://github.com/SkygearIO/skygear-SDK-JS
+- https://github.com/SkygearIO/py-skygear
+
+* Changes
+
+Please refer to the CHANGELOG.md in respective repos
+
+We will announce 
+
+- Backward Incompatibilities
+- Features
+- Bug Fixes
+- Deprecations
+
+* Impact of opensource to you
+
+Standard package management tools works
+
+    pod install SKYKit
+
+    npm install skygear
+
+    pip install skygear
+
+No more `npm install skygear-SDK-JS && npm install` :)
+
+* Feedback needed
+
+- Any feedback is welcome, no responsbility to implement
+- It help use to build docs and FAQ
+  http://docs.pandadb.com/tutorial/faq
+- It will change our design
+
+* Wishes come truth
+
+- Auto Increment ID
+- Include multiple transient fields
+- Remove error with no use
+
+* Tellskygear
+
+You can complian anonymously by `/tellskygear`
+(Rick have no access to DB, you are protected by David.)
+When in doubt, ask me.
