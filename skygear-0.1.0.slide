@@ -56,6 +56,7 @@ No more `npm install skygear-SDK-JS && npm install` :)
 
 * Tellskygear
 
-You can complian anonymously by `/tellskygear`
-(Rick have no access to DB, you are protected by David.)
-When in doubt, ask me.
+- You can complian anonymously by `/tellskygear`
+- You can suggest anything by `/tellskygear`
+- You can send pull-request to upstream directly. Credit: yulapshun, Steven-Chan
+- When in doubt, ask!
