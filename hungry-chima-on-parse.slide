@@ -1,0 +1,226 @@
+Hungry Chima on Slack
+Parse implementation
+16 Oct 2015
+Tags: oursky, parse, slack
+
+David Ng
+Oursky
+david.ng@oursky.com
+
+* Slack Bot vs Slack Command
+
+Slack bot
+
+.link https://api.slack.com/bot-users
+- Add as a member in your team
+- It appears as a user
+
+Slack command
+
+.link https://api.slack.com/slash-commands
+- Listen for custom triggers in chat messages 
+- Not shown as a user
+- Replies are private (only visible to you)
+
+* Default Commands on Slack
+
+- /prefs
+- /remind me in [time] to [message]
+  e.g. /remind me at 7pm to feed chima
+- /open [channel]
+- /kick [user]
+- /away
+- /shrug [your message]
+  usage: Appends ¯\_(ツ)_/¯ to your message
+
+* Set up Slash Commands
+- Add new integration to Slack
+.link https://oursky.slack.com/services/new
+
+.image hungry-chima-on-parse/new-slack-integration.png
+
+* Hungry Chima is not only /tellchima
+
+It is a collection of commands:
+
+- /tellchima [msg]
+- /untellchima #[issue_no]
+
+others:
+
+- /hello
+- /address
+- /yo [yo-username]
+
+* How it works
+
+- Slack Slash Command ---(Request)---> Parse Cloud Code
+- Parse Cloud Code ---(Response)---> Slack Channel
+
+* Parse
+
+* Parse
+.link https://parse.com/docs
+
+*Web* 
+- JS
+
+*Mobile*
+- iOS, Android, Unity, Xamarin, React, Windows Phone
+
+*Desktop*
+- OSX, .Net
+
+*Server*
+- Cloud Code, PHP, REST API
+
+*Others*
+- Arduino, Embedded C, Raspberry Pi, Intel, Broadcom, Atmel, Texas Instruments
+
+
+* Parse Cloud Code
+.link https://parse.com/apps/quickstart#cloud_code/unix
+- Get the Parse tool
+- Set up
+  parse new
+- Develop
+  myapp
+  ├── cloud
+  │   └── main.js
+  ├── .parse.local
+  ├── .parse.project
+  └── public
+      └── index.html
+- Deploy
+  parse deploy
+
+* Parse Cloud Code Framework
+.link http://blog.parse.com/announcements/building-parse-web-apps-with-the-express-web-framework/
+- Node.js
+- Express Framework
+
+- host at *.parseapp.com
+
+* Sample Web Server
+  Parse.Cloud.define("hello", function(request, response) {
+    response.success("Hello world!");
+  });
+
+  app.get('/test',
+           function(req, res) {
+            res.send('Yeah!');
+          });
+
+  app.listen();
+
+* Cloud Functions
+- E.g. Average Star of the movie in Review
+.code hungry-chima-on-parse/parse.txt /1 OMIT/,/2 OMIT/
+
+* Basic queries
+- Define Query
+    var query = new Parse.Query(User);
+- set condition
+    // Equal
+    query.equalTo("role", "PM");
+    query.notEqualTo("role", "PM");
+
+    // Compare
+    query.lessThan("age", 30);
+    query.lessThanOrEqualTo("age", 30);
+    query.greaterThan("age", 30);
+    query.greaterThanOrEqualTo("age", 30);
+
+    // Contain
+    query.containedIn("name", ["Rick","Ben","Roy"]);
+    query.notContainedIn("name", ["Rick","Ben","Roy"]);
+
+    // Exists
+    query.exists("girlfriend");
+    query.doesNotExist("girlfriend"); // sosad
+
+* More
+
+- Constriant
+    query.limit(10);
+    query.skip(10);
+
+- Array Value
+    query.equalTo("arrayKey", 2);
+    query.containsAll("arrayKey", [2, 3, 4]);
+
+- And / Or
+    var mainQuery = Parse.Query.or(query1, query2);
+    var mainQuery = Parse.Query.and(query1, query1);
+
+* Triggers
+.link https://parse.com/docs/cloudcode/guide#cloud-code-beforesave-triggers
+- beforeSave
+- afterSave
+- beforeDelete
+- afterDelete
+
+* Triggers Example : beforeSave
+.code hungry-chima-on-parse/parse.txt /2 OMIT/,/3 OMIT/
+
+* Limits
+- Cloud functions will be killed after 15 seconds of wall clock time.
+- Memory: currently 384 MB, but subject to change in the future
+- GC by the JavaScript engine
+
+* More features:
+- Networking : POST / GET Request
+- Webhook
+- Modules
+- Push Notifications
+- Jobs
+.image hungry-chima-on-parse/parse-scheduled-jobs.png
+
+
+* Basic API Server
+.code hungry-chima-on-parse/cloud.txt /1 OMIT/,/2 OMIT/
+
+* To YO users
+.code hungry-chima-on-parse/cloud.txt /2 OMIT/,/3 OMIT/
+
+* To receive YO
+- Yo integration
+- at `#yo` channel
+
+Related Blog
+
+.link https://medium.com/@YoAppStatus/yo-team-uses-slack-and-loves-it-b1e756555e30 on Medium
+
+* To tellchima
+.code hungry-chima-on-parse/cloud.txt /3 OMIT/,/4 OMIT/
+
+* Job
+- job
+.code hungry-chima-on-parse/cloud.txt /4 OMIT/,/5 OMIT/
+- request to slack
+.code hungry-chima-on-parse/cloud.txt /5 OMIT/,/6 OMIT/
+
+* One day, when you need a client app
+
+* Web App
+- Get JS SDK
+- Query exactly the same on cloud code
+.code hungry-chima-on-parse/cloud.txt /6 OMIT/,/7 OMIT/
+
+* iOS App
+- Get iOS SDK
+- Query
+.code hungry-chima-on-parse/cloud.txt /7 OMIT/,/8 OMIT/
+
+* Android App
+- Get Android SDK
+- Query
+.code hungry-chima-on-parse/cloud.txt /7 OMIT/,/8 OMIT/
+
+* Parse Open source SDK
+.link http://blog.parse.com/announcements/open-sourcing-our-sdks/
+.link http://blog.parse.com/announcements/open-sourcing-our-facebook-and-twitter-integration-frameworks/
+.image hungry-chima-on-parse/parse-opensource.png
+
+* Skygear Implementation
+- Leave readers as an exercise : )
