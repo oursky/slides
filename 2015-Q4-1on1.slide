@@ -32,7 +32,7 @@ bencheng@oursky.com
 
 * Team Communication
 - Please submit slides / presentation topic to Rick by 4pm Fri, so Taipei colleague can join if they are interested
-- Pull Request review by Developer should not consist of basic test. It is everyone responsibility and PM will take-over this to reduce Senior Developers' workload.
+- Pull Request review by Developer must consist of basic test. It is everyone responsibility and PM will take-over this to reduce Senior Developers' workload.
 - Please find Designer directly if you have UI questions, instead of routing through PM
 
 * Coach and improvement
