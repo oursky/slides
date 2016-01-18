@@ -32,7 +32,7 @@ bencheng@oursky.com
 
 * Team Communication
 - Please submit slides / presentation topic to Rick by 4pm Fri, so Taipei colleague can join if they are interested
-- Pull Request review by Developer should not consist of basic test. It is everyone responsibility and PM will take-over this to reduce Senior Developers' workload.
+- PR review by Senior Developer should focus on code, not basic functionality. It is developers' responsibility to test the code work as expected in normal case before sending the pull request. And PM can help advice / double check instead of Tech lead to reduce their workload.
 - If you need some design resources / images, please find designers directly instead of routing through PM; If there are some UI/UX questions PM in doubt, should seek help from designers together instead of routing.
 
 * Coach and improvement
