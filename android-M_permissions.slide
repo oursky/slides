@@ -1,0 +1,85 @@
+Android M permission
+
+Louis Chan
+Developer, Oursky
+louischan@oursky.com
+
+* Permission in Android M
+
+Permission are now classified into 2 types.
+
+- Normal: same as before, need not special handling
+- Dangerous: must check before use
+
+[[http://developer.android.com/guide/topics/security/permissions.html#perm-groups]]
+
+* Permission group
+
+Permission are granted as group.
+
+e.g. If your app are granted [[http://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE][WRITE_EXTERNAL_STORAGE]] permission, it is automatically granted [[http://developer.android.com/reference/android/Manifest.permission.html#READ_EXTERNAL_STORAGE][READ_EXTERNAL_STORAGE]].
+
+* int ContextCompat.checkSelfPermission(Context context, String permission)
+Return `PackageManager.PERMISSION_DENIED` or `PackageManager.PERMISSION_GRANTED`.
+
+* boolean ActivityCompat.shouldShowRequestPermissionRationale(Activity activity, String permission)
+
+Return `false` if it is the first time asking for permission.
+
+Return `true` if the request was denied *AND* "never ask again" was *NOT* checked.
+
+Return `false` if the request was deined *AND* "never ask again" was checked.
+
+* void ActivityCompat.requestPermissions(Activity activity, String[] permissions)
+
+`activity` must implement `ActivityCompat.OnRequestPermissionResultCallback`.
+
+Display a non-customizable dialog if "never ask again" was not checked.
+
+Invoke the callback instantly otherwise.
+
+* Example flow
+
+  // the snippet may reside in a OnClickListener
+
+  if (ContextCompat.checkSelfPermission(context, permission)) {
+    // process as normal
+  } else {
+    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+      // This implies the user has denied in the past
+      // the app should explain why the app need the permission in its own way
+    } else {
+      ActivityCompat.requestPermissions(activity, new String[]{permission});
+    }
+  }
+
+* Example flow (cont.)
+
+  // the implementation of ActivityCompat.OnRequestPermissionResultCallback
+
+  public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
+    super.onRequestPermissionResult(requestCode, permissions, grantResults);
+    
+    if (requestCode != MY_REQUEST_CODE) {
+      return;
+    }
+    
+    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+      // process as normal
+    } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+      // This implies request was deined but never ask again was not checked
+    } else {
+      // This implies the dialog actually did not show and this method was invoke instantly
+      // If the permission is essential to the app, the app should tell the user
+      // the app will not function properly without the permission
+    }
+  }
+
+* Redirect to the app details in settings
+
+  Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+  Uri uri = Uri.fromParts("package", YOUR_APP_PACKAGE_NAME, null);
+  intent.setData(uri);
+  startActitity(intent);
+
+The above intent will open up the app details in settings but the user have to manually click to enter the permission page.
