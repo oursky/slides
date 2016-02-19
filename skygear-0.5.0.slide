@@ -1,0 +1,53 @@
+Skygear.io at Oursky
+0.5.0 Release
+19 Feb 2016
+
+Rick Mak
+Oursky
+rickmak@oursky.com
+@rickmak
+CC81327D
+
+* Important Changes
+
+- zmq is now depreacted
+- `http` and `exec` will remove c deps
+
+You can now directly install by
+
+    go install github.com/oursky/skygear
+
+Say goodbye to Docker, in development
+
+* Incoporate common usecase in Core
+
+- We have user Role now
+- We have user Record by default
+- Add middleware to support CORS
+
+For more details, can refer to changelog:
+https://github.com/oursky/skygear/releases
+
+* Standardize the bug report format
+
+(Describe the issue here)
+
+- Skygear Date/Version:
+- Application Platform:
+- [ ] Is this a regression?
+- [ ] Attached logs, screenshots
+
+#### Expected Results
+
+#### Actual Results
+
+#### Steps to reproduce
+
+1.
+2.
+3.
+
+* Tellskygear
+
+- chima is very lonely
+
