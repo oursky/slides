@@ -11,15 +11,17 @@ CC81327D
 * Important Changes
 
 - zmq is now depreacted
-- `http` and `exec` will remove c deps
+- `http` and `exec` does not havet c deps
 
 You can now directly install by
 
     go install github.com/oursky/skygear
 
+Or download binary directly at https://github.com/oursky/skygear/releases
+
 Say goodbye to Docker, in development
 
-* Incoporate common usecase in Core
+* Incorporate common use case in server
 
 - We have user Role now
 - We have user Record by default
