@@ -1,0 +1,308 @@
+Tips on React Native
+
+10 June 2016
+
+Louis Chan
+Developer, Oursky
+louischan@oursky.com
+
+* Prerequisite
+
+- Understand EMCAScript 3, 5, 6, and 7
+- Understand React
+
+* Why do we need to understand ES 6 and ES7
+
+- The packager of React Native has new language features enabled by default.
+- New syntax is more concise, reads better. [[https://en.wikipedia.org/wiki/Intentional_programming][Intentional Programming]]
+
+* ES 6 and ES 7
+
+* Object Rest/Spread Properties
+
+[[https://github.com/sebmarkbage/ecmascript-rest-spread][Spec]]
+
+  // extract out some props and forward remaining props
+  const { a, b, ...props} = this.props;
+  return (
+    <View {...props}>
+      <MyComponent a={a} b={b} />
+    </View>
+  );
+
+* Object Spread Initializer
+
+[[https://github.com/sebmarkbage/ecmascript-rest-spread/blob/master/Spread.md#object-spread-initializer][Spec]]
+
+  // make shadow copy, great for fast diffing
+  const newState = {
+    ...state,
+    count: count + 1,
+  };
+
+* Class Instance Fields & Class static Properties
+
+[[https://github.com/jeffmo/es-class-fields-and-static-properties][Spec]]
+
+  class MyComponent extends Component {
+    static propTypes = {};
+
+    static defaultProps = {}; // this replaces getDefaultProps
+
+    state = {}; // this replaces getInitialState
+
+    onPress = () => {}; // this is bound to lexical this
+
+    render() { // this is not bound
+      return (
+        <TouchableOpacity
+          onPress={this.onPress}
+        />
+      );
+    }
+  }
+
+* Use Promise constructor only when you do not start with a promise
+
+Too easy to forget to resolve or reject, making the promise not promising anymore
+
+  return new Promise((resolve, reject) => {
+    skygear.publicDB.query(someQuery).then((records) => {
+      if (records && records.length > 0) {
+        resolve(records[0]);
+      } else {
+        resolve(null);
+      }
+    }, reject);
+  })
+
+should really be
+
+  return skygear.publicDB.query(someQuery).then((records) => {
+    if (records && records.length > 0) {
+      return records[0];
+    }
+    return null;
+  });
+
+* React
+
+* Use redux
+
+There is no reason not to use it.
+
+* Use ref callback form
+
+[[https://facebook.github.io/react/docs/more-about-refs.html#the-ref-callback-attribute][What is it?]]
+
+- It is a hook to `componentDidMount` and `componentWillUnmount`
+
+  render() {
+    return (<Navigator ref={this.onNavigatorRef} />);
+  }
+  onNavigatorRef = (r) => {
+    this.navigator = r;
+    this.addListenerOn(RCTDeviceEventEmitter, 'onDeepLink', this.onDeepLink);
+    this.onDeepLink();
+  }
+  onDeepLink = () => {
+    NativeModules.DeepLinkModule.popLastDeepLink().then(data => {
+      if (data) {
+        // perform deep linking with the assumption that this.navigator is valid
+      }
+    });
+  }
+
+* getInitialState and componentWillReceiveProps
+
+  getInitialState() {
+    return { price: this.computePrice(this.props) };
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setState({ price: this.computePrice(nextProps) });
+  }
+  render() {
+    return (<Text>{this.state.price}</Text>);
+  }
+
+should really be
+
+  render() {
+    return (<Text>{this.computePrice(this.props)}</Text>);
+  }
+
+or even better
+
+  render() {
+    return (<Text>{this.props.price}</Text>);
+  }
+
+* React Native
+
+* Remember that ReactContext/Bridge is created asynchronously
+
+Emit event from native and let JS to pop the data.
+
+This idea is borrowed from [[https://github.com/facebook/react-native/blob/master/Libraries/PushNotificationIOS/PushNotificationIOS.js][PushNotificationIOS]].
+
+See the slide 'Use ref callback form' as an example
+
+* Be careful of getCurrentActivity
+
+[[https://github.com/facebook/react-native/blob/a1ba0918ab2f03504066790922cbec841799de09/ReactAndroid/src/main/java/com/facebook/react/bridge/ReactContext.java#L173][getCurrentActivity]] will return null when something is on top of your app momentarily.
+e.g. The native permission dialog is showing, an Alert is showing, etc.
+
+Make each native module hold a WeakReference<Activity> to the activity is much more reliable.
+
+* Native method should return promise
+
+There are three ways to report computation result to JS
+
+- Promise, your default choice when the computation is done synchronously
+- Callback, when you present a ViewController and have to delay the result until the delegate callback fires
+- Event, as a last resort
+
+* Use your own Navigator
+
+- Use [[https://facebook.github.io/react-native/docs/navigator.html][Navigator]]
+- Do NOT use [[https://facebook.github.io/react-native/docs/navigatorios.html][NavigatorIOS]]
+- Do NOT use [[https://github.com/facebook/react-native/tree/master/Libraries/NavigationExperimental][NavigationExperimental]] (at this monent)
+- See how village does [[https://github.com/oursky/village/blob/master/routes/RouteNavigator.js][this]]
+
+* Distinguish between Flexbox and css-layout
+
+[[https://www.w3.org/TR/css-flexbox-1/][Flexbox]] is a W3C standard.
+[[https://github.com/facebook/css-layout][css-layout]] implements a layout engine using a [[https://facebook.github.io/react-native/docs/flexbox.html#content][subset]] of Flexbox.
+
+- [[https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Using_CSS_flexible_boxes][An introduction to flexbox on MDN]]
+- [[https://github.com/facebook/css-layout#supported-attributes][Caveats of css-layout]]
+- Know the [[https://github.com/facebook/css-layout#default-values][default values]] of css-layout
+- Use position: 'absolute' sparingly; Use alignItems, alignSelf and justifyContent smartly
+
+* Understand InteractionManager
+
+[[https://facebook.github.io/react-native/docs/interactionmanager.html#content][InteractionManager.runAfterInteractions]] allows you to delay function execution until interaction ends.
+
+Use it in `componentDidMount` to initiate network request.
+
+* Platform difference on soft keyboard events
+
+There are 4 events related to keyboard.
+
+- keyboardWillShow (iOS)
+- keyboardWillHide (iOS)
+- keyboardDidShow (iOS and Android)
+- keyboardDidHide (iOS and Android)
+
+On iOS, listen to keyboardWillShow and keyboardWillHide to adjust the size.
+
+On Android, set android:windowSoftInputMode="adjustResize" in AndroidManifest.xml
+adjustUnspecified (the default) is indeterministic.
+
+* Normalize TextInput
+
+[[https://facebook.github.io/react-native/docs/textinput.html][TextInput]] has few caveats on Android.
+
+- Unwanted vertical padding
+- Unwanted underline color
+- Surprising vertical text alignment
+
+  const styles = StyleSheet.create({
+    textInput: {
+      paddingTop: 0,
+      paddingBottom: 0,
+      underlineColorAndroid: 'transparent',
+      textAlignVertical: 'top',
+    },
+  });
+
+  <TextInput style={styles.textInput} />
+
+* Platform specific code
+Read [[https://facebook.github.io/react-native/docs/platform-specific-code.html][this]].
+
+tl;dr
+
+- Use `.android.js` and `.ios.js` for specialized components
+- Use [[https://github.com/facebook/react-native/commit/edf8888fb9b88a2e9f7032122646729fdb893f27][Platform.select]] for style
+
+* Understand layout and transform
+
+Animate with transform whenever possible.
+
+  <Animated.View
+    style={{
+      transform: [
+        {translateX: this.translateX}
+      ]
+    }}
+  />
+
+instead of
+
+  <Animated.View
+    style={{
+      top: this.state.top,
+    }}
+  />
+
+It avoids `setState` which avoids an extra layout pass.
+
+* Implement hasRowChanged correctly
+
+a bad version
+
+  const hasRowChanged = (a, b) => a !== b;
+  const dataSource = new ListView.DataSource({
+    hasRowChanged,
+  });
+
+a better version
+
+  const hasRowChanged = (a, b) => {
+    if (a === b) { return false; }
+    return (
+      (!a || !!b) ||
+      (!!a || !b) ||
+      (a._id !== b._id) ||
+      (a.updatedAt !== b.updatedAt)
+    );
+  };
+  const dataSource = new ListView.DataSource({
+    hasRowChanged,
+  });
+
+* Distinguish between React and React Native
+
+React is about virtual DOM.
+React Native is a renderer and a bridge.
+
+  import React, { Component } from 'react';
+  import { Platform, StyleSheet, View } from 'react-native';
+
+Fail to do this in v0.26 is an error.
+
+* Image may not re-render if source is changed
+
+Some workarounds
+
+- Wrap Image in a View
+- Render all Images and set width/height to 0 to effectively hide them
+
+* Consult the source code of React Native
+
+Some APIs are not well documented, e.g. Animated
+
+The docs does not tell you how to retrieve the current value.
+
+  const opacity = new Animated.Value(1);
+  const value = opacity.__getValue();
+
+* Keep track of new commits to master of React Native
+
+So that you are aware of new features.
+e.g. We use [[https://github.com/facebook/react-native/commit/f21da3aa31c09c375ce0021ee5069671b6e79ac1][Incremental]] to allow progressive rendering. (It is an undocumented feature, at least it is not documented on the website)
+
+* Ask villagers!
+
+We (or me) welcome your questions!
