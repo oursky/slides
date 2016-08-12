@@ -1,0 +1,174 @@
+Twelve-factor app
+Fri Apr 29 2016
+
+Kwok-kuen Cheung
+Oursky
+cheungpat@oursky.com
+@cheungpat
+
+* What is twelve-factor app?
+
+- methodology for building web apps
+- a clean contract between your app and the underlying operating system
+- make your app portable—run anywhere between local development and cloud platforms
+- good for any programming languages
+
+* What can you do with twelve-factor?
+
+- helps you setup automation
+- enabling continuous deployment
+- make your app easy to scale up
+- make your app portable
+- minimize time for new developers to join the project (and others to help you)
+
+* What are the factors?
+
+1. Codebase
+2. Dependencies
+3. Config
+4. Backig services
+5. Build, release, run
+6. Processes
+7. Port binding
+8. Concurrency
+9. Disposability
+10. Dev/prod parity
+11. Logs
+12. Admin processes
+
+* 1. Codebase
+
+“One codebase tracked in revision control, many deploys”
+
+- you app is tracked in a single repo known as a codebase
+- there should be only one codebase per app, and vice versa
+- the same codebase is deployed to multiple environment (e.g. development, production, etc)
+
+.image twelve-factor/codebase-deploys.png
+
+* 2. Dependencies
+
+“Explicitly declare and isolate dependencies”
+
+- explicitly declare all dependencies in a manifest (e.g. Gemfile, requirements.txt, etc)
+- e.g. `requests==2.4.3`
+- do not assume dependency or tools installed by operating system
+- e.g. Python `requests` package is usually installed in Ubuntu, but it is not part of the standard library
+
+* 3. Config
+
+“Store config in the environment”
+
+- database password, third-party access tokens, etc are examples of config
+- config vary for different deploys
+- config comes from environment (in the form of environment variable)
+- bad practice: need to modify config file when deploying the app
+
+* 4. Backing services
+
+“Treat backing services as attached resources”
+
+- backing services are consumed by your app over the network
+- e.g.: database, Amazon S3 and third-party APIs
+- able to swap backing service without changing the code
+- e.g.: use different database in different environment
+- e.g.: use sandbox API in staging environment
+
+* 5. Build, release, run
+
+“Strictly separate build and run stages”
+
+Three stages two transform a codebase into a running app:
+
+- build: transform codebase to executable
+- release: combine executable and config
+- run: launching a release
+
+* 5. Build, release, run
+
+“Strictly separate build and run stages”
+
+- these three stages do not allow modifying code at runtime
+- a release has everything the server need to run the app
+- deployment tool should be able to rollback release
+
+.image twelve-factor/release.png
+
+* 6. Processes
+
+“Execute an app as one or more stateless processes”
+
+- process should be stateless
+- process should share-nothing
+- process can only use memory or filesystem as cache (do not expect data to be always there)
+- process should save persistent state in a backing service
+
+* 7. Port binding
+
+“Export services via port binding”
+
+- web apps should expose a HTTP port (e.g. `http://0.0.0.0:5000`)
+- an external proxy route web traffic to your port
+- do not assume you can listen at a specific port (should be configurable)
+
+* 8. Concurrency
+
+“Scale out via the process model”
+
+- if your app has a diverse workload, define process type for each workload
+- e.g.: web process serving web request, worker process serving background jobs
+- scale out by launching process concurrently for different workload
+
+.image twelve-factor/process-types.png
+
+* 9. Disposability
+
+“Maximize robustness with fast startup and graceful shutdown”
+
+- processes are disposable—they can be started and stopped anytime
+- process should gracefully shutdown when it receive SIGTERM
+- e.g. cleanup running job when exiting
+- process should be robust against sudden death
+- e.g. unfinished job can be picked up by other process
+
+* 10. Dev/prod parity
+
+“Keep development, staging, and production as similar as possible”
+
+Time gap
+
+- how much time since last deployment?
+- minimize time between deploys—continuous deployment
+
+Personnel gap:
+
+- is the person who develop the app also the person who deployed it?
+- developer should also be involved in deploying and monitoring the app
+
+Tools gap:
+
+- is the same tool used in development and production?
+- should use the same tool for development and production (e.g. SQLite in dev vs PostgreSQL in prod)
+
+* 11. Logs
+
+“Treat logs as event streams”
+
+- logs are a stream of events collected from all running processes
+- the app should not be concerned about storing the log
+- write log to stdout
+- the execution environment is responsible for processing the log
+- e.g. supervisord can collect app log and write the log to files
+
+* 12. Admin processes
+
+“Run admin/management tasks as one-off processes”
+
+- commands for one-off maintenance tasks (e.g. `python manage.py migrate`)
+- commands must be shipped with the code
+- commands should be run in the same environment of the running app, such as using the same build, config and release
+
+* See also
+
+- http://12factor.net
+
