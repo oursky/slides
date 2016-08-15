@@ -1,0 +1,95 @@
+Java GC
+2016/8
+
+Johnny Kao
+Developer
+
+* Before GC
+
+.code ./java-gc/malloc.c
+
+* C++ GC like
+
+.code ./java-gc/vector.cpp
+
+In C++ using vector, the destructor of which will be automatically called when it’s no longer in scope
+
+* Memory leak
+
+.image ./java-gc/leak.png
+
+* What's GC (garbage collection)?
+
+.image ./java-gc/tracker.png
+
+* Reference Counting
+
+.image ./java-gc/1.png
+
+Perl, Python or PHP take this approach.
+
+* Reference Counting
+
+.image ./java-gc/2.png
+
+It is quite easy to end up with a detached cycle of objects none of which are in scope yet due to cyclic references the count of their reference is not zero.
+
+* Mark and Sweep
+
+.image ./java-gc/3.png
+
+GC Roots:
+
+- Local variables
+- Active threads
+- Static fields
+- JNI references
+
+* Mark and Sweep
+
+- Marking
+walking through all reachable objects, starting from GC roots and keeping a ledger in native memory about all such objects
+
+- Sweeping
+making sure the memory addresses occupied by non-reachable objects can be reused by the next allocations.
+
+* Mark and Sweep
+
+.image ./java-gc/GC-sweep.png
+
+* Mark and Sweep
+
+- Write operations become more time-consuming as finding the next free block of sufficient size is no longer a trivial operation.
+- When creating new objects, JVM is allocating memory in contiguous blocks. So if fragmentation escalates to a point where no individual free fragment is large enough to accommodate the newly created object, an allocation error occurs.
+
+* Mark, Sweep and Compact
+
+.image ./java-gc/GC-mark-sweep-compact.png
+
+* Mark, Sweep and Copy
+
+.image ./java-gc/GC-mark-and-copy-in-Java.png
+
+* Fragmenting and Compacting - Generational Hypothesis
+
+.image ./java-gc/5.png
+
+- Most of the objects become unused quickly
+- The ones that do not usually survive for a (very) long time
+
+* Fragmenting and Compacting - Generational Hypothesis
+
+.image ./java-gc/when-to-gc.png
+
+* Fragmenting and Compacting - Generational Hypothesis
+
+The heap is sometimes divided into two areas (or generations) called the nursery (or young space) and the old space. The nursery is a part of the heap reserved for allocation of new objects. When the nursery becomes full, garbage is collected by running a special young collection, where all objects that have lived long enough in the nursery are promoted (moved) to the old space, thus freeing up the nursery for more object allocation. When the old space becomes full garbage is collected there, a process called an old collection.
+
+* Stop The World
+
+The not-so-good thing is that the application threads need to be stopped for the collection to happen, as you cannot really count references if they keep changing all the time.
+
+* Reference
+
+.link http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html
+.link https://plumbr.eu/java-garbage-collection-handbook
