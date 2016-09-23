@@ -1,0 +1,77 @@
+Security Tips for Non-Dev
+Oursky
+23 Sep 2016
+
+Ben Cheng
+Oursky
+bencheng@oursky.com
+
+* Oursky is a super geeky company
+
+- We kind of assume dev knows basic security
+- Not your fault -- we need non-coder to function as well
+- Security is as strong as the weakest link
+- *Open everything* can be kind of scary here
+
+* 10 Tips for you
+
+* Tips 1: Use 2FA whenver you can
+
+- Use Authy.com, so you won't lose the code if you switch the devices
+
+* Tips 2: Never re-use password
+
+- Dropbox / Linkedin / Dropbox... all major services have breaches
+- Same password = feel free to visit my other accounts
+- https://haveibeenpwned.com/
+- Use 1Password Team
+
+* And you thought your password is difficult to guess?
+
+.image security-general/password_strength.png
+
+* Tips 3: Don't send password in plain text
+
+- Use 1Password Team (again)
+- https://go-talks.appspot.com/github.com/oursky/slides/gpg-at-oursky.slide#1
+
+* Tips 4: Don't click random links...
+
+- Pay attention to phishing site URL (domain name)
+- google.random-things.com is probably NOT related with Google
+- think twice whenever you're input a password
+- Use guest account when in doubt
+
+* Phishing Site...
+
+.image security-general/phishing.png
+
+* Tips 5: Use gmail preview to open attachment
+
+- They scan malware, and it is pretty good.
+
+* Tips 6: Enable full disk encryption
+
+- No excuse, super easy on Mac (System Preference -> FileVault)
+- iPhone: Enable PIN code
+
+* Tips 7: Some Chrome extension are good
+
+- https://www.eff.org/https-everywhere
+- http://www.ghostery.com/
+
+* Tips 8: Up-to-date iOS / macOS
+
+- e.g. recently iOS 9.3.5 fixed CVE-2016-4655 - 4657
+
+* Tips 9: Use signal if you need secure messaging
+
+- Or at least use Telegram Secret Chat
+- https://whispersystems.org/
+
+* Tips 10: General things...
+
+- Backup (Time Machine in office?)
+- OFfice provides VPN if you work remote
+- Wifi encryption at least WPA2
+- Avast if you need an anti-virus software
