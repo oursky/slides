@@ -1,0 +1,61 @@
+Oursky Playground
+30 Mar 2017
+
+David Ng / Jason Wu / Ben Cheng
+
+* Playground
+An effort to encourage Oursky Developers to develop or experiment with prototypes. It is basically like a 2-week hackathon.
+
+* What kind of project will be accepted?
+
+- Prototype apps with Skygear
+- Research Topics
+
+* Prototype apps with Skygear
+
+- Any developers/geeks related apps
+- Draw attentions
+- Mini-apps / April Fools apps / Mini online services
+- You can try to convince a designer to make a design for your idea, but there are no guarantee
+- Develop on Skygear
+- Launch / deploy after 2 weeks.
+
+* Research Topics
+
+- Machine learning, Augmented Reality, Computer Graphic, Security or any other fields which could be beneficial to future app development.
+- PoC with a command line program / simple web interface / library.
+- No high level library
+- 2 - 3 weeks (before working on the project, it is wise to do some background reading in your own time first)
+- Launch/deploy/open source libraries
+
+* Playground meant don't have to be perfect
+
+.image playground/imperfect.jpg
+
+* Self-manage
+
+.image playground/motivated.jpg
+
+* Goal of Playground
+
+- PR & Marketing for Developer / General Public by Fun / Viral
+- Demonstrate Skygear
+- Team Culture
+- Learning
+
+* How to participate?
+
+- Join Slack #playground
+- Github Issues Tracker at oursky/playground
+  - Idea - Discuss and vote!
+  - Ready - Planned for 2 weeks!
+  - Scheduled - Confirmed proposal and scheduled by PM
+  - WIP
+
+* How to schedule?
+
+- PM will be notified with confirmed proposal
+- Target: 12 playground project in first year
+
+* Sample Projects
+
