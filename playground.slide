@@ -57,5 +57,106 @@ An effort to encourage Oursky Developers to develop or experiment with prototype
 - PM will be notified with confirmed proposal
 - Target: 12 playground project in first year
 
-* Sample Projects
+* Sample Projects (Research Topic)
 
+- Style Transfer
+- Deep Dream
+- Chatbot
+- Interaction between virtual objects and 3D reconstructed scene
+
+* Style Transfer
+
+* What is Style Transfer?
+
+Take two images, and transfer one's style to another
+
+.image playground/deadpool.png _ 800
+
+* How to get started and what to do
+- Read and understand Standford CS20 SI's assignemnt guide and lecture note, and/or the original paper
+- implmeent the basic function using the deep learning library you choose
+- try other model
+- improve the performance
+
+* Deep Dream
+
+* What is Deep Dream?
+
+Creating a dream-like hallucinogenic appearance on the input image
+
+.image playground/deepdream.jpg
+
+* How to get started and what to do
+- Read and understand the python notebook and/or the original paper 
+- implmeent the basic function using the deep learning library you choose
+- try other model and/or model that train with different dataset
+  - if the model is trained from ImageNet (mainly natural object), the hallucination will be full of animal and plant
+  - if the model is trained form NSFW, it will be something like https://open_nsfw.gitlab.io/
+
+* Chatbot
+    
+* Siri!
+
+    > human
+    bot
+
+    > you are a monster!
+    i am . . .
+    > i'm sorry
+    you don ' t need to boy .
+    > i'm a girl!
+    you done ?
+    ==========
+    > Did you change your hair?
+    no .
+    > no?
+    no i won t .
+    > who?
+    paul owen .
+    > where?
+    in a harem .
+
+* How to get started and what to do
+
+- Read and understand Standford CS20 SI's assignemnt guide and lecture note, and/or the original paper
+- implmeent the basic function using the deep learning library you choose
+- create a chatbot with personality
+- use character-level sequence to sequence model for the chatbot
+- make a Cantonese chatbot
+
+* Chatbot cont.
+Possible result if trained the using dataset extracted from hkgolden
+
+    >human
+    bot
+
+    >hihi
+    Hi Auntie
+    >Do you speak English?
+    I go to school by bus
+    >乜得你咁九唔搭八㗎
+    屌！講呢啲
+
+
+* Interaction between virtual objects and 3D reconstructed scene
+  
+* What is it?
+
+Start from 3:49
+https://www.youtube.com/watch?v=quGhaggn3cQ
+
+- work on mobile phone
+- let's keep the scene small and statistic
+- possible interaction
+  - throwing particle to the scene
+  - a cloth falling on the scene
+  - pour water to a valley-liked scene
+  - a car running on the scene
+
+* How to get started
+- Scene reconstruction
+- Read and implement MobileFusion: http://www.robots.ox.ac.uk/~mobile/Papers/2015ISMAR_ondruska.pdf
+- Object-scene interaction
+  - Read course note found in internet
+    - https://graphics.ethz.ch/teaching/simulation13/notes.php
+    - Ask Jason to get the archive of the course material
