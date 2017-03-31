@@ -1,0 +1,198 @@
+Oursky Playground
+30 Mar 2017
+
+David Ng / Jason Wu / Ben Cheng
+
+* Playground
+An effort to encourage Oursky Developers to develop or experiment with prototypes. It is basically like a 2-week hackathon.
+
+* What kind of project will be accepted?
+
+- Prototype apps with Skygear
+- Research Topics
+
+* Prototype apps with Skygear
+
+- Any developers / geeks related apps
+- Draw attentions (go hot on HackerNews)
+- Mini-apps / April Fools apps / Mini online services
+- You can try to convince a designer to make a design for your idea, but there is no guarantee
+- Develop on Skygear
+- Launch / deploy after 2 weeks.
+
+* Research Topics
+
+- Machine learning, Augmented Reality, Computer Graphic, Security or any other fields which could be beneficial to future app development.
+- PoC with a command line program / simple web interface / library.
+- No high level library
+- 2 - 3 weeks (before working on the project, it is wise to do some background reading in your own time first)
+- Launch/deploy/open source libraries
+
+* Playground meant don't have to be perfect
+
+.image playground/imperfect.jpg
+
+* Self-managed
+
+.image playground/motivated.jpg
+
+* Goal of Playground
+
+- PR & Marketing for Developer / General Public by Fun / Viral
+- Demonstrate Skygear
+- Team Culture
+- Learning
+
+* How to participate?
+
+- Join Slack #playground
+- Github Issues Tracker at oursky/playground
+  - Idea - Discuss and vote!
+  - Ready - Planned for 2 weeks!
+  - Scheduled - Confirmed proposal and scheduled by PM
+  - WIP
+
+* How to schedule?
+
+- PM will be notified with confirmed proposal
+- Target: 12 playground project in first year
+
+* Sample Projects (Prototype apps)
+
+* Prototype apps
+
+- Something like [this](https://txt.fyi/about/) has 655 points on HN
+
+.image playground/hn.png
+
+* Prototype apps examples
+
+- 1) Air drop over Internet
+    - Fancy the Air Drop interface? Let's send a file via network using the same interaction.
+
+* Prototype apps examples
+
+- 2) Searchshot (submited proposal)
+    - Easily find information you captured in a screenshot
+    - Display screenshot -> OCR the text -> make them searchable
+
+* Prototype apps examples
+
+- 3) 聲控四驅車
+    - An app that takes minimal sets of vocal commands: “Go”, “Turn Left”, “Turn Right”, “Halt”
+    - Attach a mini-board (RasPi zero) to control the 四驅車
+
+* Prototype apps examples
+
+- 4) Wearable device to monitor health of the cats
+    - Kind of this, don't have actual ideas before I do any research.
+
+* Prototype apps
+
+- More interesting proposals are welcomed.
+
+* Sample Projects (Research Topic)
+
+* Sample Projects (Research Topic)
+
+- Style Transfer
+- Deep Dream
+- Chatbot
+- Interaction between virtual objects and 3D reconstructed scene
+
+* Style Transfer
+
+* What is Style Transfer?
+
+Take two images, and transfer one's style to another
+
+.image playground/deadpool.png _ 800
+
+* How to get started and what to do
+- Read and understand Standford CS20 SI's assignemnt guide and lecture note, and/or the original paper
+- implmeent the basic function using the deep learning library you choose
+- try other model
+- improve the performance
+
+* Deep Dream
+
+* What is Deep Dream?
+
+Creating a dream-like hallucinogenic appearance on the input image
+
+.image playground/deepdream.jpg
+
+* How to get started and what to do
+- Read and understand the python notebook and/or the original paper 
+- implmeent the basic function using the deep learning library you choose
+- try other model and/or model that train with different dataset
+  - if the model is trained from ImageNet (mainly natural object), the hallucination will be full of animal and plant
+  - if the model is trained form NSFW, it will be something like https://open_nsfw.gitlab.io/
+
+* Chatbot
+    
+* Siri!
+
+    > human
+    bot
+
+    > you are a monster!
+    i am . . .
+    > i'm sorry
+    you don ' t need to boy .
+    > i'm a girl!
+    you done ?
+    ==========
+    > Did you change your hair?
+    no .
+    > no?
+    no i won t .
+    > who?
+    paul owen .
+    > where?
+    in a harem .
+
+* How to get started and what to do
+
+- Read and understand Standford CS20 SI's assignemnt guide and lecture note, and/or the original paper
+- implmeent the basic function using the deep learning library you choose
+- create a chatbot with personality
+- use character-level sequence to sequence model for the chatbot
+- make a Cantonese chatbot
+
+* Chatbot cont.
+Possible result if trained the using dataset extracted from hkgolden
+
+    >human
+    bot
+
+    >hihi
+    Hi Auntie
+    >Do you speak English?
+    I go to school by bus
+    >乜得你咁九唔搭八㗎
+    屌！講呢啲
+
+
+* Interaction between virtual objects and 3D reconstructed scene
+  
+* What is it?
+
+Start from 3:49
+https://www.youtube.com/watch?v=quGhaggn3cQ
+
+- work on mobile phone
+- let's keep the scene small and statistic
+- possible interaction
+  - throwing particle to the scene
+  - a cloth falling on the scene
+  - pour water to a valley-liked scene
+  - a car running on the scene
+
+* How to get started
+- Scene reconstruction
+- Read and implement MobileFusion: http://www.robots.ox.ac.uk/~mobile/Papers/2015ISMAR_ondruska.pdf
+- Object-scene interaction
+  - Read course note found in internet
+    - https://graphics.ethz.ch/teaching/simulation13/notes.php
+    - Ask Jason to get the archive of the course material
