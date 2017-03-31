@@ -13,10 +13,10 @@ An effort to encourage Oursky Developers to develop or experiment with prototype
 
 * Prototype apps with Skygear
 
-- Any developers/geeks related apps
-- Draw attentions
+- Any developers / geeks related apps
+- Draw attentions (go hot on HackerNews)
 - Mini-apps / April Fools apps / Mini online services
-- You can try to convince a designer to make a design for your idea, but there are no guarantee
+- You can try to convince a designer to make a design for your idea, but there is no guarantee
 - Develop on Skygear
 - Launch / deploy after 2 weeks.
 
@@ -32,7 +32,7 @@ An effort to encourage Oursky Developers to develop or experiment with prototype
 
 .image playground/imperfect.jpg
 
-* Self-manage
+* Self-managed
 
 .image playground/motivated.jpg
 
@@ -56,6 +56,40 @@ An effort to encourage Oursky Developers to develop or experiment with prototype
 
 - PM will be notified with confirmed proposal
 - Target: 12 playground project in first year
+
+* Sample Projects (Prototype apps)
+
+* Prototype apps
+
+- Something like [this](https://txt.fyi/about/) has 655 points on HN
+
+.image playground/hn.jpg
+
+* Prototype apps examples
+
+- 1) Air drop over Internet
+    - Fancy the Air Drop interface? Let's send a file via network using the same interaction.
+
+* Prototype apps examples
+
+- 2) Searchshot (submited proposal)
+    - Easily find information you captured in a screenshot
+    - Display screenshot -> OCR the text -> make them searchable
+
+* Prototype apps examples
+
+- 3) 聲控四驅車
+    - An app that takes minimal sets of vocal commands: “Go”, “Turn Left”, “Turn Right”, “Halt”
+    - Attach a mini-board (RasPi zero) to control the 四驅車
+
+* Prototype apps examples
+
+- 4) Wearable device to monitor health of the cats
+    - Kind of this, don't have actual ideas before I do any research.
+
+* Prototype apps
+
+- More interesting proposals are welcomed.
 
 * Sample Projects (Research Topic)
 
