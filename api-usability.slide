@@ -1,0 +1,141 @@
+How Usable Are Your APIs?
+07 Apr 2017
+
+Ben Cheng
+
+* Usability of API?
+
+- Important for Skygear / General Development
+- Making software: what really works and why we believe it
+- Steven Clarke, Usability researcher for Visual Studio
+- Self-blamed Developer: MFC vs ATL Server
+
+* How often does Developer use API?
+
+  Explosion of online forum and Stack Overflow. Instead of writing code and be
+  productive, they end up spending their time browsing online forums. Their
+  self-esteem takes a hit. It doesn't really feel like she is programming
+  anymore
+
+* How developers estimates it pays off?
+
+When Payoff > Cognitive cost of using the API
+
+- Class/Method names, documentation
+- Recognizable design patterns
+- Consistent approach with other parts of the API
+- Match of the domain understanding
+
+* Usability Tests
+
+*** Card Sort Study on ATL Server (2000)
+
+- 14 C++ developers x 24 classes
+- 8 - 14 grouping in Spreadsheet
+- 3 distinct clusters
+- no conceptual model in common
+
+*** Usability Labs on Visual Basic .NET (2002)
+
+- 8 VB Developers x Read&write Text file x Talk out loud
+- Usability Engineer behind glass
+- Video for patterns of behavior, interesting highlights
+- All developers failed on the simple task
+- Enlightening Learning
+
+* Usability Labs on Visual Basic .NET
+
+- Generate huge empathy for the customer
+- StreamReader/Writer + Documentation time => Sample code
+- Looks for representation of File, but ends up with Stream
+- Complete in 20 minutes:
+
+  Dim f As New FileObject
+  f.Open(OpenMode.Write, "testfile.txt")
+  f.WriteLine("A line of text")
+  f.Close()
+
+* Profile of Developers
+
+A more diversified usability test, tagged each partcipants's video segments with the Congitive Dimensions framework [Green and Petre 1996]
+
+*** Opportunistic developers
+- Rapid prototype
+- Task focused
+- Extensive use of high-level, concrete components
+
+*** Pragmatic developers
+- Code focused
+- Use tools (refactoring, unit testing)
+- Focus on robustness and correctness of the code
+
+*** Systematic developers
+- Defensive approach to development
+- Depp understanding of any technology before start working on it
+
+* Make a guess!
+
+Who wants to use FileObject? Opportunistic, Pragmatic, or Systematic?
+
+* Habits of Developers
+
+*** Opportunistic developers
+- Prefer high-level concrete components
+- Love style
+
+*** Pragmatic developers
+- Factored components - high-level concrete components with all the modes of operation factored out into different components
+- Neutral to style
+
+*** Systematic developer
+- Prefer primitive components
+- Hate style
+
+* Scenario-based Design
+
+Answer to targeting all three of the personas - Scenario-based Design.
+
+- Complete set of interface is not what the API team thinks about, but the developers think about the scenarios in which they will use.
+
+In usability test, developers
+
+- don't care about the whole API.
+- only focus on the API help them complete the task.
+- dismiss classes weren't at the expected abstraction level.
+
+Thus,
+
+- Complete set of interface = scenario x developer expectations
+- Which type of developers will use which type of API?
+- e.g. File should be high-level, Memory mapped should be primitives
+
+* Scenario-based Design (cont.)
+
+- Write out code that they expect a developer to write in each scenario and type
+- Checklist of dimension frameworks for review.
+- Design and build the API after happy with the scenario.
+- Focus on the user experience of multiple APIs instead of the architecture of the total API.
+- Focus on what the API for instead of what the API is.
+
+* Appendix
+
+- Evaluate the usability of an API that does not require a usability study
+    Farooq, U., and D. Zirkler. 2010 API peer reviews: A method for evaluating
+    usability of application programming interfaces. Proceedings of the 2010 ACM
+    Conference on Computer Supported Cooperative Work: 207-210
+
+* API Congitive Dimensions framework [Clarke and Becker 2003]
+
+- Abstraction level
+- Learning Style
+- Working framework
+- Work-step unit
+- Progressive evaluation
+- Premature commitment
+- Penetrability
+- API elaboration
+- API viscosity
+- Consistency
+- Role expressiveness
+- Domain coresspondence
+
