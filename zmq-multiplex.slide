@@ -1,0 +1,136 @@
+ZMQ multiplex between golang coroutine and python thread
+10 June 201l7
+
+Rick Mak
+Oursky
+rickmak@oursky.com
+@rickmak
+CC81327D
+
+* What we want to do
+
+- Enable building of scalable software with less learning curve
+- Providing foundation for developer to focus business requirement and UI
+- Save developer from deployment hassle
+
+* Skygear-server
+
+- Design for web development
+- Written in golang
+- Providing basic function like Auth, Record CRUD, PubSub via core
+- Providing plugin for extending function, fulfilling business requirement.
+
+* ZMQ
+
+- High performance messaging queue
+- No message broker
+
+* Python
+
+- Imperative
+- Easy to write
+- Easy to read
+- Code quickly
+
+Actually we have JS too.
+
+* Data flow
+
+.image zmq-multiplex/dataflow.png
+
+- Skygear-server is written in golang and able to handle thousands of requests
+- For request required cloud code, a message will send to plugin via zmq
+
+* Wire Protocol
+
+    [WORKER-ADDR|0|body....]
+
+- Simple
+- Routing based on WORKER-ADDR
+
+The protocol also have heartbeat, details:
+https://rfc.zeromq.org/spec:6/PPP
+
+* Problem
+
+- Python side resource exhausted on high load
+- Thread overhead is much higher than goroutine
+- Recursion, cloud code will call back skygear-core
+- User don't want to handle the resource problem
+- Providing a just works solution
+
+* Solution
+
+- Reuse of thread awaiting skygear-server response
+- Provide configurable dynamic Thread pool
+- Limit the recursion to a configurable depth
+
+* Wire Protocol
+
+Extending the old protocol to support multiplex.
+
+- [WORKER-ADDR|0|REQ|BOUNCE-COUNT|REQ-ID|0|body....]
+
+1. Worker address
+   Same as before, for routing the message to the correct worker
+
+2. Message type
+3. Bounce Count
+4. Request ID
+   For worker reuse, and route recursion call to the same worker
+
+5. Message body
+   Actual message body
+
+* Example
+
+Plugin code:
+
+    @op('foo:hello')
+    def english():
+        return {'key':'thanks'}
+
+What will happen
+
+1. Browser calls /foo/hello
+2. Server calls plugin with
+
+  REQ|0|request-id
+
+3. Plugin responses server with
+
+  RES|0|request-id
+
+* Example 2
+
+    @op('foo:hello') # Plugin A
+    def english():
+        send_action('foo:ciao')
+        return {'key':'thanks'}
+
+ 
+
+    @op('foo:ciao') # Plugin B
+    def italian():
+        return {'key':'grazie'}
+
+What will happen
+1. Browser calls /foo/hello
+2. Server calls pluginA with `REQ|0|request-id`
+3. PluginA calls server with `REQ|1|request-id`
+4. Server calls pluginB with `REQ|2|request-id`
+5. PluginB responses server with `RES|2|request-id`
+6. Server responses pluginA with `RES|1|request-id`
+7. PluginA responses server with `RES|0|request-id`
+8. Server responses to browser
+
+* Improvement
+
+- Python side resource will be in linear order with requests
+- Resource depends less on developer coding on recursion call
+- Developer can focus on writing business requirement
+
+* Reference
+
+- [[https://github.com/SkygearIO/skygear-server/issues/295][Issue on Github]]
+- [[http://zeromq.org][ZMQ]]
