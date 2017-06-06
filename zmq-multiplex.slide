@@ -16,9 +16,9 @@ CC81327D
 
 * What we want to do
 
-- Enable building of scalable software with less learning curve
+- Enable building of scalable software with easier learning curve
 - Provide foundation for developer to focus business requirement and UI
-- Save developer from deployment hassle
+- Save developers from deployment hassle
 
 * ZMQ
 
@@ -40,7 +40,7 @@ Actually we have JS too.
 .image zmq-multiplex/dataflow.png
 
 - Skygear-server is written in golang and able to handle thousands of requests
-- For request triggering cloud code, a message will send to worker via zmq
+- For requests triggering cloud code, a message will send to worker via zmq
 
 * Wire Protocol
 
@@ -79,7 +79,7 @@ Skygear server will use the WORKER-ADDR to route message back to goroutine
 - Thread overhead is much higher than goroutine
 - Recursion, cloud code will call back skygear-server
 - User don't want to handle the resource problem
-- Providing a “just works” solution
+- Provide a "just works" solution
 
 * Solution
 
