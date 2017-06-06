@@ -7,23 +7,24 @@ rickmak@oursky.com
 @rickmak
 CC81327D
 
+* Skygear-server
+
+- Designed for web development
+- Written in golang
+- Provide common function like Auth, Record CRUD, PubSub built-in
+- Provide plugin for extending function, to fulfill business requirement
+
 * What we want to do
 
 - Enable building of scalable software with less learning curve
 - Provide foundation for developer to focus business requirement and UI
 - Save developer from deployment hassle
 
-* Skygear-server
-
-- Design for web development
-- Written in golang
-- Provide basic function like Auth, Record CRUD, PubSub via core
-- Provide plugin for extending function, fulfilling business requirement.
-
 * ZMQ
 
 - High performance messaging queue
 - No message broker
+- We can customize message routing
 
 * Python
 
@@ -45,11 +46,32 @@ Actually we have JS too.
 
     [WORKER-ADDR|0|body....]
 
-- Simple
+- Concise
 - Routing based on WORKER-ADDR
 
 The protocol also have heartbeat, details:
 https://rfc.zeromq.org/spec:6/PPP
+
+* Example
+
+Plugin code:
+
+    @op('foo:hello')
+    def english():
+        return {'key':'thanks'}
+
+What will happen
+
+1. Browser calls /foo/hello
+2. Server calls plugin with
+
+  WORKER-ADDR|0|BODY
+
+3. Plugin responses server with
+
+  WORKER-ADDR|0|BODY
+
+Skygear server will use the WORKER-ADDR to route message back to goroutine
 
 * Problem
 
@@ -84,7 +106,7 @@ Extending the old protocol to support multiplex.
 
 * Example
 
-Plugin code:
+Same Plugin code:
 
     @op('foo:hello')
     def english():
@@ -95,11 +117,11 @@ What will happen
 1. Browser calls /foo/hello
 2. Server calls plugin with
 
-  REQ|0|request-id
+  WORKER-ADDR|0|REQ|0|request-id
 
 3. Plugin responses server with
 
-  RES|0|request-id
+  WORKER-ADDR|0|RES|0|request-id
 
 * Example 2
 
