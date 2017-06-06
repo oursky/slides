@@ -1,5 +1,5 @@
 ZMQ multiplex between golang coroutine and python thread
-10 June 201l7
+10 June 2017
 
 Rick Mak
 Oursky
@@ -10,15 +10,15 @@ CC81327D
 * What we want to do
 
 - Enable building of scalable software with less learning curve
-- Providing foundation for developer to focus business requirement and UI
+- Provide foundation for developer to focus business requirement and UI
 - Save developer from deployment hassle
 
 * Skygear-server
 
 - Design for web development
 - Written in golang
-- Providing basic function like Auth, Record CRUD, PubSub via core
-- Providing plugin for extending function, fulfilling business requirement.
+- Provide basic function like Auth, Record CRUD, PubSub via core
+- Provide plugin for extending function, fulfilling business requirement.
 
 * ZMQ
 
@@ -39,7 +39,7 @@ Actually we have JS too.
 .image zmq-multiplex/dataflow.png
 
 - Skygear-server is written in golang and able to handle thousands of requests
-- For request required cloud code, a message will send to plugin via zmq
+- For request triggering cloud code, a message will send to worker via zmq
 
 * Wire Protocol
 
@@ -53,11 +53,11 @@ https://rfc.zeromq.org/spec:6/PPP
 
 * Problem
 
-- Python side resource exhausted on high load
+- Python-side resource exhausted on high load
 - Thread overhead is much higher than goroutine
-- Recursion, cloud code will call back skygear-core
+- Recursion, cloud code will call back skygear-server
 - User don't want to handle the resource problem
-- Providing a just works solution
+- Providing a “just works” solution
 
 * Solution
 
@@ -124,9 +124,9 @@ What will happen
 7. PluginA responses server with `RES|0|request-id`
 8. Server responses to browser
 
-* Improvement
+* Improvements
 
-- Python side resource will be in linear order with requests
+- Python-side resource will be in linear order with requests
 - Resource depends less on developer coding on recursion call
 - Developer can focus on writing business requirement
 
