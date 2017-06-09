@@ -7,6 +7,13 @@ rickmak@oursky.com
 @rickmak
 CC81327D
 
+* Skygear-server
+
+- Designed for mobile and web development
+- Written in golang
+- Provide common function like Auth, Record CRUD, PubSub built-in
+- Provide plugin for extending function, to fulfill business requirement
+
 * Asymmetric resource consumption
 
 - goroutine is lightweight thread managed by GO runtime
@@ -19,13 +26,6 @@ CC81327D
 - Enable building of scalable software with easier learning curve
 - Provide foundation for developer to focus business requirement and UI
 - Save developers from deployment hassle
-
-* Skygear-server
-
-- Designed for web development
-- Written in golang
-- Provide common function like Auth, Record CRUD, PubSub built-in
-- Provide plugin for extending function, to fulfill business requirement
 
 * ZMQ
 
@@ -45,6 +45,7 @@ CC81327D
 
 - Skygear-server is written in golang and able to handle thousands of requests
 - For requests triggering cloud code, a message will send to worker via zmq
+- Python plugins only have fixed number of threads
 
 * Wire Protocol
 
@@ -53,16 +54,12 @@ CC81327D
 - Concise
 - Routing based on WORKER-ADDR
 
-The protocol also have heartbeat, details:
+The protocol details:
 https://rfc.zeromq.org/spec:6/PPP
 
-* Example
+* Example plugin code
 
-Plugin code:
-
-    @op('foo:hello')
-    def english():
-        return {'key':'thanks'}
+.code zmq-multiplex/example1.py
 
 What will happen
 
@@ -76,6 +73,23 @@ What will happen
   WORKER-ADDR|0|BODY
 
 Skygear server will use the WORKER-ADDR to route message back to goroutine
+
+* Data flow
+
+.image zmq-multiplex/simple-flow.png
+
+* Example 2
+
+.code zmq-multiplex/example2.py
+
+- Recursive call
+- `send_action` is calling back Skygear and trigger anothe plugin call
+
+* What will happen
+
+.image zmq-multiplex/pre-multiplexflow.png
+
+- Each call uses one thread
 
 * Problem
 
@@ -112,40 +126,30 @@ Extending the old protocol to support multiplex.
 
 Same Plugin code:
 
-    @op('foo:hello')
-    def english():
-        return {'key':'thanks'}
+.code zmq-multiplex/example1.py
 
 What will happen
 
 1. SDK calls /foo/hello
 2. Server calls plugin with
 
-  WORKER-ADDR|0|REQ|0|request-id
+  WORKER-ADDR|0|REQ|0|request-id|0|body
 
 3. Plugin responses server with
 
-  WORKER-ADDR|0|RES|0|request-id
+  WORKER-ADDR|0|RES|0|request-id|0|body
 
 * Example 2
 
 .code zmq-multiplex/example2.py
 
-What will happen
-1. SDK calls /foo/hello
-2. Server calls pluginA with `WORKER-ADDR|0|REQ|0|request-id`
-3. PluginA calls server with `WORKER-ADDR|0|REQ|1|request-id`
-4. Server calls pluginB with `WORKER-ADDR|0|REQ|2|request-id`
-5. PluginB responses server with `WORKER-ADDR|0|RES|2|request-id`
-6. Server responses pluginA with `WORKER-ADDR|0|RES|1|request-id`
-7. PluginA responses server with `WORKER-ADDR|0|RES|0|request-id`
-8. Server responses to browser
+- Recursive call after thread reuse
 
-* Example 2
+* What will happen
 
 .image zmq-multiplex/multiplexflow.png
 
-- After REQ 1, plugin will connect to server via ZMQ without heartbeat
+- After REQ 1, plugin will connect to server via ZMQ sock
 - Skygear-server will keep an worker map to route the message to correct worker
 
 * Improvements
