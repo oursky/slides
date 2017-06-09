@@ -83,7 +83,7 @@ Skygear server will use the WORKER-ADDR to route message back to goroutine
 .code zmq-multiplex/example2.py
 
 - Recursive call
-- `send_action` is calling back Skygear and trigger anothe plugin call
+- `send_action` is calling back Skygear and trigger another plugin call
 
 * What will happen
 
@@ -149,8 +149,8 @@ What will happen
 
 .image zmq-multiplex/multiplexflow.png
 
-- After REQ 1, plugin will connect to server via ZMQ sock
-- Skygear-server will keep an worker map to route the message to correct worker
+- After REQ 1, plugin will connect to server via ZMQ socket
+- Skygear-server will keep an worker mapping to route the message to correct worker
 
 * Improvements
 
@@ -160,7 +160,7 @@ What will happen
 
 * Reference
 
-- [[https://github.com/SkygearIO/skygear-server/issues/295][Issue on Github]]
+- [[https://github.com/SkygearIO/skygear-server/issues/295][Issue #295 on Github]]
 - [[http://zeromq.org][ZMQ]]
 
 * Skygear
