@@ -17,7 +17,7 @@ CC81327D
 * Asymmetric resource consumption
 
 - goroutine is lightweight thread managed by GO runtime
-- Python thread is based on POSIX Thread(pthread)
+- Python thread is based on POSIX Thread (pthread)
 - rpc via messaging queue
 - Resource exhaust on Python side
 
@@ -37,7 +37,7 @@ CC81327D
 
 - Python
 - JS
-- What ever boss(users) want
+- Whatever boss (users) want
 
 * Data flow
 
@@ -94,7 +94,7 @@ Skygear server will use the WORKER-ADDR to route message back to goroutine
 * Problem
 
 - Python-side resource exhausted on high load
-- Thread(pthreads) overhead is much higher than goroutine
+- Thread (pthreads) overhead is much higher than goroutine
 - Recursion, cloud code will call back skygear-server
 - User don't want to handle the resource problem
 - Provide a "just works" solution
