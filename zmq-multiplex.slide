@@ -7,19 +7,19 @@ rickmak@oursky.com
 @rickmak
 CC81327D
 
+* Asymmetric resource consumption
+
+- goroutine is lightweight thread managed by GO runtime
+- Python thread is based on POSIX Thread (pthread)
+- rpc via messaging queue zmq
+- Resource exhaust on Python side
+
 * Skygear-server
 
 - Designed for mobile and web development
 - Written in golang
 - Provide common function like Auth, Record CRUD, PubSub built-in
 - Provide plugin for extending function, to fulfill business requirement
-
-* Asymmetric resource consumption
-
-- goroutine is lightweight thread managed by GO runtime
-- Python thread is based on POSIX Thread (pthread)
-- rpc via messaging queue
-- Resource exhaust on Python side
 
 * What we want to do
 
@@ -41,7 +41,7 @@ CC81327D
 
 * Data flow
 
-.image zmq-multiplex/dataflow.png
+.image zmq-multiplex/dataflow.png 200 _
 
 - Skygear-server is written in golang and able to handle thousands of requests
 - For requests triggering cloud code, a message will send to worker via zmq
@@ -63,7 +63,7 @@ https://rfc.zeromq.org/spec:6/PPP
 
 What will happen
 
-1. Browser calls /foo/hello
+1. SDK calls /foo/hello
 2. Server calls plugin with
 
   WORKER-ADDR|0|BODY
@@ -76,7 +76,7 @@ Skygear server will use the WORKER-ADDR to route message back to goroutine
 
 * Data flow
 
-.image zmq-multiplex/simple-flow.png
+.image zmq-multiplex/simple-flow.png 300 _
 
 * Example 2
 
@@ -87,7 +87,7 @@ Skygear server will use the WORKER-ADDR to route message back to goroutine
 
 * What will happen
 
-.image zmq-multiplex/pre-multiplexflow.png
+.image zmq-multiplex/pre-reuseflow.png
 
 - Each call uses one thread
 
@@ -147,7 +147,7 @@ What will happen
 
 * What will happen
 
-.image zmq-multiplex/multiplexflow.png
+.image zmq-multiplex/reuseflow.png
 
 - After REQ 1, plugin will connect to server via ZMQ socket
 - Skygear-server will keep an worker mapping to route the message to correct worker
@@ -169,5 +169,5 @@ Star our Github
 
 https://github.com/skygeario/skygear-server
 
-.image zmq-multiplex/github.png
+.image zmq-multiplex/github.png 600 _
 

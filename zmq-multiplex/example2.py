@@ -1,9 +1,12 @@
-@op('foo:hello') # Plugin A
+@op('foo:hello')
 def english():
-    send_action('foo:ciao')
-    return {'key':'thanks'}
+    result = send_action('foo:ciao')
+    return {
+        'key':'thanks',
+        'value': result['key']
+    }
 
 
-@op('foo:ciao') # Plugin B
+@op('foo:ciao')
 def italian():
     return {'key':'grazie'}
