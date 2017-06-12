@@ -1,0 +1,173 @@
+ZMQ multiplex between golang coroutine and python thread
+10 June 2017
+
+Rick Mak
+Oursky
+rickmak@oursky.com
+@rickmak
+CC81327D
+
+* Asymmetric resource consumption
+
+- goroutine is lightweight thread managed by GO runtime
+- Python thread is based on POSIX Thread (pthread)
+- rpc via messaging queue zmq
+- Resource exhaust on Python side
+
+* Skygear-server
+
+- Designed for mobile and web development
+- Written in golang
+- Provide common function like Auth, Record CRUD, PubSub built-in
+- Provide plugin for extending function, to fulfill business requirement
+
+* What we want to do
+
+- Enable building of scalable software with easier learning curve
+- Provide foundation for developer to focus business requirement and UI
+- Save developers from deployment hassle
+
+* ZMQ
+
+- High performance messaging queue
+- No message broker
+- We can customize message routing
+
+* What language we support as plugin runtime
+
+- Python
+- JS
+- Whatever boss (users) want
+
+* Data flow
+
+.image zmq-multiplex/dataflow.png 200 _
+
+- Skygear-server is written in golang and able to handle thousands of requests
+- For requests triggering cloud code, a message will send to worker via zmq
+- Python plugins only have fixed number of threads
+
+* Wire Protocol
+
+    [WORKER-ADDR|0|body....]
+
+- Concise
+- Routing based on WORKER-ADDR
+
+The protocol details:
+https://rfc.zeromq.org/spec:6/PPP
+
+* Example plugin code
+
+.code zmq-multiplex/example1.py
+
+What will happen
+
+1. SDK calls /foo/hello
+2. Server calls plugin with
+
+  WORKER-ADDR|0|BODY
+
+3. Plugin responses server with
+
+  WORKER-ADDR|0|BODY
+
+Skygear server will use the WORKER-ADDR to route message back to goroutine
+
+* Data flow
+
+.image zmq-multiplex/simple-flow.png 300 _
+
+* Example 2
+
+.code zmq-multiplex/example2.py
+
+- Recursive call
+- `send_action` is calling back Skygear and trigger another plugin call
+
+* What will happen
+
+.image zmq-multiplex/pre-reuseflow.png
+
+- Each call uses one thread
+
+* Problem
+
+- Python-side resource exhausted on high load
+- Thread (pthreads) overhead is much higher than goroutine
+- Recursion, cloud code will call back skygear-server
+- User don't want to handle the resource problem
+- Provide a "just works" solution
+
+* Solution
+
+- Reuse of thread awaiting skygear-server response
+- Provide configurable dynamic Thread pool
+- Limit the recursion to a configurable depth
+
+* Wire Protocol
+
+Extending the old protocol to support multiplex.
+
+- [WORKER-ADDR|0|REQ|BOUNCE-COUNT|REQ-ID|0|body....]
+
+1. Worker address
+   Same as before, for routing the message to the correct worker
+
+2. Message type
+3. Bounce Count
+4. Request ID
+   For worker reuse, and route recursion call to the same worker
+
+5. Message body
+   Actual message body
+
+* Example
+
+Same Plugin code:
+
+.code zmq-multiplex/example1.py
+
+What will happen
+
+1. SDK calls /foo/hello
+2. Server calls plugin with
+
+  WORKER-ADDR|0|REQ|0|request-id|0|body
+
+3. Plugin responses server with
+
+  WORKER-ADDR|0|RES|0|request-id|0|body
+
+* Example 2
+
+.code zmq-multiplex/example2.py
+
+- Recursive call after thread reuse
+
+* What will happen
+
+.image zmq-multiplex/reuseflow.png
+
+- After REQ 1, plugin will connect to server via ZMQ socket
+- Skygear-server will keep an worker mapping to route the message to correct worker
+
+* Improvements
+
+- Python-side resource will be in linear order with requests
+- Resource depends less on developer coding on recursion call
+- Developer can focus on writing business requirement
+
+* Reference
+
+- [[https://github.com/SkygearIO/skygear-server/issues/295][Issue #295 on Github]]
+- [[http://zeromq.org][ZMQ]]
+
+* Skygear
+
+Star our Github
+
+https://github.com/skygeario/skygear-server
+
+.image zmq-multiplex/github.png 600 _
+
