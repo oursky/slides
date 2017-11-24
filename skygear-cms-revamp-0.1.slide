@@ -29,6 +29,10 @@ royuen@oursky.com
 
 * Config file
 
+* Auth related
+
+- The web app will call a lambda function for general record:save and all related functions such as login, and that lambda function will intercept and inject the master key to Skygear server.
+
 * What's next?
 
 - Add new record page
@@ -39,4 +43,5 @@ royuen@oursky.com
 - Add new custom page ability
 - WYSIWYG editor support
 - ACL support when creating / editing record
-
+- Style polishing
+- Custom action button in record list page to call lambda function
