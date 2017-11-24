@@ -39,9 +39,11 @@ royuen@oursky.com
 - Push notification panel (something like https://user-images.githubusercontent.com/387241/31481782-be96bd70-af57-11e7-900e-7cfa62f870bb.jpg)
 - Import CSV for single record type
 - Export CSV for single record type
+- Create a site wise file field to upload (for cross table import usage) to call lambda function
+- Create a site wise button (for cross table export usage) to call lambda function
+- Custom action button in top of record listing page, record list records to call lambda function
 - Filter / Search
-- Add new custom page ability
 - WYSIWYG editor support
 - ACL support when creating / editing record
 - Style polishing
-- Custom action button in record list page to call lambda function
+- Add new custom page ability
