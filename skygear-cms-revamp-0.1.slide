@@ -36,7 +36,7 @@ royuen@oursky.com
 * What's next?
 
 - Add new record page
-- Push notification panel
+- Mass Push notification panel
 - Import CSV for single record type
 - Export CSV for single record type
 - Create a site wise file field to upload (for cross table import usage) to call lambda function
