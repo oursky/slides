@@ -35,6 +35,8 @@ royuen@oursky.com
 - Push notification panel (something like https://user-images.githubusercontent.com/387241/31481782-be96bd70-af57-11e7-900e-7cfa62f870bb.jpg)
 - Import CSV for single record type
 - Export CSV for single record type
+- Filter / Search
 - Add new custom page ability
 - WYSIWYG editor support
 - ACL support when creating / editing record
+
