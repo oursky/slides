@@ -1,0 +1,40 @@
+Skygear CMS Ravamp 0.1
+Skygear
+24 Nov 2017
+
+Roy Yuen
+Oursky
+royuen@oursky.com
+
+* So what is it?
+
+- We have rewritten the Skygear CMS
+  - Thanks Kenji :) and later on Joseph's involvement
+- Original CMS was powered by ng-admin and hated by everyone.
+  - Hard to customize
+
+* What do we want to achieve in the new Skygear CMS?
+
+- Show user list
+- CRUD of custom tables
+- Mass Push notification panel with custom receipient group
+- Keep using conifguration files for CMS setup. If anything really custom needed, can create new page with DOM manipulation.
+
+* DEMO
+
+- Listing
+- Show
+- Edit
+- Different fields walkthrough
+
+* Config file
+
+* What's next?
+
+- Add new record page
+- Push notification panel (something like https://user-images.githubusercontent.com/387241/31481782-be96bd70-af57-11e7-900e-7cfa62f870bb.jpg)
+- Import CSV for single record type
+- Export CSV for single record type
+- Add new custom page ability
+- WYSIWYG editor support
+- ACL support when creating / editing record
