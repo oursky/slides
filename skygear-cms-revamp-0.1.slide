@@ -1,0 +1,50 @@
+Skygear CMS Ravamp 0.1
+Skygear
+24 Nov 2017
+
+Roy Yuen
+Oursky
+royuen@oursky.com
+
+* So what is it?
+
+- We have rewritten the Skygear CMS
+  - Thanks Kenji :) and later on Joseph's involvement
+- Original CMS was powered by ng-admin and hated by everyone.
+  - Hard to customize
+
+* What do we want to achieve in the new Skygear CMS?
+
+- Show user list
+- CRUD of custom tables
+- Mass Push notification panel with custom receipient group
+- Keep using conifguration files for CMS setup. If anything really custom needed, can create new page with DOM manipulation.
+
+* DEMO
+
+- Listing
+- Show
+- Edit
+- Different fields walkthrough
+
+* Config file
+
+* Auth related
+
+- The web app will call a lambda function for general record:save and all related functions such as login, and that lambda function will intercept and inject the master key to Skygear server.
+
+* What's next?
+
+- Add new record page
+- Mass Push notification panel
+- Import CSV for single record type
+- Export CSV for single record type
+- Create a site wise file field to upload (for cross table import usage) to call lambda function
+- Create a site wise button (for cross table export usage) to call lambda function
+- Custom action button in top of record listing page, record list records to call lambda function
+- Filter / Search
+- WYSIWYG editor support
+- ACL support when creating / editing record
+- Style polishing
+- Add new custom page ability
+- Tab grouping
