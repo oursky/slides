@@ -1,0 +1,455 @@
+OCaml/Reason/BuckleScript, Flow and TypeScript
+A brief overview
+
+Louis Chan
+Developer, Oursky
+louischan@oursky.com
+
+* OCaml
+
+- Statically typed
+- Type inference
+- Eager evalution
+- Pattern matching
+- Parametric polymorphism
+- Immutable by default
+
+Modern programming languages like Rust and Swift have these features too.
+But OCaml was born 20 years ago.
+
+* Reason
+
+- Alternative syntax for OCaml
+- Look like JavaScript
+- Written in OCaml
+
+* BuckleScript
+
+- A compiler backend for OCaml
+- Generate clean JavaScript
+- Build system is based on ninja-build
+- Compiler is written in OCaml
+
+* Flow
+
+- Typecheck via type annotations
+- Strip type annotations (via Babel)
+- Written in OCaml
+
+* TypeScript
+
+- A dialect of JavaScript with type checking
+- Generate clean JavaScript
+- Written in TypeScript (self-hosting)
+
+* Try online
+
+.link https://reasonml.github.io/en/try.html OCaml/Reason/BuckleScript
+.link https://flow.org/try/ Flow
+.link https://www.typescriptlang.org/play/index.html TypeScript
+
+* An overview of the type systems
+
+* Primitive types
+
+Reason
+
+  let Abool = true;
+  let anInt = 1;
+  let aFloat = 1.0;
+  let aString = "";
+  let anOptionalInt = Some(1);
+  let anOptionalString: option(string) = None;
+
+Flow
+
+  const aBool: bool = true;
+  const aNumber: number = 1;
+  const aString: string = "";
+  const anOptionalNumber: ?number = null;
+
+TypeScript
+
+  const aBool: boolean = true;
+  const aNumber: number = 1;
+  const aString: string = "";
+  const anOptionalNumber: number | null = null;
+
+* List
+
+Reason
+
+  let aList = [1];
+
+Flow and TypeScript does not have List
+
+* Array
+
+Reason
+
+  let anArray = [|1|];
+
+Flow
+
+  const anArray: Array<number> = [1];
+
+TypeScript
+
+  const anArray: number[] = [1];
+
+* Tuple
+
+Reason
+
+  let aTuple = (1, "");
+
+Flow
+
+  const aTuple: [number, string] = [1, ""];
+
+TypeScript
+
+  const aTuple: [number, string] = [1, ""];
+
+* Record
+
+Reason
+
+  type student = {
+    name: string,
+    mutable year: number,
+  };
+
+Flow
+
+  type Student = {
+    +nameReadOnly: string,
+    -yearWriteOnly: number,
+    age: number,
+  };
+
+TypeScript
+
+  interface Student {
+    readonly name: string,
+    year: number,
+  }
+
+* Enum
+
+OCaml/Reason generializes this to Algebraic Data Type
+
+Flow
+
+  type Color = "red" | "green" | "blue";
+
+TypeScript
+
+  enum Color { Red, Green, Blue }
+  // or
+  type Color = "red" | "green" | "blue";
+
+* Tagged union (An application of Type Refinement)
+
+* Reason
+
+OCaml/Reason generializes this to Algebraic Data Type
+
+* Flow
+
+  type ActionA = { type: "a", a: number };
+  type ActionB = { type: "b", b: string };
+  type Action = ActionA | ActionB;
+
+  function takeAction(action: Action) {
+    switch (action.type) {
+    case "a":
+      console.log(action.a);
+      break;
+    case "b":
+      console.log(action.b);
+      break;
+    }
+  }
+
+* TypeScript
+
+  interface ActionA { type: "a", a: number }
+  interface ActionB { type: "b", b: string }
+  type Action = ActionA | ActionB;
+
+  function takeAction(action: Action) {
+    switch (action.type) {
+    case "a":
+      console.log(action.a);
+      break;
+    case "b":
+      console.log(action.b);
+      break;
+    }
+  }
+
+* Algebraic Data Type / Sum Type / Variant
+
+  type signupResult =
+  | Success(string)
+  | DuplicatedUser
+  | PasswordTooWeak;
+
+  let result = Success("some-access-token");
+  let storeTokenToLocalStorage = (s) => {};
+  let alert = storeTokenToLocalStorage;
+
+  switch (result) {
+  | Success(token) => storeTokenToLocalStorage(token)
+  | DuplicatedUser => alert("User already exists")
+  | PasswordTooWeak => alert("Please use a stronger password")
+  };
+
+* Abstract Type
+
+* Reason
+
+  module NonNegativeInt: {
+    /* t is a distinct type from int */
+    /* The only way to construct a value of t is via fromInt */
+    /* However, t can be upcast to an int */
+    /* pri means private */
+
+    type t = pri int;
+    let fromInt: int => option(t);
+  } = {
+    type t = int;
+    let fromInt = (x) => if (x >= 0) { Some(x) } else { None };
+  };
+
+  switch (NonNegativeInt.fromInt(2)) {
+  | None => ()
+  | Some(two) =>
+    /* upcast t to int so that we can use it as int */
+    let three = (two :> int) + 1;
+  }
+
+* Flow
+
+  // in file NonNegativeNumber.js
+
+  export opaque type NonNegativeNumber: number = number;
+  export const zero: NonNegativeNumber = 0;
+
+  // This is the only way to construct NonNegativeNumber
+  export function fromNumber(n: number): ?NonNegativeNumber {
+    return n >= 0 ? n : null;
+  }
+
+  // in file app.js
+
+  import type { NonNegativeNumber } from "./NonNegativeNumber";
+  import { zero, fromNumber } from "./NonNegativeNumber";
+
+  const a: number = zero + 1;
+  // $ExpectError
+  const b: NonNegativeNumber = zero - 1;
+  function returnNumber(a: NonNegativeNumber): number {
+    return a;
+  }
+
+* TypeScript
+
+TypeScript does not support abstract type natively.
+
+* Abstract Type, Sum Type and Immutability
+
+With
+
+- Abstract Type
+- Sum Type
+- Immutability
+
+We can achieve so called
+.link https://blog.janestreet.com/effective-ml-revisited/ "Make Illegal states unrepresentable"
+
+- Code is easier to reason about
+- Less bugs (or impossible to have bugs)
+- Easier to maintain
+
+* Soundness
+
+* Variance
+
+- Invariance
+- Covariance
+- Contravariance
+- Bivariance
+
+* Invariance
+
+- Invariance does not accept supertypes
+- Invariance does not accept subtypes
+
+Example
+
+  type X  = { x: number };
+  type XY = { x: number, y: number };
+
+  declare var xs: Array<X>;
+  declare var xys: Array<XY>;
+
+  // $ExpectError
+  xs = xys;
+
+If the assignment succeeds, xs and xys will point to the same array of type Array<XY>.
+We can then add an item of type X via xs, resulting in xys contains an item of type X.
+
+* Covariance
+
+- Covariance does not accept supertypes
+- Covariance does accept subtypes
+
+Example
+
+  type X  = { x: number };
+  type XY = { x: number, y: number };
+
+  declare var xs: $ReadOnlyArray<X>;
+  declare var xys: $ReadOnlyArray<XY>;
+
+  xs = xys;
+
+If the assignment succeeds, xs and xys will point to the same array of type Array<XY>.
+Since the array is read only and X is a subtype of XY, item of type XY can be read as type X via xs.
+
+* Contravariance
+
+- Contravariance does accept supertypes
+- Contravariance does not accept subtypes
+
+Example in a later slide
+
+
+* Bivariance
+
+- Bivariance does accept supertypes
+- Bivariance does accept subtypes
+
+Example in a later slide
+
+* Variance in functions and subtypes of functions
+
+- Function should be contravariant in its argument types, and covariant in its return type
+- F is a subtype of G if F's input is supertype of G's and F's output is subtype of G's
+
+Example
+
+  type G = (x: 1 | 2) => "A" | "B";
+
+  declare var f1: (x: 1 | 2) => "A" | "B" | "C";
+  declare var f2: (x: 1) => "A" | "B";
+  declare var f3: (x: 1 | 2 | 3) => "A";
+
+* Unsoundness of TypeScript
+
+Function Parameter (input) is bivariant in TypeScript
+
+  type G = (x: 1 | 2) => "A" | "B";
+
+  declare var f1: (x: 1 | 2) => "A" | "B" | "C";
+  declare var f2: (x: 1) => "A" | "B";
+  declare var f3: (x: 1 | 2 | 3) => "A"; 
+
+* Ecosystem
+
+* OCaml
+
+- Developers: INRIA
+- Editor support: Community-maintained editor plugins powered by Merlin
+- Users: Jane Street
+- Linting: No
+- Formatting: I don't know a popular one
+
+* Reason
+
+- Developers: a team of Facebook
+- Editor support: same as OCaml
+- Users: Facebook
+- Linting: No
+- Formatting: refmt
+
+* BuckleScript
+
+- Developers: one employee of Bloomberg
+- Users: Bloomberg, Facebook
+- JavaScript Interop: via FFI
+
+* Reason React
+
+- Reason binding to ReactJS
+- The future API of React (or even the future of React)
+- No support for old Context API (So it is not usable yet)
+- Good news https://github.com/facebook/react/pull/11818
+
+* Flow
+
+- Developers: a team of Facebook
+- Editor support: Community-maintained editor plugins
+- Users: React, React Native
+- Linting: ESLint
+- Formatting: Prettier
+- JavaScript Interop: flow-typed
+
+* TypeScript
+
+- Developers: Microsoft
+- Editor support: First class support from VS Code
+- Users: Many
+- Linting: TSLint
+- Formatting: Prettier
+- JavaScript Interop: DefinitelyTyped
+
+* Summary
+
+* OCaml/Reason/BuckleScript
+
+Pros
+
+- All advantages of OCaml
+
+Cons
+
+- Reason React is experimental (for now)
+- No syntactic sugar for async code (yet)
+- All FFI must be written manually
+
+* Flow
+
+Pros
+
+- A sound type system
+- Just JavaScript with types
+- ESLint
+
+Cons
+
+- Less enjoyable editor experience
+- Less popular libraries do not have type definitions
+
+* TypeScript
+
+Pros
+
+- The biggest community
+- The best editor experience
+- The most complete type definitions of third libraries
+
+Cons
+
+- Unsound type system
+- No ESLint (though there is TSLint and tslint-eslint-rules)
+
+* My preference
+
+  if (React.version >= "16.3" && ReasonReact.supports("New Context API")) {
+    return "OCaml/Reason/BuckleScript";
+  } else {
+    return "Flow";
+  }
