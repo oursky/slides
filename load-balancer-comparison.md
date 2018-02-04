@@ -4,6 +4,9 @@ AWS ELB vs AWS ALB vs Google L7 LB
 Created with Marp
 12 August 2016
 
+Updated
+16 Jan 2018
+
 ---
 
 # What is Load Balancer
@@ -70,7 +73,7 @@ Created with Marp
   - $0.008 per GB
 - ALB
   - $0.0225 per ALB-hour ($16.2/month)
-  - $0.008 per LCU-hour (roughly translate to connectsions and throughput per hour)
+  - $0.008 per LCU-hour (roughly translate to connections and throughput per hour)
 - Google L7
   - $0.025 per hour (5 rules included)  ($18/month)
   - $0.010 per additional rule 
