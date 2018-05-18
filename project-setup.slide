@@ -1,0 +1,65 @@
+What is good project setup
+4 May 2018
+
+Rick Mak
+Oursky
+rickmak@oursky.com
+@rickmak
+CC81327D
+
+
+* Setup with no surprise
+
+- Make switching project easy
+- Make review easy
+- Other can help with less overhead
+
+* Let look at some example
+
+Many of projects
+
+- https://github.com/oursky/heytravelista-server
+- https://github.com/oursky/polyupaths/
+- https://github.com/oursky/SC-eXellerator
+- https://github.com/oursky/biovitality
+- https://github.com/oursky/skygear-content-manager
+
+* Shell scripts
+
+NIH (Not Invented Here Syndrome)
+
+- /run.sh or ./run ?
+https://github.com/oursky/polyupaths/blob/master/run.sh
+https://github.com/oursky/heytravelista-server/blob/master/run
+
+- No auto complete
+- Need to read the file every time
+- Wrong abstraction
+
+* Makefile
+
+- More standard
+- bash completion!!!
+
+https://github.com/oursky/wilson-parking/
+https://github.com/oursky/SC-eXellerator/blob/master/Makefile
+
+* Bundling with CI
+
+Script is bundle with travis
+
+https://github.com/oursky/heytravelista-server/blob/master/scripts/deploy.sh
+
+Script is should be independent from travis
+https://github.com/oursky/biovitality/blob/master/deploy/deploy.sh
+https://github.com/oursky/biovitality/blob/master/.travis.yml
+
+That how Rick can run the script locally
+
+* Principle
+
+- If you can't abstract it, expose it
+- Less is better
+- Environment is environment
+- No surprise
+- Script should always locally runnable
