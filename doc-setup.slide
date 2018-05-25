@@ -1,0 +1,69 @@
+Making doc accessible
+25 May 2018
+
+Rick Mak
+Oursky
+rickmak@oursky.com
+@rickmak
+CC81327D
+
+
+* Providing info for other
+
+- Just click and view
+- No checkout
+- PM can have overview
+
+* Principle
+
+- Come with commits/push
+- Automate generation
+- Technical naturality
+- Doc/API level of details are project specific
+- No one more access control to manage
+
+* Suggested workflow
+
+- Everyone know gh-html?
+- Travis deploy provider https://docs.travis-ci.com/user/deployment/pages/
+- On master push
+- Build and push to `apidoc`branch
+- Browse at https://dochub.pandawork.com
+
+* Example
+
+- https://github.com/oursky/wilson-parking
+- https://dochub.pandawork.com/proxy/oursky/wilson-parking/apidoc/index.html
+
+* Travis
+
+  - language: node_js
+    node_js: "8"
+    if: branch = master AND type = push
+    before_install:
+      - npm install apidoc -g
+    script:
+      - (cd backend && apidoc -i wilson/ -o apidoc/)
+    deploy:
+      provider: pages
+      github-token: $GITHUB_TOKEN
+      target-branch: apidoc
+      skip-cleanup: true
+      keep-history: false
+      local-dir: backend/apidoc
+      verbose: true
+      on:
+        branch: master
+
+* New service
+
+- Come from hidden-dimension
+- https://github.com/oursky/gh-html
+- Deployed at https://dochub.pandawork.com
+- Link format: `/proxy/{user}/{repo}/{branch}/{file path}`
+- Auto deploy by Google Cloud build
+- Everyone can push and improve
+
+* Side usage
+
+- Private html preview for client @franklam
