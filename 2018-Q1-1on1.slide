@@ -1,0 +1,54 @@
+2018 Q1 One on One Action Items
+Team Sharing
+4 Jul 2018
+
+Ben Cheng
+Oursky
+bencheng@oursky.com
+
+* Sorry
+It was a poorly executed 1 on 1, we wasn't able to complete all quarterly 1on1 session.
+
+We will have more teammate to help 1 on 1 in Q3 to make sure we can complete it.
+
+* Improvement since last 1 on 1
+
+- Efforts on improving Technical Documentation of Projects
+- Efforts on a way to handle "single sources of truth" of Project
+- Purchased new testing device in Taipei office
+
+* Things we didn't follow up well from last 1 on 1
+
+- Clear dismissal process
+- Replace monthly team dinner with different events
+
+* Items we're going to follow up on one-on-one
+
+- Two Phase Code Review / Technical Planning on each issue
+- Encourage developers include screencap in PR to help PM test acceptance
+- More bootstrap / share libraries or projects
+- Better communication on projects -- include Designers in kick-off meetings
+- Tune our process until each project have a "single sources of truth" user stories
+- Encourage unit testing at backend
+- Try to streamline and sync for Project Management process
+- Try to ensure each project have a senior (New experiments: Two developers work on two project and rotate weekly)
+- A number of TW colleagues express their disconnection with HK office, and also as issues are usually empty it is difficult to understand the context of work
+- More formal Playground Project (done)
+
+* Suggestions from you
+
+- New office layout?
+- Have ONE person to merge all PR in a project (debatable)
+- Team size maximum at 3 or need to be divided
+- Separate backend / frontend on each project
+- User Stories template to allow reuse across project by PM
+- Noisy
+
+* Advices for colleagues
+
+- Be considerate for office environment (noisy, dirty)
+- A lot of new practices require everyone's participation:
+  - Single source of truth user stories
+  - Better technical planning (I know we made a lot of progress lately!)
+  - Unit testing of backend API, API doc (a lot of progress lately too!)
+
