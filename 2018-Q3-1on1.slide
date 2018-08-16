@@ -6,24 +6,21 @@ Ben Cheng
 Oursky
 bencheng@oursky.com
 
-
 * Management
 - Late annoucement for new and dismissal of fellows
-- Replace monthly team dinner with different events
-- Not enough discussion for solutions
+- Replace monthly team dinner with different events: https://oursky.quip.com/S2szAbqkE4wT
 - Lack of goals: Hope the coming Company Position Document helps
-- Weekly Update is too late
+- Weekly Update is too late: Any other suggestion?
 - We snoozed Skylab.ai / Oursky.com revamp
 
 * Office / Culture
-- A lot of talking, so 2-8pm in office can't get workdone except PR and discussion, and work is
-midnight. (But discussion can learn)
-- Office Size too small
-- Not enough meeting room
-- Conduct more regular survey (?)
+- A lot of talking, so 2-8pm in office can't get workdone except PR and discussion, and work is midnight. (But discussion can learn)
+- Office Size too small / Not enough meeting room
+- Conduct more regular survey - each OKR have a discourse post for colleage to feedback below
 - Can't get familiar with new colleagues
-- Noisy / Ad-hoc Discussion / Smelly Male Toilet / Office 亂
-- More direct immediate feedback
+- Noisy / Ad-hoc Discussion / Smelly Male Toilet
+- Office 亂: Arrange a 大掃除
+- More direct immediate feedback (before Skills evaluation)
 - Want to do the PTGF app
 - Smoke smell
 
@@ -33,24 +30,24 @@ midnight. (But discussion can learn)
 - Task estimation is too rough, 40 hours tasks with no break down: Will follow up with PM team
 - PM+QA Regularly Meetup: Should be happening
 - Give earlier notice when PM/Dev switch projects
-- Developers hard to find latest design files
+- Developers hard to find latest design files: Zeplin
 - PM need to sync all parties on requirement change (Single sources of truth)
 - Tech Lead role need to account in schedule arrangement
 
 * Technical
-- New Developers doesn't have simple wordpress project to learn anymore
+- Junior Developer: replace the training of "simple project" with detailed planning
+- Buffer time for new tech pick-up: PM usually give 5-10 man-days for that already, but won't stress it to avoid parkinson law - https://en.wikipedia.org/wiki/Parkinson%27s_law.
 - Doesn't know new Skygear Features
 - Less discussion between senior (Communication between Tech Leads)
-- Try flutter
-- Can't spread technical know-how if not work on the same project/talk frequently
-- More support for new tech
+- Can't spread technical know-how if not work on the same project/talk frequently: Master Louis: https://discourse.pandawork.com/t/react-native-traps/498/9
 - Hard to build on legacy code
 - Some general UI/UX guideline for junior developers?
 - Better organizational reading for works matter?
-- Need a better way to handle SSR
+- Need a better way to handle SPA SSR
+- Try flutter
 
 * Designers
-- Design Mockup can't reflect animation (more communication?)
+- Design Mockup can't reflect animation (more communication)
 - Designers workload are unstable
 - Designer need feedback from client
 
