@@ -1,0 +1,165 @@
+Why Oursky uses its own translation module in react
+12 Dec 2018
+
+Rick Mak
+Oursky
+rickmak@oursky.com
+@rickmak
+CC81327D
+
+* Existing solutions for React translation
+
+- react-intl <- Oursky used this before
+- react-i18next
+- Others?
+
+Let's do a quick poll
+
+* We encountered following problem with react-intl
+
+1. Can't embed react-component in translation string
+2. ICU(International Components for Unicode) parser differ from the original implementation (icu4c)
+.link https://github.com/yahoo/intl-messageformat
+3.  Not yet support new(16.3) Context
+.link https://github.com/yahoo/react-intl/pull/1186
+
+* How is our oursky/react-messageformat different from the others
+
+- Support embedding react-component in ICU messageformat
+- Use a more standard ICU parser
+- Must use 'new' Context API
+
+* What is ICU?
+
+- ICU is International Components for Unicode
+
+Example
+  
+  "Please input the required text {COUNT, plural, one{field} other{fields}}."
+
+ <FormattedMessage
+   id="Error.PleaseInputRequiredField"
+   values={{
+     COUNT: numberOfEmptyFields,
+   }}
+ />
+
+* What is ICU adoption?
+
+- i18next also support ICU since 7.6.0, Apr 2018
+- It depends to i18next-icu, which depends on yahoo/intl-messageformat
+- Android provides `android.icu` package since 7.0 (API level 24)
+- Steep learning curve in ICU compared with JSON format
+.link https://github.com/i18next/react-i18next/issues/303#issuecomment-332419079
+- In most case, you just need simple interpolations
+- In Oursky, we don't assume simple interpolations, we deliver a good translation from day one to avoid any switching cost.
+
+* What is the difference of ICU parser we use
+
+- We use github.com/messageformat/parser
+.link https://github.com/oursky/react-messageformat#why
+- We add react directive, add it to parser to make it a first class citizen
+.link https://github.com/louischan-oursky/parser/commit/f9f8d499e2dd696ce9b890dc073950a48f749a09
+
+* React directive of ICU we added
+
+  Please {Link, react, href{http://oursky.com} children{{Text, react, children{Click me}}}}
+
+- `Link` is the name of directive
+- `react` to declare it is react element
+- Others are passed as props, `key{value}`
+
+  Please <Link href="http://oursky.com"><Text>Click me</Text></Link>
+
+* Example before embed
+
+ en.json
+ {
+   "delta": "{greenArrow}"
+ }
+ cn.json
+ {
+   "delta": "{redArrow}"
+ }
+ 
+ import GreenArrow from "./GreenArrow";
+ import RedArrow from "./RedArrow";
+ <FormattedMessage id="delta" value={{
+   greenArrow: <GreenArrow deltaPercent=10 />,
+   redArrow: <RedArrow deltaPercent=10 />,
+ }} /
+ }>
+
+* Example With embed
+
+  en.json
+  {"delta": "{GreenArrow, react, delta{deltaPercent}"}
+  cn.json
+  {"delta": "{RedArrow, react, delta{deltaPercent}"}
+
+  import GreenArrow from "./GreenArrow";
+  import RedArrow from "./RedArrow";
+  <FormattedMessage id="delta" value={{ deltaPercent: 10 /> }}
+    components={{GreenArrow, RedArrow}} />
+
+* Example before embed
+
+  en.json
+  {"join": "Click {HERE} to Join!"}
+  {"here": "here"}
+  cn.json
+  {"join": "{HERE}加入！"}
+  {"here": "按此！"}
+
+  import Bold from "./Bold";
+  <FormattedMessage id="join" values={{
+    HERE: <Bold><FormattedMessage id="here" /></Bold>
+  }} />
+
+* Example with embed
+
+  en.json
+  {"join": "Click {Bold, react, children{here}} to Join!"}
+  cn.json
+  {"join": "{Bold, react, children{按此}}加入！"}
+
+  import Bold from "./Bold";
+  <FormattedMessage id="join" components={{ Bold }} />
+
+* Native to new Context API
+
+Just use the following and the FormattedMessage will be using new Context API
+to detect locale change.
+
+  import { Provider, FormattedMessage } from "@oursky/react-messageformat";
+
+* The new context API will save us from
+
+- PureComponent will not refresh on local change. The old Context will not propagate to it.
+- Work around one: refresh whole app - not ideal in UX.
+.link https://github.com/yahoo/react-intl/issues/243
+- Use Redux to work around the context
+
+* Scope of react-messageformat
+
+- It is not aimed to be a drop-in replacement for yahoo/react-intl
+- We will not do all of
+.link https://github.com/yahoo/react-intl/wiki#the-react-intl-module
+- For example, FormattedPlural, FormattedHTMLMessage
+- We rely on the standard Intl too
+.link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl
+
+* Future development
+
+- Support react hook API
+- Support number translate, using standard Intl
+- Current interpolate rule is strict, it will crash on production when there is missing translation string/value.
+
+* PR welcome!
+.link https://github.com/oursky/react-messageformat
+
+* Credit
+
+- Louis Chan, Senior Developer, Oursky
+- Chiu Chun Yin, Senior Developer, Oursky
+- Ken Chan, Developer, Oursky
