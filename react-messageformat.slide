@@ -1,4 +1,4 @@
-Why Oursky uses its own translation module in react
+Why Oursky uses its own localization module in react
 12 Dec 2018
 
 Rick Mak
@@ -15,7 +15,7 @@ CC81327D
 
 Let's do a quick poll
 
-* We encountered following problem with react-intl
+* We encountered following problems with react-intl
 
 1. Can't embed react-component in translation string
 2. ICU(International Components for Unicode) parser differ from the original implementation (icu4c)
@@ -27,7 +27,7 @@ Let's do a quick poll
 
 - Support embedding react-component in ICU messageformat
 - Use a more standard ICU parser
-- Must use 'new' Context API
+- Require the 'new' Context API
 
 * What is ICU?
 
@@ -51,7 +51,7 @@ Example
 - Android provides `android.icu` package since 7.0 (API level 24)
 - Steep learning curve in ICU compared with JSON format
 .link https://github.com/i18next/react-i18next/issues/303#issuecomment-332419079
-- In most case, you just need simple interpolations
+- In most cases, you just need simple interpolations
 - In Oursky, we don't assume simple interpolations, we deliver a good translation from day one to avoid any switching cost.
 
 * What is the difference of ICU parser we use
@@ -65,8 +65,8 @@ Example
 
   Please {Link, react, href{http://oursky.com} children{{Text, react, children{Click me}}}}
 
-- `Link` is the name of directive
-- `react` to declare it is react element
+- `Link` is the name of react-component 
+- `react` is the newly added directive to support react-component
 - Others are passed as props, `key{value}`
 
   Please <Link href="http://oursky.com"><Text>Click me</Text></Link>
@@ -126,19 +126,29 @@ Example
   import Bold from "./Bold";
   <FormattedMessage id="join" components={{ Bold }} />
 
-* Native to new Context API
+* Require new Context API
 
 Just use the following and the FormattedMessage will be using new Context API
 to detect locale change.
 
-  import { Provider, FormattedMessage } from "@oursky/react-messageformat";
+  import { Provider } from "@oursky/react-messageformat";
+  const messages = {
+    "Hello.World": "Hello World!",
+  };
+  
+  <Provider locale="en" messages={messages}>
+    <MyApp />
+  </Provider>
 
 * The new context API will save us from
 
-- PureComponent will not refresh on local change. The old Context will not propagate to it.
+- PureComponent will not refresh on locale change. The old Context will not propagate to it.
+.link https://reactjs.org/docs/legacy-context.html#updating-context
 - Work around one: refresh whole app - not ideal in UX.
 .link https://github.com/yahoo/react-intl/issues/243
 - Use Redux to work around the context
+# https://github.com/oursky/polyupaths/blob/master/web/src/intl/SyncContextIntlToReduxStore.js
+# https://github.com/oursky/polyupaths/blob/master/web/src/components/Text/Text.js
 
 * Scope of react-messageformat
 
@@ -152,7 +162,7 @@ to detect locale change.
 * Future development
 
 - Support react hook API
-- Support number translate, using standard Intl
+- Support Intl.NumberFormat, using standard Intl
 - Current interpolate rule is strict, it will crash on production when there is missing translation string/value.
 
 * PR welcome!
