@@ -8,20 +8,20 @@ bencheng@oursky.com
 
 * Management
 - Decouple skills evaluation and salary (Notes: considering)
-- Buddy program doesn't work (actionable: call for volunteer on buddy, should we have SOP?)
+- Buddy program doesn't work (actionable: call for volunteer on buddy, should we have standard process?)
 - Profit sharing only happen after 2 years is not fair for people who join in Jan (Discussion)
 - Skills evaluation, do it after each project (will try to see if Ida can arrange it or too complicated)
 - Skills evaluation, difficult to be objective (Notes: considering to use effect, not skills)
 - Stock options for long term staff (Discussion)
-- Code jam / challenge annually
-- Salary / Need to raise company margin / Growth
-- Hire more PMs/Dev
+- Code jam / challenge annually (Clarification)
+- Salary / Need to raise company margin / Growth (Clarification)
+- Hire more PMs/Dev (Clarification)
 
 * Culture
 - Multiple social circle in office (feel bad for old colleagues / difficult for new colleagues)
 - Multiple old colleagues left the team is sad
-- Don't know new colleagues
-- Feel remote to TW office (reminding the TW/HK program?)
+- Don't know new colleagues (Any idea?)
+- Feel remote to TW office (reminding the TW/HK program, any idea?)
 - People only look at their own app, don't try other apps (Regular link at tellchima / Weekly Update)
 - People don't read Slack / Email, need a lot of face to face communication
 - Flexible working hours lead to unstable meeting time
@@ -35,30 +35,30 @@ bencheng@oursky.com
 - More Sat/Sun activities for monthly gathering (Notes: But Ferice said participation rate is low)
 - Need more healthy snacks
 - More quiet recently, don't clean up after using things
-- Male Toilet Flush / Fan Problems
+- Male Toilet Flush / Fan Problems (Arrange fixes for twice, maybe revamp if we renew the contract)
 
 * Sales/Business
 - Some colleague want hardware/robotic related projects
 - Developers: Oursky Developers need to develop commercial awareness (note: Balance?)
-- QAaaS seems can give some positive feeling to QA Team, need to handle properly though
-- T&M Project System is basically broken now. (Margin, Pricing, Not able to find client accept T&M)
-- Need to be more positive to maintenance work
+- QAaaS seems can give some positive feeling to QA Team, need to handle capacity properly though
+- T&M Project System is basically broken now. (Clarification)
+- Need to be more positive to maintenance work for recurring revenue (implication for Devs)
 
 * Projects
-- PM should enforce if PR are hang around too long, need some follow up
-- PM tends to talk a lot with developers directly now, takes up more dev's hours
-- Spec are not well defined
-- Some issues are too big, multiple days (Notes: RULES is no more than 2 man-days)
-- Standup is too long
+- PM should enforce if PR are hang around too long, need some follow up (Should handle in Standup)
+- PM tends to talk a lot with developers directly now, takes up more dev's hours (Async communication should go first, and use Slack to schedule time if need to talk)
+- Spec are not well defined (Roy is enforcing more project planning amongst PMs)
+- Some issues are too big, multiple days (Notes: RULES is no more than 1 man-day; Dev help break down issues)
+- Standup is too long (Notes: mixed up sprint and standup, for problems should discuss after standup)
 
 * Technical
 - Use CMS other than wordpress (suggested on discourse for considering ghost.org)
-- People are not asking enough questions
-- Try Flutter / GraphQL
+- People are not asking enough questions (ask if you blocked by an hour)
+- Try Flutter / GraphQL (next Quarter)
 - Two Tech Leads could be confusing (notes: but some feedback were wish tech leads could work tgt)
 
 * Designers
-- Workload is very adhoc (could be very busy suddenly)
+- Workload is very adhoc, could be very busy suddenly (Ultimately Designers shall be scheduled by PM like developers)
 - Many UX problems only discover at QA stage (actionable items: maybe more hallway testing?)
 - Design don't cater for different screen sizes / scroll down / many items
 
@@ -67,7 +67,7 @@ bencheng@oursky.com
 - Very competent developers and teaching
 - Freedom / Flexible Hours / finally a job that know what he is doing
 - Nice / Young Colleagues
-- Enjoy the user interview of **Masked** iPad Design
+- Enjoy the user interview of *Masked* iPad Design
 - TW office is more healthy and sport equipment
 - The new PM&QA meeting is helping a lot
 - Time Estimation is good recently (Multiple Dev's comment!)
