@@ -25,8 +25,8 @@ Let's do a quick poll
 
 * How is our oursky/react-messageformat different from the others
 
-- Support embedding react-component in ICU messageformat
 - Use a more standard ICU parser
+- Support embedding react-component in ICU messageformat
 - Require the 'new' Context API
 
 * What is ICU?
@@ -43,6 +43,8 @@ Example
      COUNT: numberOfEmptyFields,
    }}
  />
+
+.link http://userguide.icu-project.org/formatparse/messages
 
 * What is ICU adoption?
 
@@ -111,20 +113,20 @@ Example
   {"join": "{HERE}加入！"}
   {"here": "按此！"}
 
-  import Bold from "./Bold";
+  import BoldLink from "./BoldLink";
   <FormattedMessage id="join" values={{
-    HERE: <Bold><FormattedMessage id="here" /></Bold>
+    HERE: <BoldLink><FormattedMessage id="here" /></BoldLink>
   }} />
 
 * Example with embed
 
   en.json
-  {"join": "Click {Bold, react, children{here}} to Join!"}
+  {"join": "Click {BoldLink, react, children{here}} to Join!"}
   cn.json
-  {"join": "{Bold, react, children{按此}}加入！"}
+  {"join": "{BoldLink, react, children{按此}}加入！"}
 
-  import Bold from "./Bold";
-  <FormattedMessage id="join" components={{ Bold }} />
+  import BoldLink from "./BoldLnk";
+  <FormattedMessage id="join" components={{ BoldLink }} />
 
 * Require new Context API
 
