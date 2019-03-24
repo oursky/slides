@@ -1,0 +1,126 @@
+On Concentration
+and why I hate Slack
+29 Mar 2019
+
+Ben Cheng
+Oursky
+bencheng@oursky.com
+
+* Why talk about Time Management
+
+- Bad time management/low producitivty = Stress
+- Life advice
+
+* Consider this a "Time Management Trilogy"
+
+- [[https://go-talks.appspot.com/github.com/oursky/slides/inbox-zero.slide][Inbox Zero]]
+- [[https://go-talks.appspot.com/github.com/oursky/slides/timelog-and-pomodoro.slide][Timelog and Pomodoro]]
+- On Concentration
+
+* How many hours per day you wasted time on...
+
+- Can't concentrate?
+- Can't find a documents, browser tabs, etc?
+- Late appointment, unprepared meetings?
+
+* Can't concentrate
+
+* How to concentrate better?
+- Find your good time, defend it ruthlessly alone, even work remotely
+- Find your bad time, schedule meetings, calls, etc
+- Use a todo list and calendar so you don't keep think about next thing
+- *Find* time for important tasks that need your concentration
+
+.caption Tips 1: you can do it by [[https://go-talks.appspot.com/github.com/oursky/slides/timelog-and-pomodor.slide#4][timelog]] for a few weeks
+.caption Tips 2: Apple Watch Infograph Watchfaces always show your next appointment
+.caption Tips 3: I recommend [[https://culturedcode.com/things/][Things]], [[https://todoist.com/][Todoist]] for task management
+
+* E.g.
+
+.image on-concentration/cal.jpg 400 _
+.caption Red = random tasks. e.g. check Developer Pre-screen interview results
+.caption Green = tasks require mental capacity, e.g. review a document
+
+* Why interruption is bad?
+
+- 5 mins interruption, 5 mins recovery; SIX interruptions = ONE hour
+
+.image on-concentration/focus.png 500 _
+
+* Prof. Will Ng: "Trun Push into Pull" 
+
+* Reduce frequency of interruptions at all cost
+- The magic is turn everything push into pull
+- Turn phone calls into emails
+- No push notification/Mute your phone/Only allow important numbers.
+- Some people unplug from Internet or use tools like [[https://chrome.google.com/webstore/detail/stayfocusd/laankejkbhbdhmipfmgcngdelahlfoji?hl=en][StayFocused]] (browser plugins)
+- Check your phone / notifications only when you finished ONE thing (usually 10 - 40 mins)
+- All of the above avoid push, what about pull?
+
+* Pull: make yourself comfortable
+- Easy to trakc what was read/unread, so no worry of missing a thing
+- Allow time to respond
+- Easy to reference in future
+
+* How good are these tools for pulling?
+- Gmail: Good, inbox zero, snooze; Spam @@ 
+- Mobile Push: Good if you control the privacy carefully
+- Discourse: Good if you use the Unread tab
+- Quip: So-so, better now but it used to mark all notification as read once you touch it
+- Slack: Bad
+- Phone: Bad
+
+* Why Slack is bad for pull
+- Impossible to know what was read (except Thread) hence easy to miss
+- People expect real time respond, constant interruption on Slack / physically 
+- Can't reference by link (mainly used in Todo for follow up) 
+- Fragmented discussion compared with emails / discourse messages, impossible to reference neither
+
+* Improve how we use Slack
+
+Turns out a quick search realize many people hate Slack as I do. Buffer has [[https://open.buffer.com/slack-agreements/][the 10 Slack Agreement]] internally which I think we should reference.
+
+Rules on [[https://oursky.quip.com/fSWPAB60FJLZ/How-Ourskyers-Communicate][How Ourskyers Communicate]]
+
+* Slack Agreement at Oursky
+
+Use Slack only for
+- Social conversations, interesting links, chit-chat
+- Questions / requests that need a urgent response (with @mention)
+- Real-time quick discussions
+- Share quick praise, love, achievements
+
+Slack should not be used for: (use Github, Discourse, or Basecamp for these)
+- High-level discussions
+- Making big decisions
+- Message that does not require immediate attention
+- Assign tasks to others
+
+Other Rules
+- Use public channel whenever possible
+- Mention the person if it is urgent
+- Use Thread whenever possible
+- Don't keep checking messages constantly
+- Default you should set your notification to “Direct messages, mentions & keywords” only
+
+* Can't find a document
+- How many browser tabs you keep opened?
+- Keep a reading list, and read when you are walking / waiting (Mobile Browser Tabs/Safari Reading List/Pocket)
+- Clutter = Death, Focus on one thing at a time
+- Good file system is essential
+- Touch each piece of information once (INBOX ZERO)
+
+* Meetings
+- Calls during transist / move
+- Schedule meeting before lunch / before end of work
+- Schedule meeting at your bad time
+- e.g. Ben is bad at morning, so my meetings are always scheduled at morning; Group at Mon&Wed. 
+- For Clients: "I have next meeting..."
+
+* Other Tips: Always ask yourself...
+
+- Have I planned each day and weeks? (you can always change your plan)
+- What happens if I choose not to do it?
+- 80/20 rule - critical few and the trivial manay
+- Break things down into small steps
+
