@@ -7,69 +7,70 @@ Oursky
 bencheng@oursky.com
 
 * Last Quarter Remaining Follow Up
-- Profit sharing only happen after 2 years is not fair for people who join in Jan (Discussion)
-- Flexible working hours lead to unstable meeting time
-- How to make X'mas Hackathon relevant to non-tech fellows?
-- Office doesn't have enough meeting rooms, HK and TW
-- Male Toilet Flush / Fan Problems (Arrange fixes for twice, maybe revamp if we renew the contract)
-- Some colleague want hardware/robotic related projects
-- Try Flutter / GraphQL (next Quarter)
+- Profit sharing only happen after 2 years is not fair for people who join in Jan (Follow up)
+- Flexible working hours lead to unstable meeting time (Didn't check latest)
+- How to make X'mas Hackathon relevant to non-tech fellows? (Wait til Q4)
+- Office doesn't have enough meeting rooms, HK and TW (New Office/Next Renovation)
+- Male Toilet Flush / Fan Problems (New Office/Next Renovation)
+- Some colleague want hardware/robotic related projects (Sales Discussion)
+- Try Flutter / GraphQL (Solicit)
 
 * Management
-- Add an Annual Learning Target for evaluation especially senior
+- Add an Annual Learning Target for evaluation especially senior ([[https://3.basecamp.com/3096882/buckets/11748863/messages/1751641433][BC Message]])
 - The reason for introduce new promotion process is reduce workload? (No; For fit in impact eval with similar workload)
-- Open everyone grading with the new Salary Policy (I'm open for it)
+- There were no proposal to "trigger promotion by yourself", it was "ask everyone anyone thought there is a promotion"
+- Open everyone grading with the new Salary Policy (Thoughts? Vote?)
 - OKR limits the chance to try new things (We should use it to helps us push new things)
-- Understand the problems before provide a fix (e.g. JP office is not needed?)
-- Evaluation does not cover all aspect (Join Impact-based Evaluation Draft Basecamp to help!)
-- Evaluation appreciate smart but not working hard. (I think it is natural consequence for result driven)
+- Evaluation does not cover all aspect (Join [[https://3.basecamp.com/3096882/join/WH3Rib2fGJyT][Impact-based Evaluation Draft Basecamp]] to help!)
+- Evaluation appreciate smart but not working hard. (Aims at Result Driven, avoid office politics, and shorter work hours)
+- Provide more training for junior positions (Sales/Business/Others)
 
 * Culture
-- Tellchima incident about cats
-- Have a roster include basic info and pic of each colleagues; Same name and profile pic for tools
-- Need introduction to part-time too
+- Unhappy about tellchima incident about cats
+- Have a roster include basic info and pic of each colleagues; Same name and profile pic for tools (follow up/vote)
+- Need introduction to part-time too (will do so)
 - Too many communication channels and missed message (migration to Basecamp)
 - Push Breakfast later (Prefer no, the intention was to encourage early office hours)
 - Socially separated between younger and older gen
 - Need check both Basecamp and Slack, need more clicks (Pull vs Push)
+- Encourage people to avoid sync communication over slack, especially metion people out of office hours for non-urgent stuffs
 
 * Office
-- Office day-time is noisy to a point need to shift the working hours
+- Office day-time is noisy to a point need to shift the working hours (Quiet room)
 - (TW) Move to a location with cheaper living environment
 - Easier to ask people for todo in Basecamp over Slack
 
 * Sales/Business
-- Provide more training for junior positions (This one is tricky)
 - Can be more open on negative things
 - More Sales/PO (Probably should focus on efficiency before more people)
 - Need to define browser support for CMS with clients
+- Beware of Ionic 1
 
 * Projects
 - PO/SM need adoption but generally good
 - Avoid deployment without spec / high value services not charged (Fixing)
 - Not sure if corporate project meant better margin? (So far yes, but we will see)
-- Not much improvement on long standup and task sizing problems (FOCUSING recently)
+- Not much improvement on long standup and task sizing problems (FOCUS)
 - POs need to understand clients better and care about P&L
 - Qualities vs Time and Budget
-- Avoid edge cases / missing design state before development
-- QA&SM disagree on some issues
-- Why HL? Too rush and Enterpriy (We need some corporate project for margin; Rush: Some mistakes in early stages)
+- Avoid edge cases / missing design state before development (PO/Designer, QA Design Review Services, Help comment on Zeplin, Dev pls talk with PO)
+- Why HL? Too rush and Enterpriy (Rush: Some mistakes in early stages)
 - HL huge and long meetings (Should be improving, pls help!)
-- PO/SM should avoid making technical arcihtecture decision for developers
+- PO/SM should avoid making technical decision for developers (technical planning)
 - Each user stories should be able to finish within a sprint.
 
 * Technical
-- Some trade-off between code readability and users doesn't make sense, it is just one-time habit
-- Development should not always be screen-based.
-- Should focus more on separation of data and UI layer, to avoid API changes escalate to view
+- Some trade-off between code readability and performance/result doesn't make sense, it is just one-time habit
+- Development should not always be screen-based. (Technical planning breakdown tasks by dev)
+- Should focus more on separation of data and UI layer, to avoid API changes escalate to view (OKR)
 - Need more best practices (and follows The Joel Test)
 - Some code base of new project are not in good shape 
-- Provide standard course to learn AI
-- No feedback after become senior / None review senior code
+- Provide standard course to learn AI (Could explore further)
+- No feedback after become senior / None review senior code (Self Learning or from Peer / Trial of two tech lead in one project but have a lot of conflicts / Senior ask for review proactively or give regular presentation)
 
 * Designers
-- iOS is first-class citizen but Android got ignored (e.g. Split screen, Material Design)
-- Have a checklist for common UI / Animations
+- iOS is first-class citizen but Android got ignored (e.g. Split screen, Material Design) (Propose an Android minimal acceptance on Design?)
+- Have a checklist / protocol for common UI / Animations between Dev and Designers
 - Need library or reusable resources, or best practices
 - Need guideline for naming / asset preparation
 - Design usually longer than 4 weeks
@@ -78,7 +79,7 @@ bencheng@oursky.com
 
 * Appreciation
 - HLInsurance Team are very serious technically
-- Happy that Oursky encourage discussion and politics
+- Happy that Oursky encourage discussion and care about politics
 - Open and Transparency
 - Flexibility to think and solve problem himself
 - Can remote work
