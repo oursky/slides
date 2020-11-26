@@ -1,0 +1,93 @@
+Tech Lead
+On working with engineer
+26 Nov 2020
+
+Rick Mak
+Oursky
+rick.mak@gmail.com
+
+* Why talk about Tech Lead 
+
+- Bad collaboration/low productivity = Stress
+- De-Mything on Tech lead 
+- Written is not enough: https://oursky.quip.com/xV8aAWoyMi9N/Tech-Lead-Role
+
+* Engineering Management
+
+Oursky motto:
+
+- Self management
+
+We don't have:
+
+- Working hours
+- Unified engineering choice
+- 1000+ developers, (yet)
+
+* Not management role, but peer
+
+- Tech lead
+- Staff Engineer
+- Principal Engineer
+- __Guardian_
+
+* Question
+
+Rick ask me to become tech lead? Isn't it engineering management.
+
+__No_
+
+I expect you:
+
+1. make the final judgement on technical matters and;
+2. become first contact point for technical matter for non-dev
+
+
+* Self management
+
+- Please take a look at previous note on time management
+- [[https://go-talks.appspot.com/github.com/oursky/slides/inbox-zero.slide][Inbox Zero]]
+- [[https://go-talks.appspot.com/github.com/oursky/slides/timelog-and-pomodoro.slide][Timelog and Pomodoro]]
+- [[https://go-talks.appspot.com/github.com/oursky/slides/on-concentration.slide][On Concentration]]
+
+* Myth 1
+
+I need to be proficient in all tech in use of the project
+
+* Truth 1
+
+- You can never proficient in all tech. 學海無涯
+- You are learning with the team, not before the team.
+- Most important things is to ask correct question when adopting new technology.
+- You know who should to go to on specific technical matters.
+
+* Myth 2
+
+I am un-productive without closing issues
+
+* Truth 2
+
+- You should spell out non-UI issue as spike task
+- You should work less on issues, more on things between issue
+- Client meeting
+
+* Myth 3
+
+Over work is norm?
+
+* Truth 3
+
+- You set the delivery target *with* PM
+- You should learn how to spell out your time spent on non-coding task
+
+* Focus 1
+
+How to bring developer to *next* level. Not assign task he already capable to handle.
+
+* Focus 2
+
+Technical communication and consensus in *context*
+
+* Focus 3
+
+Team productivity via boosting individual productivity
