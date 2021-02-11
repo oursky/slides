@@ -1,0 +1,407 @@
+# Sharing on GraphQL Schema Design
+
+YinYin Chiu
+Developer, Oursky
+yinyinchiu@oursky.com
+
+## What is a GraphQL Schema
+
+Here is a simple gql query
+
+```gql
+{
+  user {
+    id
+    profile {
+      name
+      image {
+        url
+      }
+    }
+  }
+}
+```
+and its result
+```gql
+{
+  "data": {
+    "user": {
+      "id": 1,
+      "profile": {
+        "name": "YinYinBB",
+        "image": {
+          "url": "https://www.example.com/hi.png",
+        }
+      }
+    }
+  }
+}
+```
+
+## What is a GraphQL Schema
+
+- The `shape` of a gql query closely matches the result
+- We can predict what we will get from server without knowing much about the server
+
+## How can we know...
+
+- What fields can we select?
+- What kinds of objects might they return?
+- What fields are available on those sub-objects?
+
+## Therefore we need a GraphQL schema
+
+- Every GraphQL server defines a set of types which completely describe the set of possible data you can query on that service.
+- When queries come in, they are validated and executed against that schema.
+
+## Types in GQL
+
+- Scalar types
+  - Int
+  - Float
+  - String
+  - Boolean
+  - ID <- String, identifier of a graphql object
+- Enum
+- List
+- Optional
+- Interface
+- Union
+- Input
+
+## We can define our schema from the above types
+
+## Example 1
+
+We want to have a screen to display some information of a user
+Required Fields
+- Profile pic
+- Name
+
+From the above requirements, we can design our User Schema like
+
+```gql
+type User {
+  id: ID!
+  name: String!
+  profilePicURL: String!
+}
+```
+
+Then, we can add a `query` operation
+```gql
+type Query {
+  user(id: ID!): User // Note that user may not exists so we return optional User
+}
+```
+
+## Example 1
+
+With the defined schema, we can write a gql query like
+```gql
+{
+  user(id: "some-user-id") {
+    id
+    name
+    profilePicURL
+  }
+}
+```
+
+## Example 1
+
+Or, if you can design your schema like
+```gql
+type UserProfile {
+  name: String!
+  profilePicURL: String!
+}
+
+type User {
+  id: ID!
+  profile: UserProfile!
+}
+```
+
+Then your gql query becomes
+
+```gql
+{
+  user(id: "some-user-id") {
+    id
+    profile {
+      name
+      profilePicURL
+    }
+  }
+}
+```
+
+## Example 2
+
+- Group chat message list
+  - Show conversation topic
+  - Show members info
+  - Show all messages
+  - Format: `[Sender profile pic] Sender name (sent at): message content`
+
+Assume no pagination
+
+## Example 2
+
+- Three object types
+  1. User
+      - name (String)
+      - profile pic url (String)
+  2. Message
+      - sent at (Datetime)
+      - content (String)
+  3. Conversation
+      - topic (String)
+      - member list (list of User)
+      - message list (list of Message)
+
+## Example 2
+
+Schema design
+
+```gql
+type User {
+  name: String!
+  profilePicURL: String!
+}
+
+type Message {
+  sentAt: DateTime!
+  content: String!
+}
+
+type Conversation {
+  topic: String!
+  members: [User!]!
+  messages: [Message!]!
+}
+
+type Query {
+  conversation(id: String!) Conversation
+}
+```
+
+## Example 2
+
+- Our query
+```
+{
+  conversion(id: "conversation-id") {
+    topic
+    members {
+      name
+    }
+    messages {
+      sentAt
+      content
+      sender {
+        name
+        profilePicURL
+      }
+    }
+  }
+}
+```
+
+## Conclusion
+
+- Did you find that I didn't talk about db schema design / server implementation or other related things?
+- That's how schema design works
+- Schema design should focus on the Schema but not the implementation
+    - Just like when you drawing you ER diagram, you don't care about mysql/pgsql/sql server
+
+## Resolvers
+
+A field of an object is resolved using resolver
+
+Function signature of a resolver (Apollo server)
+```
+function resolver<Parent, Args, Context, Field>(
+  parent: Parent,
+  args: Args,
+  context: Context
+) => Field | Promise<Field>
+```
+- `parent`: The resolved value from the previous resolver
+- `args`: Arguments. Any fields can have arguments
+- `context`: An object shared across all resolvers
+
+## How graphql resolvers work?
+
+```gql
+{
+  user(id: "some-id") {
+    id
+    username
+    profile {
+      name
+      age
+    }
+  }
+}
+```
+
+Request -> Validate schema -> Build a execution tree
+
+```
+Root -> User -> id
+             -> profile -> name
+                        -> age
+```
+
+We need to think about what should we give to User's resolvers in order to allow us
+to resolve a user object
+
+
+## Resolvers
+
+Consider we have the following db schemas
+```tsx
+// DB model
+interface DBUser {
+  id: string; // pkey
+}
+interface DBUserProfile {
+  id: string; // pkey, fk(user.id)
+  name: string;
+  age: int;
+}
+```
+
+```tsx
+const UserProfile_Name_Resolver = function resolver(parent: Parent) => string | Promise<string>
+const UserProfile_Age_Resolver = function resolver(parent: Parent) => int | Promise<int>
+```
+
+What should be given to UserProfile_*_Resolver?
+- Usually a corresponding db model
+
+```tsx
+const UserProfile_Name_Resolver = function resolver(parent: DBUserProfile) => string | Promise<string>
+                                = (dbUserProfile) => dbUserProfile.name
+const UserProfile_Age_Resolver = function resolver(parent: DBUserProfile) => int | Promise<int>
+                                = (dbUserProfile) => dbUserProfile.age
+```
+
+## Resolvers
+```tsx
+const User_ID_Resolver = function resolver(parent: DBUser) => ID | Promise<ID>
+const User_Profile_Resolver = ...
+```
+
+We are required to pass DBUserProfile to UserProfile's resolvers
+```tsx
+const User_Profile_Resolver = function resolver(parent: DBUser) => DBUserProfile | Promise<DBUserProfile>
+                            = (dbUser) => someUserProfileService.fetchDBUserProfileByUserID(dbUser.id)
+```
+
+In Root Query,
+```tsx
+// Root
+const Query_User_Resolver = function resolver(parent: never, arg: {id: ID}) => DBUser | Promise<ID>
+                          = (_, args) => someUserService.FetchDBUserByID(args.id)
+```
+
+## Resolvers
+
+Alternatively, we can choose other parent type for UserProfile's resolvers
+For example, we choose userID (i.e. string)
+```tsx
+const UserProfile_Name_Resolver = function resolver(parent: string) => string | Promise<string>
+                                = (userID) => {
+                                  return someUserProfileService.fetchDBUserProfileByUserID(dbUser.id)
+                                    .then((p) => p.name)
+                                }
+const UserProfile_Age_Resolver = function resolver(parent: string) => int | Promise<int>
+                                = (userID) => {
+                                  return someUserProfileService.fetchDBUserProfileByUserID(dbUser.id)
+                                    .then((p) => p.age)
+                                }
+```
+Then we User_Profile_Resolver will become
+```tsx
+const User_Profile_Resolver = function resolver(parent: DBUser) => DBUserProfile | Promise<DBUserProfile>
+                            = (dbUser) => dbUser.id
+```
+
+Performance & Optimization are another storry...
+
+## How to make the decision?
+
+Your own choice.
+
+## Schema design & Resolvers
+
+- Each resolver focus on one object field.
+    - More flexible
+- (90% of time) No need to worry about implementation when designing schema
+
+## Schema design & Resolvers
+
+- GraphQL is closer to frontend application
+  - Your schema should favour your frontend use cases
+- GraphQL Schema !== 3 party api data schema / DB schema
+  - e.g. `User` in GraphQL schema can be completely different with `user` table in DB
+  ```
+  // GraphQL
+  type User {
+    id: ID!
+    profile: UserProfile!
+  }
+
+  // DB
+  interface User {
+    id: string;
+  }
+  interface UserProfile {
+    id: string; // Reference(user.id)
+    name: string;
+  }
+  ```
+  - Don't expose something frontend user doesn't need. It just creates noise.
+
+## Schema-first vs Code-first
+
+- Schema-first
+  - Write your schema using schema file
+- Code-first
+  - Write your schema using code
+
+## Schema-first vs Code-first
+
+- I personally prefer schema-first over code-first
+- Schema-first is clearer and less noise
+- Can used in all platforms (Code generation can based on a single source of truth)
+- Example on code-first
+```js
+var schema = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    name: 'RootQueryType',
+    fields: {
+      hello: {
+        type: GraphQLString,
+        resolve() {
+          return 'world';
+        },
+      },
+    },
+  }),
+});
+```
+
+## もっともっと
+
+.link https://graphql.org/learn/schema/ Offical tutorial on schemas and types
+.link https://relay.dev/docs/en/graphql-server-specification Relay GQL Spec
+.link https://docs.github.com/en/graphql Github API v4
+
+
+## Q & A
+
+Any questions?
