@@ -1,0 +1,473 @@
+# Parsec
+
+Monadic parser combinators
+
+24th Nov 2023
+
+YinYin Chiu
+Software Engineer, Oursky
+yinyinchiu@oursky.com
+
+## What is a parser?
+
+You have something with a loose structure (mostly string)
+
+You want to have something to convert that to a known structure.
+
+For example, given a string `'2023-11-24'`, you want to convert it to a date representation.
+
+```
+{
+  year: 2023,
+  month: 11,
+  day: 24,
+}
+```
+
+Note: Today we are !!Not focusing on performance!! !!Not focusing on performance!! !!Not focusing on performance!!
+
+## Create a parser
+
+Something to match
+
+--> Create some steps with some rules to match
+
+--> `Parser<Something>`
+
+## Combine parsers
+
+`Parser<A>` + `Parser<B>` = `Parser<C>`
+
+Combine `Parser<A>` with `Parser<B>` (via a combinator) to produce a new parser `Parser<C>`
+which can parse more complicated things
+
+## Run a parser
+
+- Input
+  - thing to parse
+  - `Parser<Something>`
+- Output
+  - Success or Failure
+
+## Consider a simple parser
+
+Parsing character A
+
+- Input
+  - some string
+- Output
+  - remaining input
+  - true / false
+
+## Parsing character A
+```
+const parseCharacter_a = (str: string) => {
+  if (str.length === 0) {
+    return [false, ""]
+  }
+  if (str[0] === "a") {
+    return [true, str.substring(1)]
+  }
+  return [false, str]
+}
+```
+
+```
+parseCharacter_a("abc") // [true, "bc"]
+parseCharacter_a("bca") // [false, "bca"]
+parseCharacter_a("") // [false, ""]
+```
+
+## Some improvement we can make
+
+1. Change to not only parse a
+2. Include the parsed value in the result
+3. Maybe some error messages?
+
+## Improvement on char parser
+
+```
+type ParseResult<T> =
+ | {type: "Success", value: T, remaining: string}
+ | {type: "Failure", errorMessage: string}
+
+type Char = string;
+
+const parseCharacter = (char: Char, str: string) => {
+  if (str.length === 0) {
+    return Failure("Empty string")
+  }
+  if (str[0] === char) {
+    return Success(value: char, remaining: str.substring(1))
+  }
+  return Failure(`Expecting ${char}, but got ${str[0]}`)
+}
+
+parseCharacter("a", "abc") // Success(value: "a", remaining: "bc")
+parseCharacter("a", "bca") // Failure("Expecting a, but got b")
+parseCharacter("b", "bca") // Success(value: "b", remaining: "ca")
+```
+
+## More Improvement on char parser
+
+But often we only get the input string after something...
+
+so we need to make the parse function run later
+
+```
+const makeParseCharacter = (char: Char) => {
+  const parseCharacter = (str: string) => {
+    if (str.length === 0) {
+      return Failure("Empty string")
+    }
+    if (str[0] === char) {
+      return Success(value: char, remaining: str.substring(1))
+    }
+    return Failure(`Expecting ${char}, but got ${str[0]}`)
+  }
+  return parseCharacter;
+}
+
+const parseCharacter_a = makeParseCharacter("a")
+parseCharacter_a("abc") // Success(value: "a", remaining: "bc")
+parseCharacter_a("bca") // Failure("Expecting a, but got b")
+```
+
+## Let's make a type for parser
+
+```
+type Parser<T> = (str: string) => ParseResult<T>
+function Parser<T>(f: Parser<T>): Parser<T> {
+  return f;
+}
+
+const pCharacter = (char: Char): Parser<Char> => {
+  const parseCharacter = (str: string): ParseResult<Char> => {
+    if (str.length === 0) {
+      return Failure("Empty string")
+    }
+    if (str[0] === char) {
+      return Success(value: char, remaining: str.substring(1))
+    }
+    return Failure(`Expecting ${char}, but got ${str[0]}`)
+  }
+  return Parser(parseCharacter);
+}
+
+const pChar_a = pCharacter("a")
+pChar_a("abc") // Success(value: "a", remaining: "bc")
+pChar_a("bca") // Failure("Expecting a, but got b")
+```
+
+## That's it for the parser part
+
+## Combinator
+
+- Combinator is used to combine things to get more complex things
+- e.g.
+  - `+`
+    - number + number = number
+  - `Array.concat`
+    - array concat array = array
+- Parser ????(what is this) Parser = Parser
+
+## Basic parser combinators
+
+- Parser _andThen_ Parser => Parser
+- Parser _orElse_ Parser => Parser
+- Parser _map_ (transformer) => Parser
+
+## AndThen
+
+- Run the first parser
+  - If fails, return
+- Then, run the second parser with the remaining input
+  - If fails, return
+If both parsers succeed, return both result with a tuple
+
+## AndThen
+
+```
+function andThen<A, B>(parser1: Parser<A>, parser2: Parser<B>): Parser<[A, B]> {
+  return Parser<[A, B]>((str) => {
+    const result1 = parser1(str);
+    if (isFailure(result1)) {
+      return Failure(result1.errorMessage)
+    }
+    const {value: value1, remaining: remaining1} = result1
+
+    const result2 = parser2(remaining1)
+    if (isFailure(result2)) {
+      return Failure(result2.errorMessage)
+    }
+    const {value: value2, remaining: remaining2} = result2
+    return Success(value: [value1, value2], remaining: remaining2)
+  })
+}
+```
+
+## Example on AndThen
+
+```
+const parseA = pCharacter("A")
+const parseB = pCharacter("B")
+const parseAAndThenB = andThen(parseA, parseB)
+
+parseAAndThenB("ABC") // Success(value: ["A", "B"], remaining: "C")
+parseAAndThenB("ZBC") // Failure("Expecting A, but got Z")
+parseAAndThenB("AZC") // Failure("Expecting B, but got Z")
+```
+
+## OrElse
+
+- Run the first parser
+  - If success, return the result
+- If fails, run the second parser with the **original input**
+- Return the result from second parser
+
+```
+function orElse<A>(parser1: Parser<A>, parser2: Parser<A>): Parser<A> {
+  return Parser<A>((str) => {
+    const result1 = parser1(str);
+    if (isSuccess(result1)) {
+      return result1;
+    }
+    const result2 = parser2(str)
+    return result2;
+  })
+}
+```
+
+## Example on orElse
+
+```
+const parseA = pCharacter("A")
+const parseB = pCharacter("B")
+const parseAOrB = orElse(parseA, parseB)
+parseAOrB("AXX") // Success(value: "A", "XX")
+parseAOrB("BXX") // Success(value: "B", "XX")
+parseAOrB("CXX") // Failure("Expecting B, but got C")
+````
+
+## map
+
+- Run the first parser
+- If success, transform the parsed value with the transformer
+- If fails, return the failure
+
+```
+function map<A, B>(fmap: ((a: A) => B), parser: Parser<A>): Parser<B> {
+  return Parser<B>((str) => {
+    const result = parser(str);
+    if (isSuccess(result)) {
+      return Success(value: fmap(result.value), remaining: result.remaining)
+    }
+    return result;
+  })
+}
+```
+
+## Example on orElse
+
+```
+const parseA = pCharacter("A")
+const parseB = pCharacter("B")
+const parseAAndThenB = andThen(parseA, parseB)
+const parseAAndThenBToString = map(([A, B]) => `${A}${B}`, parseAAndThenB)
+
+parseAAndThenBToString("ABC") // Success(value: "AB", remaining: "C")
+parseAAndThenBToString("ZBC") // Failure("Expecting A, but got Z")
+````
+
+## Advanced combinator
+
+One of any chars
+```
+function any(chars: Char[]): Parser<Char> {
+  return chars.map(pCharacter).reduce(orElse)
+}
+```
+
+Match String
+```
+function sequence<A>(parsers: Parser<A>[]): Parser<A[]> {
+  const concatResults = (p1: Parser<A[]>, p2: Parser<A[]>) => {
+    let oneAndThenTwo = andThen(p1, p2)
+    return map(([a,b]) => a.concat(b), oneAndThenTwo)
+  }
+  return parsers.map(p => map((a) => [a], p)).reduce(concatResults)
+}
+
+function pString(str: string): Parser<string> {
+  const ps = sequence(str.split("").map(pCharacter));
+  return map(ss => ss.join(""), ps)
+}
+```
+
+## Advanced combinator (2)
+
+andThen -> Take the first result
+```
+function andThenTakeFirst<A, B>(
+  parser1: Parser<A>,
+  parser2: Parser<B>
+): Parser<A> {
+  return map(([a]: [A, B]) => a, andThen(parser1, parser2));
+}
+```
+
+andThen -> Take the second result
+```
+function andThenTakeSecond<A, B>(
+  parser1: Parser<A>,
+  parser2: Parser<B>
+): Parser<A> {
+  return map(([a, b]: [A, B]) => b, andThen(parser1, parser2));
+}
+```
+
+## Advanced combinator (3)
+
+between
+```
+function between<A, B, C>(
+  parser1: Parser<A>,
+  parser2: Parser<B>,
+  parser3: Parser<C>,
+): Parser<B> {
+  return andThenTakeFirst(andThenTakeSecond(parser1, parser2), parser3);
+}
+```
+
+## Example 1
+
+We want to parse `YYYY-MM-DD` or `YYYY/MM/DD`
+
+We can first define some primitives
+
+```
+const digit = any(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
+
+const year = map(
+  (s: string[]) => Number(s.join("")),
+  sequence([digit, digit, digit, digit]),
+);
+
+const month = map(
+  (s: string[]) => Number(s.join("")),
+  sequence([digit, digit]),
+);
+const day = map((s: string[]) => Number(s.join("")), sequence([digit, digit]));
+
+const separator = orElse(pCharacter("-"), pCharacter('/'));
+```
+
+## Example 1 Cont.
+```
+// YYYY-MM-DD
+const dateStringParser = map(
+  ([year, month, day]) => ({
+    year,
+    month,
+    day,
+  }),
+  sequence([
+    andThenTakeFirst(year, separator),
+    andThenTakeFirst(month, separator),
+    day,
+  ]),
+);
+
+dateStringParser('2023-11-24') // Success(value: {year: 2023, month: 11, day: 24}, remaining: "")
+dateStringParser('2023/11/24') // Success(value: {year: 2023, month: 11, day: 24}, remaining: "")
+```
+
+## Example 2
+
+We want to parse a HKID
+
+We can add more useful combinator
+
+```
+function satisfy(predicate: ((char: Char) => boolean)): Parser<Char> {
+  const parse = (str: string): ParseResult<Char> => {
+    if (str.length === 0) {
+      return Failure("Empty string")
+    }
+    if (predicate(str[0])) {
+      return Success(str[0], str.substring(1))
+    }
+    return Failure(`${str[0]} cannot satisfy the condition`)
+  }
+  return Parser(parse);
+}
+```
+
+Btw, we can replace pCharacter with
+```
+const pCharacter = (char: Char) => satisfy((input) => char === input);
+```
+
+## Example 2 Cont.
+```
+const anyLetter = satisfy((char) => /\w/.test(char))
+const anyNumber = satisfy((char) => /\d/.test(char))
+
+const parseIDNumber = sequence([
+  anyLetter,
+  anyNumber,
+  anyNumber,
+  anyNumber,
+  anyNumber,
+  anyNumber,
+  anyNumber,
+  between(pCharacter("("), anyNumber, pCharacter(")")),
+]);
+```
+
+## Example 2 Cont.
+
+```
+const anyLetter = satisfy((char) => /\w/.test(char))
+const anyNumber = satisfy((char) => /\d/.test(char))
+
+const parseIDNumber = andThen(
+  andThen(
+    anyLetter,
+    many(anyNumber), // <-- try implement many yourself
+  ),
+  between(pCharacter("("), anyNumber, pCharacter(")")),
+)
+```
+
+## Compare to regex
+
+- Regex only can give you result in string
+- Cannot further process intermediate result
+- Parser combinators are more understandable
+- We can define some smaller problems for a big problem
+  - Define small parsers and combine them with combinators
+  - e.g. define how to parse number and then define how to parse a date string
+
+## A journey of a thousand miles begins with a single step
+
+Try to define your parsers
+
+Try to define your combinators
+
+Try to use parsec in your project
+
+## Parsec implementation
+
+- C#
+  - https://github.com/Pjanssen/ParsecSharp
+- Go
+  - https://github.com/prataprc/goparsec
+- Kotlin
+  - https://github.com/d-plaindoux/parsec.kotlin
+- Python
+  - https://github.com/sighingnow/parsec.py
+- Typescript
+  - https://github.com/microsoft/ts-parsec
+- Swift
+  - https://github.com/davedufresne/SwiftParsec
