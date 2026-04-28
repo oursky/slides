@@ -1,0 +1,10 @@
+apiVersion: v2
+name: redis-ha-demo
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+dependencies:
+- name: redis
+  alias: redis1
+  version: 0.26.8
+  repository: "file://charts/redis-cloudpirates"

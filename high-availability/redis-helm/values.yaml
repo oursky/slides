@@ -1,0 +1,44 @@
+redis1:
+  global:
+    security:
+      allowInsecureImages: true
+  image:
+    pullPolicy: IfNotPresent
+    registry: "docker.io"
+    repository: "redis"
+    tag: "8.6.2-trixie"
+  resources:
+    requests:
+      cpu: 100m
+      memory: "32Mi"
+    limits:
+      cpu: "500m"
+      memory: "128Mi"
+  # architecture: standalone
+  architecture: replication
+  replicaCount: 3
+  sentinel:
+    enabled: true
+    image:
+      pullPolicy: IfNotPresent
+      registry: "docker.io"
+      repository: "redis"
+      tag: "8.6.2-trixie"
+    quorum: 2
+    downAfterMilliseconds: 5000
+    preStop:
+      enabled: true
+  pdb:
+    enabled: true
+    minAvailable: 1
+  auth:
+    password: "1234"
+    usePasswordFiles: true
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    # existingClaim: "data-app-redis1-0"
+  config:
+    content: |
+      appendonly yes

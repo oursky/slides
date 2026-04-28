@@ -1,0 +1,6 @@
+dependencies:
+- name: redis
+  repository: file://charts/redis-cloudpirates
+  version: 0.26.8
+digest: sha256:759d90993e11a660788b2471ee3616a5a7826df7edb951a9c2be620dd8dff31e
+generated: "2026-04-16T10:45:52.405655072+08:00"

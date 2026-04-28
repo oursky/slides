@@ -1,0 +1,28 @@
+services:
+  redis1:
+    image: redis:8.6.2-trixie
+    command: redis-server --requirepass 1234 --masterauth 1234
+    ports:
+      - 6379
+
+  redis2:
+    image: redis:8.6.2-trixie
+    command: redis-server --slaveof redis1 6379 --requirepass 1234 --masterauth 1234
+    ports:
+      - 6379
+
+  sentinel:
+    image: redis:8.6.2-trixie
+    command: ["bash", "-c", "mkdir -p /etc/redis/ && cp /var/sentinel.conf /etc/redis/ && redis-sentinel /etc/redis/sentinel.conf"]
+    volumes:
+      - ./sentinel.conf:/var/sentinel.conf:ro
+
+  haproxy:
+    image: haproxy:3.3.6-trixie
+    ports:
+      - 6379
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+
+  redis-cli:
+    image: redis:8.6.2-trixie

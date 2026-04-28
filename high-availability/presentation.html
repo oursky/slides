@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>High Availability — pgsql · redis · failover</title>
+
+<!-- === FONTS: Syne (display) + Space Mono (body/mono) === -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* =============================================================
+   THEME — Creative Voltage
+   Change these to re-skin the whole deck.
+   ============================================================= */
+:root {
+    --blue: #0066ff;
+    --blue-deep: #0052cc;
+    --dark: #1a1a2e;
+    --dark-soft: #252540;
+    --neon: #d4ff00;
+    --ink: #0a0a1a;
+    --white: #ffffff;
+    --mute: rgba(255,255,255,0.65);
+    --mute-2: rgba(255,255,255,0.35);
+
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration: 0.7s;
+}
+
+/* =============================================================
+   VIEWPORT FITTING — mandatory base styles
+   (copied from viewport-base.css)
+   ============================================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow-x: hidden; }
+html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+body {
+    font-family: var(--font-mono);
+    background: var(--dark);
+    color: var(--white);
+    -webkit-font-smoothing: antialiased;
+}
+.slide {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.slide-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    overflow: hidden;
+    padding: var(--slide-padding);
+}
+:root {
+    --title-size: clamp(1.5rem, 5vw, 4rem);
+    --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
+    --h3-size: clamp(1rem, 2.5vw, 1.75rem);
+    --body-size: clamp(0.75rem, 1.4vw, 1.1rem);
+    --small-size: clamp(0.65rem, 1vw, 0.875rem);
+    --slide-padding: clamp(1rem, 4vw, 4rem);
+    --content-gap: clamp(0.5rem, 2vw, 2rem);
+    --element-gap: clamp(0.25rem, 1vw, 1rem);
+}
+@media (max-height: 700px) {
+    :root {
+        --slide-padding: clamp(0.75rem, 3vw, 2rem);
+        --title-size: clamp(1.25rem, 4.5vw, 2.5rem);
+        --h2-size: clamp(1rem, 3vw, 1.75rem);
+    }
+}
+@media (max-height: 600px) {
+    :root {
+        --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem);
+        --title-size: clamp(1.1rem, 4vw, 2rem);
+        --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
+    }
+    .nav-dots, .keyboard-hint, .decorative { display: none; }
+}
+@media (max-height: 500px) {
+    :root {
+        --title-size: clamp(1rem, 3.5vw, 1.5rem);
+        --h2-size: clamp(0.9rem, 2.5vw, 1.25rem);
+        --body-size: clamp(0.65rem, 1vw, 0.85rem);
+    }
+}
+@media (max-width: 600px) {
+    :root { --title-size: clamp(1.25rem, 7vw, 2.5rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+    html { scroll-behavior: auto; }
+}
+
+/* =============================================================
+   SHARED VOLTAGE ELEMENTS
+   ============================================================= */
+/* Halftone dot texture — the Creative Voltage signature */
+.halftone {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(212,255,0,0.15) 1px, transparent 1.5px);
+    background-size: clamp(12px, 1.5vw, 20px) clamp(12px, 1.5vw, 20px);
+    opacity: 0.9;
+    animation: drift 40s linear infinite;
+    pointer-events: none;
+}
+.halftone.subtle { opacity: 0.35; }
+.halftone.white {
+    background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1.5px);
+}
+@keyframes drift { to { background-position: 200px 200px; } }
+
+/* Eyebrow mono tag */
+.eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--small-size);
+    color: var(--neon);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+}
+.eyebrow.muted { color: var(--mute-2); }
+
+/* Meta label at corner */
+.meta-corner {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: clamp(0.6rem, 0.8vw, 0.75rem);
+    color: var(--mute-2);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    z-index: 5;
+}
+.meta-corner.tr { top: clamp(1rem, 2.5vw, 2rem); right: clamp(1rem, 2.5vw, 2rem); }
+.meta-corner.br { bottom: clamp(1rem, 2.5vw, 2rem); right: clamp(1rem, 2.5vw, 2rem); }
+.meta-corner.tl { top: clamp(1rem, 2.5vw, 2rem); left: clamp(1rem, 2.5vw, 2rem); }
+.meta-corner.bl { bottom: clamp(1rem, 2.5vw, 2rem); left: clamp(1rem, 2.5vw, 2rem); }
+.meta-corner .neon-dot {
+    display: inline-block;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--neon);
+    margin-right: 0.5em;
+    vertical-align: middle;
+    box-shadow: 0 0 8px var(--neon);
+    animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 50% { opacity: 0.4; transform: scale(0.7); } }
+
+/* Badge (rotated neon tag) */
+.badge {
+    display: inline-block;
+    background: var(--neon);
+    color: var(--dark);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(0.6rem, 0.85vw, 0.75rem);
+    padding: 0.5em 0.9em;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transform: rotate(-2deg);
+    align-self: flex-start;
+}
+.badge.flat { transform: none; }
+
+/* Scroll/keyboard hint */
+.keyboard-hint {
+    position: fixed;
+    bottom: clamp(1rem, 2.5vw, 2rem);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: clamp(0.6rem, 0.8vw, 0.75rem);
+    color: var(--mute-2);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0;
+    animation: fadeIn 0.8s 1.5s forwards;
+}
+.keyboard-hint .key {
+    display: inline-block;
+    padding: 0.2em 0.55em;
+    border: 1px solid var(--mute-2);
+    border-radius: 3px;
+    color: var(--white);
+}
+
+/* Progress bar at top */
+.progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: var(--neon);
+    width: 0;
+    z-index: 100;
+    transition: width 0.15s linear;
+    box-shadow: 0 0 10px var(--neon);
+}
+
+/* Nav dots */
+.nav-dots {
+    position: fixed;
+    right: clamp(0.75rem, 1.5vw, 1.5rem);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.5rem, 0.8vw, 0.75rem);
+    z-index: 60;
+}
+.nav-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid var(--mute-2);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s var(--ease-out-expo);
+}
+.nav-dot:hover { border-color: var(--neon); }
+.nav-dot.active {
+    background: var(--neon);
+    border-color: var(--neon);
+    box-shadow: 0 0 10px var(--neon);
+    transform: scale(1.3);
+}
+
+/* =============================================================
+   REVEAL ANIMATIONS (.visible class added by IntersectionObserver)
+   ============================================================= */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity var(--duration) var(--ease-out-expo),
+                transform var(--duration) var(--ease-out-expo);
+}
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.slide.visible .reveal:nth-child(1) { transition-delay: 0.1s; }
+.slide.visible .reveal:nth-child(2) { transition-delay: 0.22s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: 0.34s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: 0.46s; }
+.slide.visible .reveal:nth-child(5) { transition-delay: 0.58s; }
+.slide.visible .reveal:nth-child(6) { transition-delay: 0.7s; }
+
+.reveal-scale { opacity: 0; transform: scale(0.92); transition: opacity var(--duration), transform var(--duration) var(--ease-out-expo); }
+.slide.visible .reveal-scale { opacity: 1; transform: scale(1); }
+
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* =============================================================
+   SLIDE 1 — TITLE (split panel, voltage signature)
+   ============================================================= */
+.title-slide {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+}
+.title-slide .left,
+.title-slide .right {
+    padding: clamp(1.5rem, 4vw, 4rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+.title-slide .left { background: var(--blue); }
+.title-slide .right { background: var(--dark); }
+.title-slide h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.5rem, 8vw, 6.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    position: relative;
+    z-index: 2;
+}
+.title-slide h1 em {
+    font-style: italic;
+    font-weight: 700;
+    color: var(--neon);
+}
+.title-slide .tagline {
+    margin-top: clamp(1rem, 2vw, 2rem);
+    max-width: 32ch;
+    font-size: clamp(0.85rem, 1.2vw, 1.1rem);
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+    position: relative;
+    z-index: 2;
+}
+.title-slide .stack {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.5vw, 3rem);
+    line-height: 1.15;
+    color: var(--white);
+}
+.title-slide .stack span { display: block; }
+.title-slide .stack .dim { color: rgba(255,255,255,0.3); }
+.title-slide .stack .neon { color: var(--neon); }
+
+/* =============================================================
+   CONTENT SLIDES — shared wrapper
+   ============================================================= */
+.content-slide {
+    background: var(--dark);
+    padding: clamp(1.5rem, 4vw, 4rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+.content-slide.blue { background: var(--blue); }
+.content-slide.blue .eyebrow { color: var(--neon); }
+.content-slide.blue .meta-corner { color: rgba(255,255,255,0.5); }
+
+.h-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.75rem, 5.5vw, 4.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    color: var(--white);
+    max-width: 20ch;
+}
+.h-title em { font-style: italic; color: var(--neon); font-weight: 700; }
+.h-sub {
+    margin-top: clamp(0.75rem, 1.5vw, 1.25rem);
+    font-size: clamp(0.9rem, 1.4vw, 1.25rem);
+    color: var(--mute);
+    max-width: 55ch;
+    line-height: 1.55;
+}
+
+.content-wrap {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 1.5vw, 1.5rem);
+    max-height: 100%;
+}
+
+/* =============================================================
+   SLIDE 2/3 — Problem setup (hero statement slides)
+   ============================================================= */
+.statement-slide h2.h-title { font-size: clamp(2rem, 7vw, 6rem); }
+.statement-slide .quiet {
+    font-family: var(--font-mono);
+    font-size: clamp(0.75rem, 1vw, 0.9rem);
+    color: var(--mute-2);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: clamp(0.5rem, 1vw, 1rem);
+}
+
+/* Weak-link visual: app node + database node + warning flash */
+.weaklink {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 2rem);
+    margin-top: clamp(1rem, 2.5vw, 2.5rem);
+    justify-content: start;
+}
+.node {
+    border: 2px solid var(--white);
+    border-radius: 4px;
+    padding: clamp(0.6rem, 1.2vw, 1rem) clamp(0.8rem, 1.6vw, 1.4rem);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(0.7rem, 1.1vw, 0.95rem);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: transparent;
+    position: relative;
+}
+.node.solid { background: var(--white); color: var(--dark); }
+.node.neon { background: var(--neon); color: var(--dark); border-color: var(--neon); }
+.node.weak {
+    border-color: #ff4d4d;
+    color: #ff8080;
+    background: rgba(255,77,77,0.08);
+    animation: flicker 2.5s ease-in-out infinite;
+}
+@keyframes flicker {
+    0%, 90%, 100% { opacity: 1; }
+    92% { opacity: 0.4; }
+    94% { opacity: 1; }
+    96% { opacity: 0.5; }
+}
+.arrow {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--neon);
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    letter-spacing: -0.05em;
+}
+.arrow .label {
+    display: block;
+    font-size: clamp(0.6rem, 0.8vw, 0.7rem);
+    color: var(--mute-2);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 0.2em;
+    font-weight: 400;
+}
+
+/* =============================================================
+   SLIDE 4 — Agenda cards
+   ============================================================= */
+.agenda-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    margin-top: clamp(1rem, 2.5vw, 2rem);
+}
+.agenda-card {
+    background: var(--dark-soft);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    padding: clamp(1rem, 2vw, 1.75rem);
+    position: relative;
+    overflow: hidden;
+    min-height: clamp(140px, 24vh, 280px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.4s var(--ease-out-expo);
+}
+.agenda-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--neon);
+    box-shadow: 0 10px 40px rgba(212,255,0,0.1);
+}
+.agenda-card .num {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--neon);
+    line-height: 1;
+}
+.agenda-card h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1rem, 1.8vw, 1.5rem);
+    color: var(--white);
+    letter-spacing: -0.01em;
+    margin-top: clamp(0.5rem, 1vw, 0.75rem);
+}
+.agenda-card p {
+    font-size: clamp(0.7rem, 1vw, 0.85rem);
+    color: var(--mute);
+    line-height: 1.5;
+    margin-top: clamp(0.5rem, 1vw, 0.75rem);
+}
+
+@media (max-width: 700px) {
+    .agenda-grid { grid-template-columns: 1fr; }
+    .agenda-card { min-height: auto; }
+}
+
+/* =============================================================
+   SLIDE 5/8 — Section dividers (huge number)
+   ============================================================= */
+.section-slide {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    background: var(--blue);
+}
+.section-slide .num-panel {
+    background: var(--dark);
+    padding: clamp(1.5rem, 4vw, 4rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+.section-slide .name-panel {
+    padding: clamp(1.5rem, 4vw, 4rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    position: relative;
+    overflow: hidden;
+}
+.section-slide .big-num {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(6rem, 22vw, 18rem);
+    line-height: 0.85;
+    color: var(--neon);
+    letter-spacing: -0.06em;
+    position: relative;
+    z-index: 2;
+}
+.section-slide .section-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2rem, 6vw, 5rem);
+    color: var(--white);
+    line-height: 1;
+    letter-spacing: -0.03em;
+}
+.section-slide .section-subs {
+    font-family: var(--font-mono);
+    font-size: clamp(0.75rem, 1.1vw, 1rem);
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+.section-slide .section-subs .dot { color: var(--neon); margin: 0 0.4em; }
+
+/* =============================================================
+   SLIDE 6/7/9/10 — Architecture diagrams
+   ============================================================= */
+.arch-wrap {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(1rem, 3vw, 3rem);
+    align-items: center;
+    margin-top: clamp(1rem, 2vw, 2rem);
+    flex: 1;
+    min-height: 0;
+}
+.arch-points {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+.arch-points li {
+    list-style: none;
+    font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+    color: var(--white);
+    line-height: 1.5;
+    padding-left: clamp(1.2rem, 2vw, 1.6rem);
+    position: relative;
+}
+.arch-points li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--neon);
+    font-weight: 700;
+}
+.arch-points li strong {
+    font-family: var(--font-mono);
+    color: var(--neon);
+    font-weight: 700;
+    font-size: 0.85em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.2em;
+}
+
+/* Diagram canvas */
+.diagram {
+    background: var(--dark-soft);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: clamp(1rem, 2vw, 1.75rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.5rem, 1.2vw, 1rem);
+    position: relative;
+    overflow: hidden;
+    max-height: min(65vh, 520px);
+}
+.diagram::before {
+    content: '// topology';
+    position: absolute;
+    top: clamp(0.5rem, 1vw, 0.75rem);
+    right: clamp(0.5rem, 1vw, 0.75rem);
+    font-family: var(--font-mono);
+    font-size: clamp(0.55rem, 0.7vw, 0.7rem);
+    color: var(--mute-2);
+    letter-spacing: 0.15em;
+}
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.4rem, 1vw, 0.9rem);
+    flex-wrap: wrap;
+}
+.box {
+    background: var(--dark);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 3px;
+    padding: clamp(0.5rem, 1vw, 0.8rem) clamp(0.75rem, 1.4vw, 1.2rem);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(0.65rem, 0.95vw, 0.85rem);
+    color: var(--white);
+    text-align: center;
+    letter-spacing: 0.08em;
+    min-width: clamp(70px, 10vw, 120px);
+    position: relative;
+}
+.box .tag {
+    display: block;
+    font-weight: 400;
+    font-size: clamp(0.55rem, 0.7vw, 0.7rem);
+    color: var(--mute-2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 0.2em;
+}
+.box.primary { background: var(--neon); color: var(--dark); border-color: var(--neon); }
+.box.primary .tag { color: rgba(26,26,46,0.65); }
+.box.replica { border-color: rgba(212,255,0,0.35); color: var(--white); }
+.box.replica .tag { color: rgba(212,255,0,0.6); }
+.box.sentinel {
+    background: transparent;
+    border-color: rgba(255,255,255,0.4);
+    border-style: dashed;
+    color: rgba(255,255,255,0.85);
+}
+.box.app {
+    background: var(--blue);
+    border-color: var(--blue);
+}
+.box.proxy {
+    background: var(--white);
+    color: var(--dark);
+    border-color: var(--white);
+}
+.box.proxy .tag { color: rgba(26,26,46,0.55); }
+
+.conn {
+    font-family: var(--font-mono);
+    font-size: clamp(0.85rem, 1.3vw, 1.1rem);
+    color: var(--neon);
+    text-align: center;
+    font-weight: 700;
+    position: relative;
+    line-height: 1;
+}
+.conn .lbl {
+    display: block;
+    font-size: clamp(0.55rem, 0.7vw, 0.7rem);
+    color: var(--mute-2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin-top: 0.15em;
+}
+.conn.v { writing-mode: vertical-rl; transform: rotate(180deg); }
+
+/* Vertical connection with fanning out */
+.fanout {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    height: clamp(1.25rem, 2.5vw, 2rem);
+}
+.fanout::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 30%;
+    right: 30%;
+    bottom: 50%;
+    border-left: 1.5px solid var(--neon);
+    border-right: 1.5px solid var(--neon);
+    border-bottom: 1.5px solid var(--neon);
+    border-radius: 0 0 4px 4px;
+}
+.fanout::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1.5px;
+    height: 50%;
+    background: var(--neon);
+}
+
+/* Sentinel quorum ring — horizontal line connecting sentinels */
+.quorum-line {
+    position: relative;
+    height: clamp(1rem, 2vw, 1.5rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.quorum-line::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 15%;
+    right: 15%;
+    height: 1.5px;
+    background: rgba(255,255,255,0.3);
+}
+.quorum-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1.5px;
+    height: 100%;
+    background: var(--neon);
+}
+.quorum-line .txt {
+    background: var(--dark-soft);
+    padding: 0 0.6em;
+    font-family: var(--font-mono);
+    font-size: clamp(0.55rem, 0.75vw, 0.7rem);
+    color: var(--neon);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+    margin-top: clamp(0.6rem, 1.2vw, 1rem);
+}
+
+/* =============================================================
+   SLIDE 11 — helm comparison (two columns)
+   ============================================================= */
+.compare-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1rem, 2.5vw, 2rem);
+    margin-top: clamp(0.75rem, 1.5vw, 1.5rem);
+    min-height: 0;
+    flex: 1;
+}
+.compare-col {
+    background: var(--dark-soft);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: clamp(1rem, 2vw, 1.75rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.5rem, 1.2vw, 1rem);
+    position: relative;
+    overflow: hidden;
+}
+.compare-col.highlight { border-color: var(--neon); }
+.compare-col .mode {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+    color: var(--neon);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+}
+.compare-col h3 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.2rem, 2.4vw, 2rem);
+    color: var(--white);
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+.compare-col .mechanism {
+    font-family: var(--font-mono);
+    font-size: clamp(0.7rem, 1vw, 0.85rem);
+    color: var(--mute);
+    letter-spacing: 0.05em;
+    padding: clamp(0.4rem, 0.8vw, 0.7rem) clamp(0.5rem, 1vw, 0.8rem);
+    background: rgba(0,102,255,0.12);
+    border-left: 2px solid var(--blue);
+    border-radius: 2px;
+}
+.compare-col ul { list-style: none; display: flex; flex-direction: column; gap: clamp(0.4rem, 0.8vw, 0.6rem); }
+.compare-col li {
+    font-size: clamp(0.75rem, 1.05vw, 0.95rem);
+    color: var(--white);
+    line-height: 1.45;
+    padding-left: clamp(0.9rem, 1.5vw, 1.2rem);
+    position: relative;
+}
+.compare-col li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--neon);
+}
+.compare-col li.con::before { background: #ff6b6b; }
+.compare-col .use {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+    color: var(--neon);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding-top: clamp(0.5rem, 1vw, 0.75rem);
+    border-top: 1px dashed rgba(255,255,255,0.15);
+}
+
+@media (max-width: 700px) {
+    .compare-wrap { grid-template-columns: 1fr; }
+    .arch-wrap { grid-template-columns: 1fr; }
+}
+
+/* =============================================================
+   SLIDE 12 — Pattern / closing (three tenets)
+   ============================================================= */
+.tenets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.75rem, 2vw, 1.75rem);
+    margin-top: clamp(1rem, 2vw, 2rem);
+}
+.tenet {
+    position: relative;
+    padding: clamp(1rem, 2vw, 1.75rem);
+    border-top: 3px solid var(--neon);
+    background: var(--dark-soft);
+}
+.tenet .num {
+    font-family: var(--font-mono);
+    font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+    color: var(--neon);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: clamp(0.5rem, 1vw, 0.75rem);
+}
+.tenet h3 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.1rem, 2vw, 1.75rem);
+    color: var(--white);
+    letter-spacing: -0.02em;
+    margin-bottom: clamp(0.5rem, 1vw, 0.75rem);
+    line-height: 1.1;
+}
+.tenet p {
+    font-size: clamp(0.8rem, 1.1vw, 1rem);
+    color: var(--mute);
+    line-height: 1.5;
+}
+
+.closing-line {
+    margin-top: clamp(1rem, 2vw, 2rem);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(1rem, 1.8vw, 1.5rem);
+    color: var(--neon);
+    max-width: 60ch;
+}
+
+@media (max-width: 700px) {
+    .tenets { grid-template-columns: 1fr; }
+}
+
+/* =============================================================
+   INLINE EDITING (opted-in)
+   ============================================================= */
+.edit-hotzone {
+    position: fixed;
+    top: 0; left: 0;
+    width: 80px; height: 80px;
+    z-index: 10000;
+    cursor: pointer;
+}
+.edit-toggle {
+    position: fixed;
+    top: clamp(1rem, 2vw, 1.5rem);
+    left: clamp(1rem, 2vw, 1.5rem);
+    width: clamp(40px, 4vw, 48px);
+    height: clamp(40px, 4vw, 48px);
+    background: var(--neon);
+    color: var(--dark);
+    border: none;
+    border-radius: 50%;
+    font-size: clamp(0.95rem, 1.4vw, 1.2rem);
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(212,255,0,0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s var(--ease-out-expo);
+    z-index: 10001;
+}
+.edit-toggle.show,
+.edit-toggle.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+.edit-toggle:hover { transform: scale(1.1); }
+.edit-toggle.active { background: var(--white); }
+
+.edit-banner {
+    position: fixed;
+    top: clamp(1rem, 2vw, 1.5rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(-60px);
+    background: var(--neon);
+    color: var(--dark);
+    padding: 0.6em 1.2em;
+    font-family: var(--font-mono);
+    font-size: clamp(0.7rem, 0.95vw, 0.85rem);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    z-index: 10002;
+    transition: transform 0.4s var(--ease-out-expo);
+    white-space: nowrap;
+}
+.edit-banner.active { transform: translateX(-50%) translateY(0); }
+
+body.edit-active [contenteditable="true"] {
+    outline: 1.5px dashed var(--neon);
+    outline-offset: 4px;
+    cursor: text;
+    border-radius: 2px;
+}
+body.edit-active [contenteditable="true"]:focus {
+    outline-style: solid;
+    background: rgba(212,255,0,0.08);
+}
+body.edit-active {
+    /* Prevent scroll-snap interference when clicking to edit */
+    scroll-snap-type: none;
+}
+</style>
+</head>
+<body>
+
+<!-- === PROGRESS BAR + NAV DOTS === -->
+<div class="progress-bar"></div>
+<nav class="nav-dots" aria-label="Slide navigation"></nav>
+
+<!-- === INLINE EDIT UI === -->
+<div class="edit-hotzone" aria-hidden="true"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)" aria-label="Toggle edit mode">✏️</button>
+<div class="edit-banner" id="editBanner">● EDIT MODE · CTRL+S TO SAVE · ESC TO EXIT</div>
+
+<!-- === KEYBOARD HINT === -->
+<div class="keyboard-hint">
+    <span class="key">↓</span> or <span class="key">space</span> to advance
+</div>
+
+<!-- =============================================================
+     SLIDE 1 — TITLE
+     ============================================================= -->
+<section class="slide title-slide">
+    <div class="left">
+        <div class="halftone"></div>
+        <div class="eyebrow reveal" contenteditable="false">// infrastructure · 2026</div>
+        <div>
+            <h1 class="reveal" contenteditable="false">High<br>Availa<em>bility.</em></h1>
+            <p class="tagline reveal" contenteditable="false">
+                When the managed services we depend on stop depending on themselves.
+            </p>
+        </div>
+        <div></div>
+    </div>
+    <div class="right">
+        <span class="meta-corner tr" contenteditable="false">// deck 01</span>
+        <div class="badge reveal" contenteditable="false">★ HA</div>
+        <div class="stack reveal">
+            <span class="dim" contenteditable="false">postgres.</span>
+            <span contenteditable="false">redis.</span>
+            <span class="neon" contenteditable="false">failover.</span>
+        </div>
+        <div class="meta-corner br" contenteditable="false"><span class="neon-dot"></span>no single point</div>
+    </div>
+</section>
+
+<!-- =============================================================
+     SLIDE 2 — THE APP IS PERFECT
+     ============================================================= -->
+<section class="slide content-slide statement-slide blue">
+    <div class="halftone subtle"></div>
+    <span class="meta-corner tl" contenteditable="false">// 02 · the setup</span>
+    <div class="content-wrap">
+        <div class="eyebrow reveal" contenteditable="false">// the good news</div>
+        <h2 class="h-title reveal" contenteditable="false">We ship <em>great</em> code.</h2>
+        <p class="h-sub reveal" contenteditable="false">
+            Tests green. Deploys smooth. The application is solid.
+            Every code path we own behaves the way we want it to.
+        </p>
+        <div class="quiet reveal" contenteditable="false">// and yet —</div>
+    </div>
+    <span class="meta-corner br" contenteditable="false">part 01 / problem</span>
+</section>
+
+<!-- =============================================================
+     SLIDE 3 — THE WEAK LINK
+     ============================================================= -->
+<section class="slide content-slide statement-slide">
+    <div class="halftone subtle"></div>
+    <span class="meta-corner tl" contenteditable="false">// 03 · the problem</span>
+    <div class="content-wrap">
+        <div class="eyebrow reveal" contenteditable="false">// the bad news</div>
+        <h2 class="h-title reveal" contenteditable="false">The <em>dependency</em> is the weak link.</h2>
+        <p class="h-sub reveal" contenteditable="false">
+            Managed Postgres and managed Redis are great. But when we can't
+            use managed services, our own deployment becomes the weak link.
+        </p>
+
+        <div class="weaklink reveal">
+            <div class="node solid" contenteditable="false">APP · OK</div>
+            <div class="arrow">
+                →
+                <span class="label">hard dependency</span>
+            </div>
+            <div class="node weak" contenteditable="false">DB · DOWN</div>
+        </div>
+    </div>
+    <span class="meta-corner br" contenteditable="false">part 01 / problem</span>
+</section>
+
+<!-- =============================================================
+     SLIDE 4 — AGENDA
+     ============================================================= -->
+<section class="slide content-slide">
+    <div class="halftone subtle"></div>
+    <span class="meta-corner tl" contenteditable="false">// 04 · agenda</span>
+    <div class="content-wrap">
+        <div class="eyebrow reveal" contenteditable="false">// what's next</div>
+        <h2 class="h-title reveal" contenteditable="false">Two stateful services.<br>One recurring <em>pattern.</em></h2>
+
+        <div class="agenda-grid">
+            <div class="agenda-card reveal" contenteditable="false">
+                <div>
+                    <div class="num">01</div>
+                    <h3>PostgreSQL</h3>
+                </div>
+                <p>Primary + standby, orchestrated by a monitor (pg_auto_failover), served through HAProxy.</p>
+            </div>
+            <div class="agenda-card reveal" contenteditable="false">
+                <div>
+                    <div class="num">02</div>
+                    <h3>Redis</h3>
+                </div>
+                <p>Master–replica + Sentinel quorum, same HAProxy story. Plus the helm choice.</p>
+            </div>
+            <div class="agenda-card reveal" contenteditable="false">
+                <div>
+                    <div class="num">03</div>
+                    <h3>The Pattern</h3>
+                </div>
+                <p>Redundancy + consensus + stable access point. Every time.</p>
+            </div>
+        </div>
+    </div>
+    <span class="meta-corner br" contenteditable="false">part 01 / map</span>
+</section>
+
+<!-- =============================================================
+     SLIDE 5 — SECTION DIVIDER: POSTGRESQL
+     ============================================================= -->
+<section class="slide section-slide">
+    <div class="num-panel">
+        <div class="halftone subtle"></div>
+        <div class="eyebrow reveal" contenteditable="false">// section</div>
+        <div class="big-num reveal" contenteditable="false">01</div>
+    </div>
+    <div class="name-panel">
+        <div class="halftone"></div>
+        <span class="meta-corner tr" contenteditable="false">part 02</span>
+        <span class="badge reveal" contenteditable="false">★ postgres</span>
+        <h2 class="section-name reveal" contenteditable="false">PostgreSQL.</h2>
+        <p class="section-subs reveal" contenteditable="false">
+            primary <span class="dot">●</span> standby <span class="dot">●</span> monitor
+        </p>
+    </div>
+</section>
+
+<!-- =============================================================
+     SLIDE 6 — pgsql PRIMARY-STANDBY FAILOVER
+     ============================================================= -->
+<section class="slide content-slide">
+    <div class="halftone subtle"></div>
+    <span class="meta-corner tl" contenteditable="false">// 06 · pgsql · topology</span>
+    <div class="content-wrap" style="flex:1; min-height:0;">
+        <div class="eyebrow reveal" contenteditable="false">// postgresql · 01</div>
+        <h2 class="h-title reveal" contenteditable="false">Primary, standby,<br><em>monitor.</em></h2>
+
+        <div class="arch-wrap">
+            <ul class="arch-points reveal">
+                <li contenteditable="false"><strong>streaming replication</strong>Write-ahead logs stream continuously from primary to a hot standby.</li>
+                <li contenteditable="false"><strong>the monitor</strong>A third Postgres node running pg_auto_failover. It watches both data nodes and holds the cluster state.</li>
+                <li contenteditable="false"><strong>automated failover</strong>Primary stops answering → monitor promotes the standby → seconds of downtime, no pager.</li>
+                <li contenteditable="false"><strong>why a monitor</strong>Two nodes can't agree on who's dead. A dedicated, separate arbiter avoids split-brain.</li>
+            </ul>
+
+            <div class="diagram reveal-scale">
+                <div class="row">
+                    <div class="box proxy" contenteditable="false">MONITOR<span class="tag">pg_auto_failover</span></div>
+                </div>
+                <div class="fanout" aria-hidden="true"></div>
+                <div class="row">
+                    <div class="box primary" contenteditable="false">PRIMARY<span class="tag">read + write</span></div>
+                    <div class="conn">⇄<span class="lbl">WAL stream</span></div>
+                    <div class="box replica" contenteditable="false">STANDBY<span class="tag">hot spare</span></div>
+                </div>
+                <div class="row" style="margin-top: clamp(0.4rem, 0.8vw, 0.75rem);">
+                    <div style="font-family:var(--font-mono); font-size:clamp(0.6rem,0.8vw,0.75rem); color:var(--mute-2); letter-spacing:0.15em; text-transform:uppercase;" contenteditable="false">
+                        monitor health-checks both → orchestrates promotion on failure
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="meta-corner br" contenteditable="false">part 02 / 01</span>
+</section>
+
+<!-- =============================================================
+     SLIDE 7 — pgsql HAProxy ACCESS POINT
+     ============================================================= -->
+<section class="slide content-slide">
+    <div class="halftone subtle"></div>
+    <span class="meta-corner tl" contenteditable="false">// 07 · pgsql · access</span>
+    <div class="content-wrap" style="flex:1; min-height:0;">
+        <div class="eyebrow reveal" contenteditable="false">// postgresql · 02</div>
+        <h2 class="h-title reveal" contenteditable="false">One endpoint.<br>Always the <em>writer.</em></h2>
+
+        <div class="arch-wrap">
+            <ul class="arch-points reveal">
+                <li contenteditable="false"><strong>stable DSN</strong>App connects to the HAProxy VIP. It never knows which node is primary right now.</li>
+                <li contenteditable="false"><strong>health checks</strong>Each node exposes its monitor-assigned role. HAProxy routes only to whoever is currently primary.</li>
+                <li contenteditable="false"><strong>failover is invisible</strong>Monitor promotes → node roles flip → HAProxy follows. No app config change, just a reconnect.</li>
+            </ul>
+
+            <div class="diagram reveal-scale">
+                <div class="row"><div class="box app" contenteditable="false">APP<span class="tag">one DSN</span></div></div>
+                <div class="conn">↓<span class="lbl">tcp · one VIP</span></div>
+                <div class="row"><div class="box proxy" contenteditable="false">HAPROXY<span class="tag">health-checked</span></div></div>
+                <div class="fanout" aria-hidden="true"></div>
+                <div class="row">
+                    <div class="box primary" contenteditable="false">PRIMARY<span class="tag">active</span></div>
+                    <div class="box replica" contenteditable="false">STANDBY<span class="tag">passive</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="meta-corner br" contenteditable="false">part 02 / 02</span>
+</section>
+
+<!-- =============================================================
+     SLIDE 8 — SECTION DIVIDER: REDIS
+     ============================================================= -->
+<section class="slide section-slide">
+    <div class="num-panel">
+        <div class="halftone subtle"></div>
+        <div class="eyebrow reveal" contenteditable="false">// section</div>
+        <div class="big-num reveal" contenteditable="false">02</div>
+    </div>
+    <div class="name-panel">
+        <div class="halftone"></div>
+        <span class="meta-corner tr" contenteditable="false">part 03</span>
+        <span class="badge reveal" contenteditable="false">★ redis</span>
+        <h2 class="section-name reveal" contenteditable="false">Redis.</h2>
+        <p class="section-subs reveal" contenteditable="false">
+            master <span class="dot">●</span> sentinel <span class="dot">●</span> haproxy
+        </p>
+    </div>
+</section>
+
+<!-- =============================================================
+     SLIDE 9 — REDIS MASTER-SLAVE + SENTINEL
+     ============================================================= -->
+<section class="slide content-slide">
+    <div class="halftone subtle"></div>
+    <span class="meta-corner tl" contenteditable="false">// 09 · redis · topology</span>
+    <div class="content-wrap" style="flex:1; min-height:0;">
+        <div class="eyebrow reveal" contenteditable="false">// redis · 01</div>
+        <h2 class="h-title reveal" contenteditable="false">Master, replicas,<br>and a <em>quorum.</em></h2>
+
+        <div class="arch-wrap">
+            <ul class="arch-points reveal">
+                <li contenteditable="false"><strong>master–replica</strong>One master accepts writes; replicas follow asynchronously. Classic.</li>
+                <li contenteditable="false"><strong>sentinel</strong>A separate process that watches every node. Runs as its own cluster.</li>
+                <li contenteditable="false"><strong>quorum decides</strong>Sentinels vote. Majority says "master is down" → promote a replica.</li>
+                <li contenteditable="false"><strong>why three</strong>Three sentinels is the minimum for a real quorum — never even, never one.</li>
+            </ul>
+
+            <div class="diagram reveal-scale">
+                <div class="row">
+                    <div class="box sentinel" contenteditable="false">SENTINEL 1</div>
+                    <div class="box sentinel" contenteditable="false">SENTINEL 2</div>
+                    <div class="box sentinel" contenteditable="false">SENTINEL 3</div>
+                </div>
+                <div class="quorum-line"><span class="txt" contenteditable="false">quorum ≥ 2</span></div>
+                <div class="row">
+                    <div class="box primary" contenteditable="false">MASTER<span class="tag">write</span></div>
+                    <div class="box replica" contenteditable="false">REPLICA<span class="tag">read</span></div>
+                    <div class="box replica" contenteditable="false">REPLICA<span class="tag">read</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="meta-corner br" contenteditable="false">part 03 / 01</span>
+</section>
+
+<!-- =============================================================
+     SLIDE 10 — REDIS HAProxy ACCESS POINT
+     ============================================================= -->
+<section class="slide content-slide">
+    <div class="halftone subtle"></div>
+    <span class="meta-corner tl" contenteditable="false">// 10 · redis · access</span>
+    <div class="content-wrap" style="flex:1; min-height:0;">
+        <div class="eyebrow reveal" contenteditable="false">// redis · 02</div>
+        <h2 class="h-title reveal" contenteditable="false">Same pattern. <em>Again.</em></h2>
+
+        <div class="arch-wrap">
+            <ul class="arch-points reveal">
+                <li contenteditable="false"><strong>stable endpoint</strong>Clients hit HAProxy, not Redis directly. No Sentinel-aware client required.</li>
+                <li contenteditable="false"><strong>who's master?</strong>HAProxy's health check asks each node — whoever replies "master" wins the route.</li>
+                <li contenteditable="false"><strong>zero-edit failover</strong>Promotion happens → HAProxy notices → traffic shifts. App config is untouched.</li>
+            </ul>
+
+            <div class="diagram reveal-scale">
+                <div class="row"><div class="box app" contenteditable="false">APP<span class="tag">one host:port</span></div></div>
+                <div class="conn">↓<span class="lbl">tcp · one VIP</span></div>
+                <div class="row"><div class="box proxy" contenteditable="false">HAPROXY<span class="tag">role-checked</span></div></div>
+                <div class="fanout" aria-hidden="true"></div>
+                <div class="row">
+                    <div class="box primary" contenteditable="false">MASTER<span class="tag">active</span></div>
+                    <div class="box replica" contenteditable="false">REPLICA</div>
+                    <div class="box replica" contenteditable="false">REPLICA</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="meta-corner br" contenteditable="false">part 03 / 02</span>
+</section>
+
+<!-- =============================================================
+     SLIDE 11 — HELM: STANDALONE vs REPLICATION
+     ============================================================= -->
+<section class="slide content-slide">
+    <div class="halftone subtle"></div>
+    <span class="meta-corner tl" contenteditable="false">// 11 · redis · helm</span>
+    <div class="content-wrap" style="flex:1; min-height:0;">
+        <div class="eyebrow reveal" contenteditable="false">// helm · which chart</div>
+        <h2 class="h-title reveal" contenteditable="false">Standalone, or <em>replication?</em></h2>
+
+        <div class="compare-wrap">
+            <div class="compare-col reveal">
+                <div class="mode" contenteditable="false">mode · A</div>
+                <h3 contenteditable="false">Standalone</h3>
+                <div class="mechanism" contenteditable="false">failure → pod restarts</div>
+                <ul>
+                    <li contenteditable="false">One pod. No replicas. No sentinel.</li>
+                    <li contenteditable="false">Simple config, fast to deploy, easy to reason about.</li>
+                    <li class="con" contenteditable="false">Downtime window while the pod restarts.</li>
+                    <li class="con" contenteditable="false">In-memory data is gone unless persisted to a volume.</li>
+                </ul>
+                <div class="use" contenteditable="false">→ caches · dev · stateless-ish workloads</div>
+            </div>
+            <div class="compare-col highlight reveal">
+                <div class="mode" contenteditable="false">mode · B</div>
+                <h3 contenteditable="false">Replication</h3>
+                <div class="mechanism" contenteditable="false">failure → sentinel promotes replica</div>
+                <ul>
+                    <li contenteditable="false">Master + replicas + sentinel quorum, all orchestrated.</li>
+                    <li contenteditable="false">Seconds to new master — failover under the app.</li>
+                    <li class="con" contenteditable="false">More moving parts. More config. More to understand.</li>
+                    <li class="con" contenteditable="false">Needs HAProxy (or sentinel-aware client) for seamless access.</li>
+                </ul>
+                <div class="use" contenteditable="false">→ anything we can't afford to lose</div>
+            </div>
+        </div>
+    </div>
+    <span class="meta-corner br" contenteditable="false">part 03 / 03</span>
+</section>
+
+<!-- =============================================================
+     SLIDE 12 — THE PATTERN / CLOSING
+     ============================================================= -->
+<section class="slide content-slide blue">
+    <div class="halftone"></div>
+    <span class="meta-corner tl" contenteditable="false">// 12 · pattern</span>
+    <div class="content-wrap">
+        <div class="eyebrow reveal" contenteditable="false">// the takeaway</div>
+        <h2 class="h-title reveal" contenteditable="false">Same shape,<br><em>every time.</em></h2>
+
+        <div class="tenets">
+            <div class="tenet reveal">
+                <div class="num" contenteditable="false">01 · redundancy</div>
+                <h3 contenteditable="false">More than one node.</h3>
+                <p contenteditable="false">Primary + standby. Master + replicas. Never a single box holding state.</p>
+            </div>
+            <div class="tenet reveal">
+                <div class="num" contenteditable="false">02 · consensus</div>
+                <h3 contenteditable="false">A quorum picks the leader.</h3>
+                <p contenteditable="false">Sentinels vote. Health-check majorities decide. No humans in the loop.</p>
+            </div>
+            <div class="tenet reveal">
+                <div class="num" contenteditable="false">03 · access point</div>
+                <h3 contenteditable="false">One stable endpoint.</h3>
+                <p contenteditable="false">The app connects to a proxy. The proxy hides which node is leading today.</p>
+            </div>
+        </div>
+
+        <p class="closing-line reveal" contenteditable="false">
+            Our code can be perfect — but only if the foundation is too.
+        </p>
+    </div>
+    <span class="meta-corner br" contenteditable="false">end</span>
+</section>
+
+<script>
+/* =============================================================
+   SLIDE PRESENTATION CONTROLLER
+   - Intersection observer → .visible class (triggers CSS reveals)
+   - Keyboard + touch + wheel navigation
+   - Progress bar + nav dots
+   ============================================================= */
+class SlidePresentation {
+    constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.currentSlide = 0;
+        this.navDotsContainer = document.querySelector('.nav-dots');
+        this.progressBar = document.querySelector('.progress-bar');
+
+        this.setupIntersectionObserver();
+        this.setupKeyboardNav();
+        this.setupTouchNav();
+        this.setupWheelNav();
+        this.setupNavDots();
+        this.setupProgress();
+    }
+
+    setupIntersectionObserver() {
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.intersectionRatio > 0.5) {
+                    e.target.classList.add('visible');
+                    this.currentSlide = this.slides.indexOf(e.target);
+                    this.updateNavDots();
+                    this.updateProgress();
+                }
+            });
+        }, { threshold: [0.5] });
+        this.slides.forEach(s => io.observe(s));
+    }
+
+    setupKeyboardNav() {
+        document.addEventListener('keydown', (e) => {
+            // Don't hijack keys while editing text
+            if (document.activeElement && document.activeElement.getAttribute('contenteditable') === 'true') return;
+
+            switch (e.key) {
+                case 'ArrowDown':
+                case 'ArrowRight':
+                case 'PageDown':
+                case ' ':
+                    e.preventDefault(); this.go(this.currentSlide + 1); break;
+                case 'ArrowUp':
+                case 'ArrowLeft':
+                case 'PageUp':
+                    e.preventDefault(); this.go(this.currentSlide - 1); break;
+                case 'Home':
+                    e.preventDefault(); this.go(0); break;
+                case 'End':
+                    e.preventDefault(); this.go(this.slides.length - 1); break;
+            }
+        });
+    }
+
+    setupTouchNav() {
+        let startY = 0;
+        document.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; }, { passive: true });
+        document.addEventListener('touchend', (e) => {
+            const dy = startY - e.changedTouches[0].clientY;
+            if (Math.abs(dy) < 50) return;
+            this.go(this.currentSlide + (dy > 0 ? 1 : -1));
+        }, { passive: true });
+    }
+
+    setupWheelNav() {
+        // Native scroll-snap handles wheel. No extra needed — keeps it cheap.
+    }
+
+    setupNavDots() {
+        // Clear first — re-opening a saved file preserves outerHTML, so dots
+        // would otherwise duplicate on every load.
+        this.navDotsContainer.innerHTML = '';
+        this.slides.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+            dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+            dot.addEventListener('click', () => this.go(i));
+            this.navDotsContainer.appendChild(dot);
+        });
+    }
+
+    updateNavDots() {
+        this.navDotsContainer.querySelectorAll('.nav-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === this.currentSlide);
+        });
+    }
+
+    setupProgress() { this.updateProgress(); }
+    updateProgress() {
+        const pct = ((this.currentSlide + 1) / this.slides.length) * 100;
+        this.progressBar.style.width = pct + '%';
+    }
+
+    go(idx) {
+        idx = Math.max(0, Math.min(this.slides.length - 1, idx));
+        this.slides[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+const presentation = new SlidePresentation();
+
+/* =============================================================
+   INLINE EDITOR
+   - Hover top-left or press E to toggle
+   - Ctrl+S exports file; auto-saves to localStorage
+   - exportFile() strips edit state before capturing outerHTML
+   ============================================================= */
+class SlideEditor {
+    constructor() {
+        this.isActive = false;
+        this.storageKey = 'ha-presentation-edits';
+        this.editables = document.querySelectorAll('[contenteditable]');
+        this.toggle = document.getElementById('editToggle');
+        this.banner = document.getElementById('editBanner');
+        this.hotzone = document.querySelector('.edit-hotzone');
+
+        this.loadEdits();
+        this.wireToggle();
+        this.wireHotzone();
+        this.wireKeys();
+    }
+
+    wireToggle() {
+        this.toggle.addEventListener('click', () => this.toggleEditMode());
+    }
+
+    wireHotzone() {
+        let hideTimeout = null;
+        const show = () => {
+            clearTimeout(hideTimeout);
+            this.toggle.classList.add('show');
+        };
+        const scheduleHide = () => {
+            hideTimeout = setTimeout(() => {
+                if (!this.isActive) this.toggle.classList.remove('show');
+            }, 400);
+        };
+        this.hotzone.addEventListener('mouseenter', show);
+        this.hotzone.addEventListener('mouseleave', scheduleHide);
+        this.toggle.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+        this.toggle.addEventListener('mouseleave', scheduleHide);
+        this.hotzone.addEventListener('click', () => this.toggleEditMode());
+    }
+
+    wireKeys() {
+        document.addEventListener('keydown', (e) => {
+            const editing = document.activeElement && document.activeElement.getAttribute('contenteditable') === 'true';
+
+            // E toggles (but not when typing into a text field)
+            if ((e.key === 'e' || e.key === 'E') && !editing) {
+                e.preventDefault();
+                this.toggleEditMode();
+                return;
+            }
+            // Ctrl+S / Cmd+S exports
+            if ((e.ctrlKey || e.metaKey) && e.key === 's' && this.isActive) {
+                e.preventDefault();
+                this.exportFile();
+                return;
+            }
+            // Escape exits edit mode
+            if (e.key === 'Escape' && this.isActive) {
+                e.preventDefault();
+                this.toggleEditMode();
+            }
+        });
+
+        // Auto-save to localStorage on every edit
+        this.editables.forEach(el => {
+            el.addEventListener('input', () => this.saveEdits());
+        });
+    }
+
+    toggleEditMode() {
+        this.isActive = !this.isActive;
+        document.body.classList.toggle('edit-active', this.isActive);
+        this.toggle.classList.toggle('active', this.isActive);
+        this.banner.classList.toggle('active', this.isActive);
+
+        this.editables.forEach(el => {
+            el.setAttribute('contenteditable', this.isActive ? 'true' : 'false');
+        });
+
+        if (this.isActive) {
+            this.toggle.innerHTML = '✓';
+        } else {
+            this.toggle.innerHTML = '✏️';
+            this.toggle.classList.remove('show');
+        }
+    }
+
+    saveEdits() {
+        const edits = {};
+        this.editables.forEach((el, i) => { edits[i] = el.innerHTML; });
+        try { localStorage.setItem(this.storageKey, JSON.stringify(edits)); } catch (_) {}
+    }
+
+    loadEdits() {
+        try {
+            const raw = localStorage.getItem(this.storageKey);
+            if (!raw) return;
+            const edits = JSON.parse(raw);
+            this.editables.forEach((el, i) => {
+                if (edits[i] !== undefined) el.innerHTML = edits[i];
+            });
+        } catch (_) {}
+    }
+
+    exportFile() {
+        // Strip edit state before capturing outerHTML — otherwise the
+        // saved file opens stuck in edit mode with dashed outlines.
+        const wasActive = this.isActive;
+        const editableEls = Array.from(document.querySelectorAll('[contenteditable]'));
+        editableEls.forEach(el => el.removeAttribute('contenteditable'));
+        document.body.classList.remove('edit-active');
+        this.toggle.classList.remove('active', 'show');
+        this.banner.classList.remove('active');
+
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+        // Restore so the user can keep editing
+        if (wasActive) {
+            document.body.classList.add('edit-active');
+            editableEls.forEach(el => el.setAttribute('contenteditable', 'true'));
+            this.toggle.classList.add('active');
+            this.banner.classList.add('active');
+        }
+
+        const blob = new Blob([html], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'ha-presentation.html';
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
+}
+
+const editor = new SlideEditor();
+
+/* Mark the first slide visible immediately (IntersectionObserver
+   can miss it on initial load if the page is fully visible). */
+document.querySelector('.slide').classList.add('visible');
+</script>
+</body>
+</html>

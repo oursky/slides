@@ -1,0 +1,82 @@
+services:
+  monitor:
+    build:
+      dockerfile: Dockerfile
+    command: pg_autoctl create monitor --run --auth scram-sha-256 --hostname monitor
+    ports:
+      - 5432
+    user: "999:999"
+    volumes:
+      - monitor_data:/var/lib/postgresql/
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres1234"
+      PG_AUTOCTL_SSL_SELF_SIGNED: "true"
+
+  cli:
+    image: postgres:18.3-trixie
+
+  pg-health1:
+    build:
+      dockerfile: Dockerfile
+      context: ./pg-health/
+    ports:
+      - 127.0.0.1:8000:8000
+    environment:
+      DATABASE_URL: "postgres://app:app1234@pg1:5432/appdb"
+
+  pg-health2:
+    build:
+      dockerfile: Dockerfile
+      context: ./pg-health/
+    ports:
+      - 127.0.0.1:8001:8000
+    environment:
+      DATABASE_URL: "postgres://app:app1234@pg2:5432/appdb"
+
+  haproxy:
+    image: haproxy:3.3.6-trixie
+    ports:
+      - 5432
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+
+  pg1:
+    build:
+      dockerfile: Dockerfile
+    command: pg_autoctl create postgres --run --auth scram-sha-256 --pg-hba-lan --hostname pg1 --name pg1
+    ports:
+      - 127.0.0.1:15432:5432
+    user: "999:999"
+    volumes:
+      - pg1_data:/var/lib/postgresql/
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres1234"
+      PGPASSWORD: "replica1234"
+      PG_AUTOCTL_SSL_SELF_SIGNED: "true"
+      PG_AUTOCTL_MONITOR: "postgresql://autoctl_node:monitor1234@monitor/pg_auto_failover"
+
+  pg2:
+    build:
+      dockerfile: Dockerfile
+    command: pg_autoctl create postgres --run --auth scram-sha-256 --pg-hba-lan --hostname pg2 --name pg2
+    ports:
+      - 127.0.0.1:25432:5432
+    user: "999:999"
+    volumes:
+      - pg2_data:/var/lib/postgresql/
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres1234"
+      PGPASSWORD: "replica1234"
+      PG_AUTOCTL_SSL_SELF_SIGNED: "true"
+      PG_AUTOCTL_MONITOR: "postgresql://autoctl_node:monitor1234@monitor/pg_auto_failover"
+
+volumes:
+  monitor_data:
+    driver: local
+  pg1_data:
+    driver: local
+  pg2_data:
+    driver: local

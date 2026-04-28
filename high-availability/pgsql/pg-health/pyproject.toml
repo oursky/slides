@@ -1,0 +1,10 @@
+[project]
+name = "pgsql-health"
+version = "0.1.0"
+description = "PostgreSQL health-check API exposing replication mode (primary/standby/offline)"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn>=0.34",
+    "asyncpg>=0.31.0",
+]
