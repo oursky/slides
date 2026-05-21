@@ -1,0 +1,111 @@
+# Infrastructure supports AI coding development
+Dev env for deploying / testing vide app
+
+04th May 2026
+
+YinYin Chiu
+Software Engineer, Oursky
+yinyinchiu@oursky.com
+
+## Background
+
+- AI coding agents enable PM / Designer / Sales involve in development
+- Coding agent Harness - ongoing to assist AI agents produce code up to Oursky standard
+   - Please help contribute
+   - [https://github.com/oursky/flotilla](github.com/oursky/flotilla)
+   - [https://github.com/oursky/agentic-engineering-harness](https://github.com/oursky/agentic-engineering-harness)
+- Deployment is hard
+   - Not everyone (not even opus) knows how to deploy application to pandawork
+   - No way to preview how the application works after deployment
+   - Some internal tools are using fly.io
+- Cloud hosting cost is expensive 
+   - More expensive than HK office rent
+- Coding agent reduces great amount of engineer workload
+   - Enable free time to do some extra stuff
+
+## Goal
+
+- Setup a env / tool for colleagues to deploy their application
+- Reduce hosting cost
+
+## Big milestones
+
+- k8s (k3s) cluster setup (Done, Thanks Big Cal, Big Peter, Rico)
+  - oursky.dev
+- Self-host Image registry (Done, Thanks Big Cal again)
+- Deployment tool - ongoing
+   - This presentation
+- Other services (not yet started)
+  - Postgresql
+  - Redis
+  - Cloud storage
+  - etc..
+
+## Brief summary on oursky.dev cluster
+
+- Self-hosted cluster
+  - Control plane on gcp
+  - Nodes in servier rooms
+- Domain - oursky.dev
+- Tailscale protected
+- We trust everyone, currently auth control on cluster level
+  - Prerequisite: You have access to the nodes :0)
+
+## Skyrocket
+
+.image assets/banner.png 400 _
+
+[https://github.com/oursky/skyrocket](https://github.com/oursky/skyrocket)
+
+## Demo
+
+1. Download CLI
+2. Init project
+3. Sign up / Login
+4. Deploy
+
+## Limitation
+
+- Way of cli installation sucks
+- Need docker installed in user's machine
+- Assume Dockerfile exists
+- Not support image size > 2Gi
+- Only support single service
+
+## Future milestones
+
+- Migrate away from fly.io
+
+- Multi services support
+
+- Configuration (Secrets config) support
+
+- Postgresql & redis support (Hopefully happen in this month, ping Big Cal)
+
+- Move away build pipeline from user's machine
+
+- Support Github PR preview
+
+- Deploy (or maybe migrate??) via mcp
+
+   Prompt
+   ```
+   Deploy this app to oursky.dev
+   ```
+
+- Others...
+
+## Future Future milestones
+
+- Replace pandawork
+
+## Feedback needed
+
+- Please provide feedback, esp. PM / Designer / Sales
+- Contribution are also welcome
+
+Create an issue / submit a PR on [https://github.com/oursky/skyrocket](https://github.com/oursky/skyrocket)
+
+Let us know if you can help!!
+
+## Q & A

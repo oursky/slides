@@ -1,0 +1,110 @@
+# Skyrocket update after 3 weeks
+
+21st May 2026
+
+YinYin Chiu
+Software Engineer, Oursky
+yinyinchiu@oursky.com
+
+## Recap
+
+Skyrocket is built for
+- Setup a env / tool for colleagues to deploy their application
+
+## Previously
+
+Limitation
+- Way of cli installation sucks
+- Need docker installed in user's machine
+- Assume Dockerfile exists
+- Not support image size > 2Gi
+- Only support single service
+
+## Previously
+
+Future milestones
+- Migrate away from fly.io
+- Multi services support
+- Configuration (Secrets config) support
+- Postgresql & redis support (Hopefully happen in this month, ping Big Cal)
+- Move away build pipeline from user's machine
+- Support Github PR preview
+- Deploy (or maybe migrate??) via mcp
+
+## Today
+
+- Way of cli installation sucks -> still sucks but better
+- No need docker installed in user's machine
+- Still assume Dockerfile exists
+- ~~Not support image size > 2Gi~~
+  - Expect source code (docker context) < 500mb
+- Moved away build pipeline from user's machine
+- Changed to poll base
+
+## Today
+
+- Support Postgresql, redis and s3
+- Support secrets management
+- Support multi services
+  - Separate Dockerfile and context
+  - Support nested dockerignore
+- Support use public docker images
+- Predeploy tasks
+  - DB migration
+  - Insert seed
+  - Conditional
+
+## Today
+
+- Created a documentation site [https://docs-skyrocket.oursky.dev/](https://docs-skyrocket.oursky.dev/)
+- Included a llm-full.txt [https://docs-skyrocket.oursky.dev/llms-full.txt](https://docs-skyrocket.oursky.dev/llms-full.txt)
+
+.image assets/docsite.png 400 _
+
+## Today
+- Still no support Github PR preview -> seems other tools in Rick's agenda
+- Deploy (or maybe migrate??) via mcp -> No started yet
+- Not Destroy project commands
+
+## Technical
+
+Postgresql
+- postgres18.oursky.dev (Thanks Big Cal)
+
+## Technical
+
+Build on k8s
+- Buildkit
+- [https://github.com/moby/buildkit](https://github.com/moby/buildkit)
+
+Limitation
+- No replicas
+  - No time study make it works
+- Too many build job will lead to service oom
+
+## Technical
+
+Redis
+- Kvrocks
+- [https://kvrocks.apache.org/](https://kvrocks.apache.org/)
+- Support multi users via namespace
+  - https://kvrocks.apache.org/docs/namespace
+- Redis API but use RocksDB as storage
+  - slower in speed but not eating rams $$
+
+## Technical
+
+S3
+- RustFS
+- [https://rustfs.com/](https://rustfs.com/)
+- minio alternative :0)
+- Just want to try try
+
+## Special Thanks
+
+Teddy Yeung
+- requested many features, which seems not in Rick's roadmap / target for Skyrocket
+
+Mandy and formx
+- repo too large, need to support nested dockerignore, which offically not supported by docker
+
